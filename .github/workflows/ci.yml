@@ -1,0 +1,21 @@
+name: Check Whiteboat water release
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+          cache: npm
+      - run: npm ci
+        working-directory: vendor/whiteboat-core
+      - run: npm test && npm run build
+        working-directory: vendor/whiteboat-core
+      - run: npm ci --ignore-scripts
+      - run: npm test && npm run build && npm run check:release && node --check main.js

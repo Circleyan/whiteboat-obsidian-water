@@ -1,0 +1,10 @@
+{
+  "id": "whiteboat",
+  "name": "Whiteboat",
+  "version": "0.1.0",
+  "minAppVersion": "1.8.10",
+  "description": "Begin on a quiet water surface and turn a thought into a new Canvas.",
+  "author": "千百慧",
+  "authorUrl": "https://github.com/Circleyan",
+  "isDesktopOnly": true
+}

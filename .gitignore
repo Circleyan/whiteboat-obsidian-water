@@ -1,0 +1,14 @@
+node_modules/
+.DS_Store
+.env
+.env.*
+*.log
+coverage/
+dist/
+.vite/
+.gstack/
+
+main.js
+release-assets/
+
+vendor/whiteboat-core/lib/

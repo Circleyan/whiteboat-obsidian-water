@@ -1,0 +1,35 @@
+{
+  "name": "whiteboat",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Begin on a quiet water surface and turn a thought into a new Canvas.",
+  "main": "main.js",
+  "scripts": {
+    "build": "tsc -noEmit --skipLibCheck && node esbuild.config.mjs production",
+    "dev": "node esbuild.config.mjs",
+    "test": "vitest run --config vitest.water.config.mjs",
+    "test:unit": "vitest run --config vitest.water.config.mjs",
+    "check:release": "node scripts/check-water-release.mjs"
+  },
+  "keywords": [
+    "obsidian",
+    "obsidian-plugin",
+    "whiteboat"
+  ],
+  "author": "千百慧",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/howler": "^2.2.13",
+    "@types/node": "^20.19.0",
+    "@types/three": "^0.180.0",
+    "esbuild": "^0.28.2",
+    "obsidian": "^1.7.2",
+    "typescript": "4.7.4",
+    "vitest": "^3.2.7",
+    "whiteboat-core": "file:vendor/whiteboat-core"
+  },
+  "dependencies": {
+    "howler": "^2.2.4",
+    "three": "^0.180.0"
+  }
+}

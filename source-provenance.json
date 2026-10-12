@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "distribution_repository": "Circleyan/whiteboat-obsidian-water",
+  "obsidian_source_commit": "d3e280cdfc55b49e738edc694afcd9c5586ea8bf",
+  "core_source_commit": "95ae08f5d6a686bc3ea3aae55b0f5e4fd64b9228",
+  "policy": "Vendored release snapshot only. Shared feature bodies are byte-identical; package/build/index project the consumed water subset. No development Git history is included.",
+  "core_source_files": {
+    "LICENSE": "5c0cda18399f7e58073f6ce127a111595fddd972687abaaa43fd4247dc649db0",
+    "package.json": "52a08d4c2a7faba5751fe4bc431b50513b93ee706c58d690b7f8b49b8774602f",
+    "package-lock.json": "107e912ad03c0a549c70c77afff90d86c41c37e69d904e70e4e06eb3c1597d63",
+    "tsconfig.json": "624bb6d078b829cc103253dbb4094f6da152e9643c35695f40bc14c05d421b11",
+    "tsdown.config.ts": "daf054ebb8601fb3204974a09890da3f4904a31fc9711bcd15828d30e8ed3f78",
+    "src/index.ts": "867ae58a95fc7a8c6f3713a876ed7d380640654ae12928c0577038bda55980a9",
+    "src/audio.d.ts": "f9b7c7b24fbe1da18e28e95a2908f096cb4cc6fea35fb18d802844af6172b75c",
+    "src/svg.d.ts": "d6e4a04dbfe083934adcb67b9736d773b5165411a5f4cf2bf058a5b81f7b458e",
+    "src/features/canvas-creation-composer-motion.ts": "22fb065d556cbe9e5409499c352007b2810d7ea2dccd236f38926254210a04b6",
+    "src/features/canvas-creation-navigation.ts": "89a75bcce6be75452d8e1eeb85b31364377440f39794ba529cfe770840d92e33",
+    "src/features/canvas-creation-water-field.ts": "7a3c88f829d5c6679f22050c88a6725d7a2a241d0895a12a974d9b57e079a389",
+    "src/features/canvas-creation-projection.ts": "aa5f13a6c0ac4855ded296dea313a41b1ededc8d780bcfada4cb86fb12ee6525",
+    "src/features/boat-water-sound.ts": "22a25ca8dd59842d79ffd0655219204727f163c1fbc955650127dfa84e2f78f8",
+    "src/features/canvas-creation-boat-assets.ts": "6dd8d8f3c4ee988a107d07d0cddc8812d8a419797ff8cbed016b12177e549f1b",
+    "src/features/canvas-creation-water-impact.ts": "934e30b8a3f6761a1e8f5c16194b19c218958f0105e187beff8385cd3b962d46",
+    "src/features/idea-speech-input.ts": "6634ce6322d2a6087689e913b63de021867f9f2d3edd65d41991d0b83da6ef58",
+    "src/features/canvas-creation-light.ts": "23ef2bc845a23bbfbb4a1a2a1f993c2f8d4ec215fe23623009bf13f2853e016c",
+    "src/features/boat-water-source.ts": "7c6a0096a4f3c6308bc68a65ae9109f17da773d25f73fbafb3553257985ddf26",
+    "src/assets/canvas-entry-boat-shadow.svg": "b02b3104a4f0b1499bd2398df02a00b6da449691eaea498e8e5e07904f319cac",
+    "src/assets/canvas-entry-boat-window.svg": "714545eb34ea134805d6e649f978b468857b5fcd2c5960d1e54d2f21e3308a54",
+    "src/assets/canvas-entry-boat-hull.svg": "b5e961e082870406908b733eb39940b842e5e9829632ad7ce62e34478446174e",
+    "src/assets/audio/stone-falling-in-water.mp3": "48d71d00f8643433862d68f9c9f0a6c7132d82c6a6a08470db97c37439b1f92c",
+    "src/assets/audio/README.md": "bf65de42c95b7c20ea31961498611e8eba5864f79b5e74aff023e71569c25cd9",
+    "src/assets/audio/boat-water.mp3": "89e164e834c3b380e740e2179643eb31fee0e487b669bbd9454a5a01c142e3a9",
+    "src/assets/audio/idea-drops/big-rock-splash-3.mp3": "7761081b8488e03ecff297f94e6aad04af853ba83e948052f21e5594613a00ad",
+    "src/assets/audio/idea-drops/big-rock-splash-2.mp3": "f533648ae764cabf8ac4e0f19aeaef681c7fa6f584c6dce115609238e1f1576a",
+    "src/assets/audio/idea-drops/big-rock-splash-1.mp3": "e786c2e44e7cfb725f20c99177554e3ca6f36b4d4086a9370161684cfb8beba9",
+    "src/assets/audio/idea-drops/big-rock-splash-4.mp3": "e02e76f17232ec91ba48283723795149a00c27351da658103b04d924e96ab31f",
+    "test/water-field-flow-pause.spec.ts": "ca9cd5216feda03dd6080a66506976856012af1fff510697f315910a249029dc",
+    "test/shared-water.spec.ts": "224580b24e1b1bae555f795d69b0588f039c11772f694f7c615f5d9d2ddd6ee6",
+    "test/boat-water-sound.spec.ts": "76ea5c35fc566c36579c14b5ae11bee7eed80922a83c1996fe8b368124e93a23",
+    "test/shared-speech.spec.ts": "cf8423303dc683c21a40f54329b6ab652282e1bfc7912352633b159eda72776e",
+    "test/water-impact.spec.ts": "1d407330d3d346e306a4deb1258a5d3e9506610590853570d79d047db9dce594"
+  },
+  "projected_metadata": [
+    "package.json",
+    "src/index.ts",
+    "tsdown.config.ts",
+    "package-lock.json",
+    "vitest.config.mjs"
+  ],
+  "obsidian_projected_sources": {
+    "src/canvas/runtime.ts": {
+      "source_commit": "d3e280cdfc55b49e738edc694afcd9c5586ea8bf",
+      "kept_methods": [
+        "constructor",
+        "getActiveCanvasView",
+        "getCanvasViewByPath",
+        "isCanvasView",
+        "getRuntimeNodeId",
+        "getRuntimeNodeData",
+        "findRuntimeNodeById",
+        "getCanvasNodes",
+        "isRuntimeNode"
+      ],
+      "purpose": "Retain only the read-only native Canvas lookup used by the water reveal; omit other Canvas mutation features and their full-product vocabulary."
+    },
+    "src/main.ts": {
+      "source_commit": "d3e280cdfc55b49e738edc694afcd9c5586ea8bf",
+      "change": "Unload closes the water modal immediately, including when its composer is open; prevents orphaned water/audio on reload."
+    }
+  }
+}

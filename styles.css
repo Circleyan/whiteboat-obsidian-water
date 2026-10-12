@@ -1,0 +1,1503 @@
+/* WB-ENTRY-006 · Obsidian-native Canvas creation water */
+body.whiteboat-canvas-entry-open .modal-container,
+.modal-container.whiteboat-canvas-entry-modal-container,
+.modal-container:has(> .whiteboat-canvas-entry-modal),
+.modal-container:has(.whiteboat-canvas-entry:not(.is-settings-preview)) {
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  width: 100dvw !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: 100dvh !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden;
+  box-sizing: border-box;
+  background: oklch(99.5% 0.003 240) !important;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+body.whiteboat-canvas-entry-phone-open {
+  overflow: hidden !important;
+}
+
+body.theme-dark.whiteboat-canvas-entry-open .modal-container,
+body.theme-dark .modal-container.whiteboat-canvas-entry-modal-container,
+body.theme-dark .modal-container:has(> .whiteboat-canvas-entry-modal),
+body.theme-dark
+  .modal-container:has(.whiteboat-canvas-entry:not(.is-settings-preview)) {
+  background: oklch(20% 0.012 235) !important;
+}
+
+body.whiteboat-canvas-entry-open .modal-container > .modal-bg,
+.modal-container.whiteboat-canvas-entry-modal-container > .modal-bg,
+.modal-container:has(> .whiteboat-canvas-entry-modal) > .modal-bg,
+.modal-container:has(.whiteboat-canvas-entry:not(.is-settings-preview))
+  > .modal-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: oklch(99.5% 0.003 240) !important;
+  opacity: 1 !important;
+}
+
+body.theme-dark.whiteboat-canvas-entry-open .modal-container > .modal-bg,
+body.theme-dark .modal-container.whiteboat-canvas-entry-modal-container > .modal-bg,
+body.theme-dark .modal-container:has(> .whiteboat-canvas-entry-modal) > .modal-bg,
+body.theme-dark
+  .modal-container:has(.whiteboat-canvas-entry:not(.is-settings-preview))
+  > .modal-bg {
+  background: oklch(20% 0.012 235) !important;
+}
+
+.whiteboat-canvas-entry-modal.modal {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  width: 100dvw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  box-sizing: border-box;
+  transform: none !important;
+}
+
+.whiteboat-canvas-entry-modal > .modal-close-button,
+.whiteboat-canvas-entry-modal > .modal-header-button {
+  display: none;
+}
+
+.whiteboat-canvas-entry-modal > .modal-content {
+  position: absolute;
+  inset: 0;
+  flex: none;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+body:has(.whiteboat-canvas-entry:not(.is-settings-preview))
+  .sidebar-toggle-button.mod-right {
+  visibility: hidden;
+}
+
+.whiteboat-canvas-entry {
+  /* Foundation: color */
+  --wb-entry-ink-90: oklch(26% 0.006 250);
+  --wb-entry-ink-70: oklch(43% 0.008 250);
+  --wb-entry-ink-50: oklch(62% 0.006 250);
+  --wb-entry-paper-00: oklch(99.5% 0.003 240);
+  --wb-entry-paper-10: oklch(97.8% 0.005 220);
+  --wb-entry-paper-20: oklch(95.4% 0.008 245);
+  --wb-entry-line-10: oklch(92% 0.007 235);
+  --wb-entry-line-20: oklch(86% 0.009 235);
+  --wb-entry-cyan-20: oklch(89% 0.075 222);
+  --wb-entry-cyan-40: oklch(72% 0.15 232);
+  --wb-entry-cyan-50: oklch(66% 0.135 210);
+  --wb-entry-green-40: oklch(72% 0.155 145);
+  --wb-entry-blue-40: oklch(70% 0.145 260);
+  --wb-entry-violet-30: oklch(75% 0.14 305);
+  --wb-entry-error-50: oklch(54% 0.16 25);
+  --wb-entry-water-line-01: rgba(38, 38, 38, 0.1);
+  --wb-entry-water-line-02: rgba(38, 38, 38, 0.14);
+  --wb-entry-water-line-03: rgba(38, 38, 38, 0.18);
+  --wb-entry-rim-highlight: transparent;
+  --wb-entry-rim-highlight-soft: transparent;
+
+  /* Foundation: type */
+  --wb-entry-font-ui:
+    "SF Pro Text", "SF Pro Display", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", "PingFang SC", "Hiragino Sans GB", sans-serif;
+  --wb-entry-font-reading:
+    "Inclusive Sans", "Avenir Next", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", "PingFang SC", sans-serif;
+  --wb-entry-type-caption: 0.75rem;
+  --wb-entry-type-label: 0.875rem;
+  --wb-entry-type-body: 1rem;
+  --wb-entry-leading-compact: 1.2;
+  --wb-entry-leading-body: 1.5;
+  --wb-entry-weight-regular: 400;
+  --wb-entry-weight-medium: 520;
+
+  /* Foundation: space and shape */
+  --wb-entry-space-01: 0.125rem;
+  --wb-entry-space-02: 0.25rem;
+  --wb-entry-space-03: 0.5rem;
+  --wb-entry-space-04: 0.75rem;
+  --wb-entry-space-05: 1rem;
+  --wb-entry-space-06: 1.5rem;
+  --wb-entry-space-07: 2rem;
+  --wb-entry-space-08: 2.5rem;
+  --wb-entry-radius-small: 0.5rem;
+  --wb-entry-radius-medium: 0.75rem;
+  --wb-entry-radius-large: 1rem;
+  --wb-entry-radius-pill: 999rem;
+  --wb-entry-border-width: 0.0625rem;
+
+  /* Foundation: motion and elevation */
+  --wb-entry-duration-instant: 100ms;
+  --wb-entry-duration-fast: 180ms;
+  --wb-entry-duration-state: 280ms;
+  --wb-entry-duration-enter: 480ms;
+  --wb-entry-duration-settle: 720ms;
+  --wb-entry-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --wb-entry-ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --wb-entry-shadow-dialog: 0 0.25rem 0.5rem rgba(255, 254, 250, 0.32);
+  /* Daylight: one quiet sun above the jelly water. */
+  --wb-entry-celestial-light: sun;
+  --wb-entry-celestial-light-intensity: 1;
+  --wb-entry-celestial-projection-angle: 29deg;
+  --wb-entry-celestial-projection-counter-angle: -29deg;
+  --wb-entry-celestial-projection-color: rgba(28, 33, 52, 0.24);
+  --wb-entry-celestial-projection-opacity: 0.28;
+  --wb-entry-celestial-projection-blur: var(--wb-entry-space-04);
+  --wb-entry-projection-color: var(--wb-entry-celestial-projection-color);
+  --wb-entry-projection-opacity: var(
+    --wb-entry-celestial-projection-opacity
+  );
+  --wb-entry-projection-blur: var(--wb-entry-celestial-projection-blur);
+  --wb-entry-projection-filter: blur(var(--wb-entry-projection-blur));
+  --wb-entry-focus-ring: 0 0 0 0.1875rem rgba(51, 177, 255, 0.34);
+  --wb-entry-z-water: 1;
+  --wb-entry-z-pointer: 2;
+  --wb-entry-z-recording-ripple: 2;
+  --wb-entry-z-water-focus: 2;
+  --wb-entry-z-boat: 3;
+  /* Open composer: surrounding water recedes into a progressive blur. */
+  --wb-entry-water-focus-padding: 96px;
+  --wb-entry-water-focus-blur-near: 1.5px;
+  --wb-entry-water-focus-blur-mid: 3px;
+  --wb-entry-water-focus-blur-far: 6px;
+  --wb-entry-water-focus-release-duration: 320ms;
+  /* Opacity kept by the farthest water dashes under full focus. */
+  --wb-entry-water-focus-dash-floor: 0.3;
+  --wb-entry-z-dialog: 5;
+  --wb-entry-z-reflection: 8;
+  --wb-entry-z-chrome: 10;
+
+  /* Semantic */
+  --wb-entry-background: var(--wb-entry-paper-00);
+  --wb-entry-layer-01: var(--wb-entry-paper-10);
+  --wb-entry-layer-02: var(--wb-entry-paper-20);
+  --wb-entry-text-primary: var(--wb-entry-ink-90);
+  --wb-entry-text-secondary: var(--wb-entry-ink-70);
+  --wb-entry-text-placeholder: var(--wb-entry-ink-50);
+  --wb-entry-border-subtle: var(--wb-entry-line-10);
+  --wb-entry-border-strong: var(--wb-entry-line-20);
+  --wb-entry-interactive: var(--wb-entry-cyan-50);
+  --wb-entry-focus: var(--wb-entry-cyan-40);
+  --wb-entry-error: var(--wb-entry-error-50);
+  --wb-entry-water-line-quiet: var(--wb-entry-water-line-01);
+  --wb-entry-water-line: var(--wb-entry-water-line-02);
+  --wb-entry-water-line-strong: var(--wb-entry-water-line-03);
+  --wb-entry-wake-accent-01: var(--wb-entry-green-40);
+  --wb-entry-wake-accent-02: var(--wb-entry-cyan-40);
+  --wb-entry-wake-accent-03: var(--wb-entry-blue-40);
+  --wb-entry-wake-accent-04: var(--wb-entry-violet-30);
+  --wb-entry-wake-opacity-strong: 1;
+  --wb-entry-wake-opacity-bright: 0.76;
+  --wb-entry-wake-opacity-middle: 0.54;
+  --wb-entry-wake-opacity-soft: 0.34;
+  --wb-entry-wake-opacity-tail: 0.18;
+
+  /* Component */
+  --wb-entry-header-height: 96px;
+  --wb-entry-header-inline: var(--wb-entry-space-07);
+  --wb-entry-header-padding-block-start: var(--wb-entry-space-06);
+  --wb-entry-header-padding-block-end: var(--wb-entry-space-03);
+  --wb-entry-boat-hit-size: 108px;
+  --wb-entry-boat-body-width: 24.4256px;
+  --wb-entry-boat-body-height: 68.7696px;
+  --wb-entry-boat-shadow-width: 55.9392px;
+  --wb-entry-boat-shadow-height: 100.9856px;
+  --wb-entry-boat-heading: 0rad;
+  --wb-entry-boat-rim-offset-x: 0px;
+  --wb-entry-boat-rim-offset-y: -0.9px;
+  --wb-entry-boat-rim-angle: 119deg;
+  --wb-entry-boat-projection-distance: 11px;
+  --wb-entry-boat-projection-opacity: var(--wb-entry-projection-opacity);
+  --wb-entry-boat-projection-blur: 8px;
+  --wb-entry-composer-width: 400px;
+  --wb-entry-composer-height: 224px;
+  --wb-entry-composer-title-height: 56px;
+  --wb-entry-phone-composer-min-height: 64px;
+  --wb-entry-phone-composer-max-height: 144px;
+  --wb-entry-phone-composer-inline-gap: 12px;
+  --wb-entry-composer-outer-radius: var(--wb-entry-radius-large);
+  --wb-entry-composer-inner-radius: calc(
+    var(--wb-entry-composer-outer-radius) - var(--wb-entry-space-03)
+  );
+  --wb-entry-composer-enter-shift: var(--wb-entry-space-05);
+  --wb-entry-composer-land-x: 26px;
+  --wb-entry-composer-land-y: 62px;
+  --wb-entry-composer-projection-distance: 74px;
+  /* Keep the composer projection readable against the dark water field. */
+  --wb-entry-composer-projection-opacity: 0.38;
+  --wb-entry-composer-projection-blur: 13px;
+  --wb-entry-composer-projection-scale-x: 1;
+  --wb-entry-composer-projection-scale-y: 1;
+  --wb-entry-water-top-inset: var(--wb-entry-space-04);
+  --wb-entry-water-top-ratio: 0;
+  --wb-entry-recording-ripple-size: 42px;
+  --wb-entry-recording-ripple-stroke: 2px;
+  --wb-entry-recording-ripple-duration: 1900ms;
+  --wb-entry-recording-ripple-stagger: 380ms;
+  --wb-entry-recording-ripple-delay-01: 0ms;
+  --wb-entry-recording-ripple-delay-02: -380ms;
+  --wb-entry-recording-ripple-delay-03: -760ms;
+  --wb-entry-recording-ripple-delay-04: -1140ms;
+
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 20rem;
+  min-height: 24rem;
+  overflow: clip;
+  isolation: isolate;
+  color: var(--wb-entry-text-primary);
+  background: var(--wb-entry-background);
+  /* Keep the scene cursor stable while hit-testing moves between its layers.
+     Interactive controls below this root still provide their own cursors. */
+  cursor: var(--wb-entry-anchor-cursor, crosshair);
+  font-family: var(--wb-entry-font-ui);
+  font-size: var(--wb-entry-type-body);
+  font-weight: var(--wb-entry-weight-regular);
+  line-height: var(--wb-entry-leading-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  box-sizing: border-box;
+}
+
+.theme-dark .whiteboat-canvas-entry {
+  --wb-entry-ink-90: oklch(94% 0.006 225);
+  --wb-entry-ink-70: oklch(78% 0.01 225);
+  --wb-entry-ink-50: oklch(67% 0.012 225);
+  --wb-entry-paper-00: oklch(20% 0.012 235);
+  --wb-entry-paper-10: oklch(24% 0.014 235);
+  --wb-entry-paper-20: oklch(29% 0.016 235);
+  --wb-entry-line-10: oklch(33% 0.014 235);
+  --wb-entry-line-20: oklch(39% 0.016 235);
+  --wb-entry-water-line-01: rgba(226, 235, 241, 0.1);
+  --wb-entry-water-line-02: rgba(226, 235, 241, 0.15);
+  --wb-entry-water-line-03: rgba(226, 235, 241, 0.22);
+  --wb-entry-rim-highlight: rgba(184, 211, 246, 0.48);
+  --wb-entry-rim-highlight-soft: rgba(147, 185, 235, 0.24);
+  /* The boat's cool moonlit hull edge (0xb8d3ff), kept faint on the higher
+     composer. The champagne colour is the glint on the moon's own reflection,
+     not the edge, so it would read too gold here. */
+  --wb-entry-composer-moon-rim: rgba(184, 211, 255, 0.62);
+  --wb-entry-composer-moon-rim-soft: rgba(184, 211, 255, 0.2);
+  /* Half a CSS pixel: one device pixel at 2x, so the edge stays a hairline
+     rather than a drawn border. */
+  --wb-entry-composer-moon-rim-width: 0.5px;
+  --wb-entry-shadow-dialog: 0 0.5rem 1.5rem rgba(5, 10, 16, 0.28);
+  /* Moonlight mirrors the same model from the other side of the water. */
+  --wb-entry-celestial-light: moon;
+  --wb-entry-celestial-projection-angle: -27deg;
+  --wb-entry-celestial-projection-counter-angle: 27deg;
+  --wb-entry-celestial-projection-color: rgba(2, 8, 16, 0.46);
+  background:
+    radial-gradient(ellipse at 50% 54%, rgba(103, 158, 254, 0.05), transparent 45%),
+    radial-gradient(ellipse at 72% 18%, rgba(103, 158, 254, 0.03), transparent 58%),
+    var(--wb-entry-background);
+}
+
+.theme-dark .whiteboat-canvas-entry__water::before,
+.theme-dark .whiteboat-canvas-entry__water::after {
+  position: absolute;
+  inset: -18%;
+  z-index: 0;
+  display: block;
+  pointer-events: none;
+  content: "";
+}
+
+.theme-dark .whiteboat-canvas-entry__water::before {
+  background:
+    radial-gradient(ellipse at 62% 38%, rgba(103, 158, 254, 0.11) 0%, rgba(103, 158, 254, 0.06) 23%, transparent 58%),
+    radial-gradient(ellipse at 31% 76%, rgba(249, 250, 251, 0.04), transparent 42%);
+  filter: blur(1.5rem);
+  opacity: 0.82;
+  transform: translate3d(-3%, -2%, 0) scale(1.04);
+  animation: whiteboat-entry-moonlight-drift 28s ease-in-out infinite alternate;
+}
+
+.theme-dark .whiteboat-canvas-entry__water::after {
+  background:
+    radial-gradient(ellipse at 16% 34%, rgba(4, 7, 11, 0.48) 0 14%, transparent 48%),
+    radial-gradient(ellipse at 72% 22%, rgba(4, 7, 11, 0.38) 0 18%, transparent 52%),
+    radial-gradient(ellipse at 54% 78%, rgba(4, 7, 11, 0.34) 0 16%, transparent 46%);
+  filter: blur(2.25rem);
+  opacity: 0.76;
+  transform: translate3d(-12%, 1%, 0) scale(1.08);
+  animation: whiteboat-entry-cloud-cover 34s cubic-bezier(0.42, 0, 0.58, 1) infinite alternate;
+}
+
+@keyframes whiteboat-entry-moonlight-drift {
+  from { transform: translate3d(-3%, -2%, 0) scale(1.04); }
+  to { transform: translate3d(5%, 3%, 0) scale(1.12); }
+}
+
+.whiteboat-canvas-entry[data-water-background="paused"] .whiteboat-canvas-entry__water::before,
+.whiteboat-canvas-entry[data-water-background="paused"] .whiteboat-canvas-entry__water::after {
+  animation-play-state: paused;
+}
+
+@keyframes whiteboat-entry-cloud-cover {
+  from { transform: translate3d(-12%, 1%, 0) scale(1.08); opacity: 0.76; }
+  to { transform: translate3d(15%, -4%, 0) scale(1.18); opacity: 0.5; }
+}
+
+.theme-dark .whiteboat-canvas-entry__boat-body {
+  filter: brightness(0.72) saturate(0.32) contrast(0.94)
+    drop-shadow(var(--wb-entry-boat-rim-offset-x) var(--wb-entry-boat-rim-offset-y) 0 var(--wb-entry-rim-highlight))
+    drop-shadow(var(--wb-entry-boat-rim-offset-x) var(--wb-entry-boat-rim-offset-y) 1px var(--wb-entry-rim-highlight-soft));
+}
+
+.theme-dark .whiteboat-canvas-entry__composer-title img {
+  filter: brightness(0) invert(1);
+}
+
+.whiteboat-canvas-entry button,
+.whiteboat-canvas-entry textarea {
+  font: inherit;
+}
+
+.whiteboat-canvas-entry button {
+  color: inherit;
+  cursor: pointer;
+}
+
+.whiteboat-canvas-entry button:focus-visible,
+.whiteboat-canvas-entry textarea:focus-visible {
+  outline: none;
+  box-shadow: var(--wb-entry-focus-ring);
+}
+
+.whiteboat-canvas-entry textarea {
+  cursor: text;
+}
+
+.whiteboat-canvas-entry__header {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: var(--wb-entry-z-chrome);
+  display: flex;
+  min-height: var(--wb-entry-header-height);
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--wb-entry-space-06);
+  padding: var(--wb-entry-header-padding-block-start)
+    var(--wb-entry-header-inline) var(--wb-entry-header-padding-block-end);
+  pointer-events: none;
+}
+
+.whiteboat-canvas-entry__brand,
+.whiteboat-canvas-entry__header-actions {
+  pointer-events: auto;
+}
+
+.whiteboat-canvas-entry__brand {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.5065rem;
+}
+
+.whiteboat-canvas-entry__brand-mark {
+  display: block;
+  width: 34.032px;
+  height: 32px;
+}
+
+.whiteboat-canvas-entry__brand-wordmark {
+  display: block;
+  width: 156.95px;
+  height: 26.777px;
+}
+
+.whiteboat-canvas-entry__brand .is-dark,
+.theme-dark .whiteboat-canvas-entry__brand .is-light {
+  display: none;
+}
+
+.theme-dark .whiteboat-canvas-entry__brand .is-dark {
+  display: block;
+}
+
+.whiteboat-canvas-entry__header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--wb-entry-space-03);
+}
+
+.whiteboat-canvas-entry__sound-toggle,
+.whiteboat-canvas-entry__close {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border: var(--wb-entry-border-width) solid var(--wb-entry-border-subtle);
+  color: var(--wb-entry-text-secondary);
+  background: color-mix(in oklab, var(--wb-entry-layer-01) 90%, transparent);
+  cursor: pointer;
+  transition:
+    color var(--wb-entry-duration-fast) var(--wb-entry-ease-out),
+    background-color var(--wb-entry-duration-fast) var(--wb-entry-ease-out),
+    transform var(--wb-entry-duration-fast) var(--wb-entry-ease-out);
+}
+
+.whiteboat-canvas-entry__sound-toggle,
+.whiteboat-canvas-entry__close {
+  flex: 0 0 auto;
+}
+.whiteboat-canvas-entry__sound-toggle svg,
+.whiteboat-canvas-entry__close svg {
+  width: var(--wb-entry-space-05);
+  height: var(--wb-entry-space-05);
+}
+
+.whiteboat-canvas-entry__sound-toggle,
+.whiteboat-canvas-entry__close {
+  width: 2.75rem;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.whiteboat-canvas-entry__sound-toggle:hover,
+.whiteboat-canvas-entry__close:hover {
+  color: var(--wb-entry-text-primary);
+  background: var(--wb-entry-layer-02);
+  transform: translateY(calc(var(--wb-entry-space-01) * -1));
+}
+
+/* Match the idea card's opaque dark surfaces, scoped above host button rules. */
+body.theme-dark .whiteboat-canvas-entry button:is(.whiteboat-canvas-entry__sound-toggle, .whiteboat-canvas-entry__close) {
+  appearance: none;
+  color: var(--wb-entry-text-primary);
+  background: var(--wb-entry-layer-01);
+  border: var(--wb-entry-border-width) solid var(--wb-entry-border-subtle);
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+body.theme-dark .whiteboat-canvas-entry button:is(.whiteboat-canvas-entry__sound-toggle, .whiteboat-canvas-entry__close):hover:not(:disabled) {
+  background: var(--wb-entry-layer-02);
+  transform: none;
+}
+
+body.theme-dark .whiteboat-canvas-entry button:is(.whiteboat-canvas-entry__sound-toggle, .whiteboat-canvas-entry__close):focus-visible {
+  outline: var(--wb-entry-border-width) solid var(--wb-entry-text-primary);
+  outline-offset: var(--wb-entry-space-02);
+}
+
+.whiteboat-canvas-entry__water {
+  position: relative;
+  z-index: var(--wb-entry-z-water);
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  overflow: clip;
+  touch-action: manipulation;
+  cursor: var(--wb-entry-anchor-cursor, crosshair);
+}
+
+.whiteboat-canvas-entry__water-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.whiteboat-canvas-entry button.whiteboat-canvas-entry__boat {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: var(--wb-entry-z-boat);
+  display: block;
+  width: var(--wb-entry-boat-hit-size);
+  height: var(--wb-entry-boat-hit-size);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  appearance: none;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  cursor: var(--wb-entry-anchor-cursor, pointer);
+  transform-origin: center;
+  isolation: isolate;
+  /* The script writes the transform every frame; Obsidian's `button`
+     transition would restart each write and pin the boat in place. */
+  transition: none;
+  will-change: transform;
+}
+
+.whiteboat-canvas-entry__boat-shadow,
+.whiteboat-canvas-entry__boat-body,
+.whiteboat-canvas-entry__boat-hull,
+.whiteboat-canvas-entry__boat-window {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+
+.whiteboat-canvas-entry__boat-shadow,
+.whiteboat-canvas-entry__composer-shadow {
+  background: var(--wb-entry-projection-color);
+}
+
+.whiteboat-canvas-entry__boat-shadow {
+  top: 50%;
+  left: 50%;
+  width: var(--wb-entry-boat-shadow-width);
+  height: var(--wb-entry-boat-shadow-height);
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  z-index: 0;
+  opacity: var(--wb-entry-boat-projection-opacity);
+  filter: blur(var(--wb-entry-boat-projection-blur));
+  transform: translate(-50%, -50%)
+    rotate(var(--wb-entry-celestial-projection-angle))
+    translateY(var(--wb-entry-boat-projection-distance))
+    rotate(var(--wb-entry-celestial-projection-counter-angle))
+    rotate(var(--wb-entry-boat-heading));
+}
+
+@property --wb-entry-water-focus-x {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+@property --wb-entry-water-focus-y {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+@property --wb-entry-water-focus-rx {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+@property --wb-entry-water-focus-ry {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+@property --wb-entry-water-focus-amount {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+/* The veil never animates opacity: Chromium drops backdrop-filter while an
+   opacity transition runs and then snaps the blur in when it ends. The entry
+   script writes the blur amount and clear-area geometry every frame from the
+   boat's voyage, so the blur never runs ahead of the boat and its wake. */
+.whiteboat-canvas-entry__focus-veil {
+  position: absolute;
+  inset: 0;
+  z-index: var(--wb-entry-z-water-focus);
+  visibility: hidden;
+  pointer-events: none;
+  transition: visibility 0s linear var(--wb-entry-water-focus-release-duration);
+}
+
+.whiteboat-canvas-entry[data-water-focus="focused"] .whiteboat-canvas-entry__focus-veil {
+  visibility: visible;
+  transition: none;
+}
+
+/* Each layer starts farther out and blurs harder; stacked they read as one
+   continuous falloff away from the composer and its moored boat. No colour
+   wash on top: a near-background gradient quantises into visible rings. */
+.whiteboat-canvas-entry__focus-layer {
+  position: absolute;
+  inset: 0;
+  display: block;
+  -webkit-mask-image: radial-gradient(
+    calc(var(--wb-entry-water-focus-rx) + var(--wb-entry-water-focus-padding))
+      calc(var(--wb-entry-water-focus-ry) + var(--wb-entry-water-focus-padding))
+      at var(--wb-entry-water-focus-x) var(--wb-entry-water-focus-y),
+    transparent var(--wb-entry-water-focus-from),
+    #000 var(--wb-entry-water-focus-to)
+  );
+  mask-image: radial-gradient(
+    calc(var(--wb-entry-water-focus-rx) + var(--wb-entry-water-focus-padding))
+      calc(var(--wb-entry-water-focus-ry) + var(--wb-entry-water-focus-padding))
+      at var(--wb-entry-water-focus-x) var(--wb-entry-water-focus-y),
+    transparent var(--wb-entry-water-focus-from),
+    #000 var(--wb-entry-water-focus-to)
+  );
+}
+
+.whiteboat-canvas-entry__focus-layer.is-near {
+  --wb-entry-water-focus-from: 100%;
+  --wb-entry-water-focus-to: 160%;
+  -webkit-backdrop-filter: blur(calc(var(--wb-entry-water-focus-blur-near) * var(--wb-entry-water-focus-amount)));
+  backdrop-filter: blur(calc(var(--wb-entry-water-focus-blur-near) * var(--wb-entry-water-focus-amount)));
+}
+
+.whiteboat-canvas-entry__focus-layer.is-mid {
+  --wb-entry-water-focus-from: 130%;
+  --wb-entry-water-focus-to: 220%;
+  -webkit-backdrop-filter: blur(calc(var(--wb-entry-water-focus-blur-mid) * var(--wb-entry-water-focus-amount)));
+  backdrop-filter: blur(calc(var(--wb-entry-water-focus-blur-mid) * var(--wb-entry-water-focus-amount)));
+}
+
+.whiteboat-canvas-entry__focus-layer.is-far {
+  --wb-entry-water-focus-from: 170%;
+  --wb-entry-water-focus-to: 300%;
+  -webkit-backdrop-filter: blur(calc(var(--wb-entry-water-focus-blur-far) * var(--wb-entry-water-focus-amount)));
+  backdrop-filter: blur(calc(var(--wb-entry-water-focus-blur-far) * var(--wb-entry-water-focus-amount)));
+}
+
+.whiteboat-canvas-entry[data-reduced-motion="true"] .whiteboat-canvas-entry__focus-veil {
+  transition: none;
+}
+
+.whiteboat-canvas-entry__recording-ripples {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: var(--wb-entry-z-recording-ripple);
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+  transform-origin: center;
+  transition: opacity var(--wb-entry-duration-fast) var(--wb-entry-ease-out);
+}
+
+.whiteboat-canvas-entry__recording-ripple {
+  position: absolute;
+  top: calc(var(--wb-entry-recording-ripple-size) * -0.5);
+  left: calc(var(--wb-entry-recording-ripple-size) * -0.5);
+  display: block;
+  width: var(--wb-entry-recording-ripple-size);
+  height: var(--wb-entry-recording-ripple-size);
+  border: var(--wb-entry-recording-ripple-stroke) solid
+    var(--wb-entry-wake-accent-01);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.45);
+  transform-origin: center;
+}
+
+.whiteboat-canvas-entry__recording-ripple:nth-child(2) {
+  border-color: var(--wb-entry-wake-accent-02);
+  --wb-entry-recording-ripple-delay: var(
+    --wb-entry-recording-ripple-delay-02
+  );
+}
+
+.whiteboat-canvas-entry__recording-ripple:nth-child(3) {
+  border-color: var(--wb-entry-wake-accent-03);
+  --wb-entry-recording-ripple-delay: var(
+    --wb-entry-recording-ripple-delay-03
+  );
+}
+
+.whiteboat-canvas-entry__recording-ripple:nth-child(4) {
+  border-color: var(--wb-entry-wake-accent-04);
+  --wb-entry-recording-ripple-delay: var(
+    --wb-entry-recording-ripple-delay-04
+  );
+}
+
+.whiteboat-canvas-entry.is-recording-pending
+  .whiteboat-canvas-entry__recording-ripples,
+.whiteboat-canvas-entry.is-recording
+  .whiteboat-canvas-entry__recording-ripples {
+  opacity: 1;
+}
+
+.whiteboat-canvas-entry.is-recording-pending
+  .whiteboat-canvas-entry__recording-ripple:first-child {
+  opacity: var(--wb-entry-wake-opacity-middle);
+  transform: scale(1.2);
+}
+
+.whiteboat-canvas-entry.is-recording
+  .whiteboat-canvas-entry__recording-ripple {
+  animation: whiteboat-entry-recording-ripple
+    var(--wb-entry-recording-ripple-duration) linear infinite;
+  animation-delay: var(
+    --wb-entry-recording-ripple-delay,
+    var(--wb-entry-recording-ripple-delay-01)
+  );
+}
+
+@keyframes whiteboat-entry-recording-ripple {
+  0% {
+    opacity: var(--wb-entry-wake-opacity-bright);
+    transform: scale(0.42);
+  }
+  72% {
+    opacity: var(--wb-entry-wake-opacity-soft);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(3.4);
+  }
+}
+
+.whiteboat-canvas-entry__boat-hull {
+  width: 100%;
+  height: 100%;
+}
+
+.whiteboat-canvas-entry__boat-body {
+  top: 50%;
+  left: 50%;
+  width: var(--wb-entry-boat-body-width);
+  height: var(--wb-entry-boat-body-height);
+  z-index: 1;
+  transform: translate(-50%, -50%) rotate(var(--wb-entry-boat-heading));
+}
+
+.whiteboat-canvas-entry__boat-hull {
+  inset: 0;
+}
+
+.whiteboat-canvas-entry__boat-window {
+  inset: 21.81% 11.87% 12.6% 13.16%;
+  width: auto;
+  height: auto;
+}
+
+.whiteboat-canvas-entry__boat-model {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  z-index: 2;
+  width: 6rem;
+  height: 6rem;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(var(--wb-entry-water-visual-scale, 1));
+}
+
+.whiteboat-canvas-entry__boat[data-boat-renderer="webgl"] .whiteboat-canvas-entry__boat-model {
+  opacity: 1;
+}
+
+.whiteboat-canvas-entry__boat[data-boat-renderer="webgl"] .whiteboat-canvas-entry__boat-body {
+  visibility: hidden;
+}
+
+.whiteboat-canvas-entry__composer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: var(--wb-entry-z-dialog);
+  width: min(
+    var(--wb-entry-composer-width),
+    calc(100vw - var(--wb-entry-space-06))
+  );
+  height: var(--wb-entry-composer-height);
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate3d(0, var(--wb-entry-composer-enter-shift), 0)
+    scale(0.985);
+  transform-origin: 16% 18%;
+  transition:
+    opacity var(--wb-entry-duration-state) var(--wb-entry-ease-out),
+    transform var(--wb-entry-duration-enter) var(--wb-entry-ease-out);
+}
+
+.whiteboat-canvas-entry__composer.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+.whiteboat-canvas-entry__composer.is-landed {
+  transform: translate3d(
+      var(--wb-entry-composer-land-x),
+      var(--wb-entry-composer-land-y),
+      0
+    )
+    scale(1);
+  transition-duration: var(--wb-entry-duration-settle);
+  transition-timing-function: var(--wb-entry-ease-out-quart);
+}
+
+/* The modal keeps the input alive; WAAPI owns only its temporary presentation. */
+.whiteboat-canvas-entry .whiteboat-canvas-entry__composer[data-motion] {
+  transition: none;
+  transform-origin: 50% 65%;
+}
+
+.whiteboat-canvas-entry__composer-ghost {
+  position: absolute;
+  z-index: var(--wb-entry-z-dialog);
+  pointer-events: none;
+  transform-origin: 50% 65%;
+}
+
+.whiteboat-canvas-entry__composer-ghost * {
+  pointer-events: none !important;
+}
+
+.whiteboat-canvas-entry__composer-shadow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--wb-entry-radius-medium);
+  opacity: var(--wb-entry-composer-projection-opacity);
+  filter: blur(var(--wb-entry-composer-projection-blur));
+  pointer-events: none;
+  transform: rotate(var(--wb-entry-celestial-projection-angle))
+    translateY(var(--wb-entry-composer-projection-distance))
+    rotate(var(--wb-entry-celestial-projection-counter-angle))
+    scale(
+      var(--wb-entry-composer-projection-scale-x),
+      var(--wb-entry-composer-projection-scale-y)
+    );
+  transition:
+    opacity var(--wb-entry-duration-state) var(--wb-entry-ease-out),
+    transform var(--wb-entry-duration-settle) var(--wb-entry-ease-out-quart);
+}
+
+.whiteboat-canvas-entry__composer.is-landed
+  .whiteboat-canvas-entry__composer-shadow {
+  --wb-entry-composer-projection-scale-x: 1.025;
+  --wb-entry-composer-projection-scale-y: 0.82;
+}
+
+.whiteboat-canvas-entry__composer-surface {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  padding: var(--wb-entry-space-03);
+  overflow: hidden;
+  border: var(--wb-entry-border-width) solid var(--wb-entry-border-strong);
+  border-radius: var(--wb-entry-composer-outer-radius);
+  background: var(--wb-entry-background);
+  box-shadow: var(--wb-entry-shadow-dialog);
+  transition:
+    border-color var(--wb-entry-duration-fast) var(--wb-entry-ease-out),
+    opacity var(--wb-entry-duration-fast) var(--wb-entry-ease-out);
+}
+
+.theme-dark .whiteboat-canvas-entry__composer-surface {
+  border: 0 !important;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.theme-dark .whiteboat-canvas-entry__composer-surface::after {
+  display: none;
+}
+
+/* Moonlight catches only the edge facing the moon, opposite the cast
+   projection, and fades out before the sides; it never closes into an
+   outline. Colour matches the boat's cool hull edge, and the conic peak
+   follows the same moving celestial angle. */
+.theme-dark .whiteboat-canvas-entry__composer-surface::before {
+  position: absolute;
+  inset: 0;
+  padding: var(--wb-entry-composer-moon-rim-width);
+  border-radius: inherit;
+  background: conic-gradient(
+    from calc(var(--wb-entry-celestial-projection-angle) - 90deg),
+    transparent 0deg,
+    var(--wb-entry-composer-moon-rim-soft) 62deg,
+    var(--wb-entry-composer-moon-rim) 90deg,
+    var(--wb-entry-composer-moon-rim-soft) 118deg,
+    transparent 180deg
+  );
+  content: "";
+  opacity: clamp(
+    0.12,
+    calc(var(--wb-entry-celestial-light-intensity, 1) * 0.72),
+    1
+  );
+  pointer-events: none;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+}
+
+.whiteboat-canvas-entry__composer.is-error
+  .whiteboat-canvas-entry__composer-surface {
+  border-color: var(--wb-entry-error);
+}
+
+.theme-dark .whiteboat-canvas-entry__composer.is-error
+  .whiteboat-canvas-entry__composer-surface::after {
+  display: none;
+}
+
+.whiteboat-canvas-entry__composer.is-submitting
+  .whiteboat-canvas-entry__composer-surface {
+  opacity: 0.88;
+}
+
+.whiteboat-canvas-entry__composer-header {
+  display: flex;
+  min-height: var(--wb-entry-composer-title-height);
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--wb-entry-space-04);
+  padding: var(--wb-entry-space-04) var(--wb-entry-space-04)
+    var(--wb-entry-space-03);
+}
+
+.whiteboat-canvas-entry__composer-title {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--wb-entry-space-02);
+  font-family: var(--wb-entry-font-reading);
+  font-size: var(--wb-entry-type-body);
+  line-height: var(--wb-entry-leading-compact);
+}
+
+.whiteboat-canvas-entry__composer-title img {
+  display: block;
+  width: var(--wb-entry-space-05);
+  height: var(--wb-entry-space-05);
+  margin: var(--wb-entry-space-02);
+}
+
+.whiteboat-canvas-entry__shortcut {
+  --wb-entry-shortcut-control-height: 2rem;
+  display: flex;
+  flex: 0 0 auto;
+  height: var(--wb-entry-shortcut-control-height) !important;
+  align-items: stretch;
+  gap: var(--wb-entry-space-02);
+}
+
+.whiteboat-canvas-entry__shortcut .whiteboat-canvas-entry__command-key,
+.whiteboat-canvas-entry__shortcut button {
+  display: grid;
+  height: var(--wb-entry-shortcut-control-height) !important;
+  min-height: var(--wb-entry-shortcut-control-height) !important;
+  max-height: var(--wb-entry-shortcut-control-height) !important;
+  box-sizing: border-box !important;
+  place-items: center;
+  padding: 0 var(--wb-entry-space-03) !important;
+  appearance: none;
+  -webkit-appearance: none;
+  border: var(--wb-entry-border-width) solid var(--wb-entry-border-subtle);
+  border-radius: var(--wb-entry-composer-inner-radius);
+  box-shadow: none;
+  color: var(--wb-entry-text-placeholder);
+  background: var(--wb-entry-layer-02);
+  font-family: var(--wb-entry-font-reading);
+  font-size: var(--wb-entry-type-body);
+  line-height: 1 !important;
+  transition:
+    color var(--wb-entry-duration-fast) var(--wb-entry-ease-out),
+    background-color var(--wb-entry-duration-fast) var(--wb-entry-ease-out),
+    transform var(--wb-entry-duration-instant) var(--wb-entry-ease-out);
+}
+
+.whiteboat-canvas-entry__shortcut .whiteboat-canvas-entry__command-key {
+  width: var(--wb-entry-shortcut-control-height) !important;
+  min-width: var(--wb-entry-shortcut-control-height) !important;
+  max-width: var(--wb-entry-shortcut-control-height) !important;
+  padding: 0 !important;
+  aspect-ratio: 1;
+  cursor: default;
+  pointer-events: none;
+}
+
+.whiteboat-canvas-entry__shortcut button {
+  cursor: pointer;
+}
+
+.whiteboat-canvas-entry__speech-button {
+  color: var(--wb-entry-text-placeholder);
+  background: var(--wb-entry-layer-02);
+}
+
+.whiteboat-canvas-entry__shortcut button:active {
+  transform: scale(0.96);
+}
+
+.whiteboat-canvas-entry__shortcut button:focus-visible {
+  outline: 2px solid var(--wb-entry-focus);
+  outline-offset: 2px;
+}
+
+.whiteboat-canvas-entry__composer.has-value
+  .whiteboat-canvas-entry__shortcut
+  kbd,
+.whiteboat-canvas-entry__composer.has-value
+  .whiteboat-canvas-entry__shortcut
+  button,
+.whiteboat-canvas-entry__composer.is-submitting
+  .whiteboat-canvas-entry__shortcut
+  kbd,
+.whiteboat-canvas-entry__composer.is-submitting
+  .whiteboat-canvas-entry__shortcut
+  button {
+  color: var(--wb-entry-background);
+  background: var(--wb-entry-interactive);
+}
+
+.whiteboat-canvas-entry__composer.has-value
+  .whiteboat-canvas-entry__shortcut
+  .whiteboat-canvas-entry__speech-button:not(.is-listening) {
+  color: var(--wb-entry-text-placeholder);
+  background: var(--wb-entry-layer-02);
+}
+
+.whiteboat-canvas-entry__composer.is-listening
+  .whiteboat-canvas-entry__shortcut
+  .whiteboat-canvas-entry__speech-button,
+.whiteboat-canvas-entry__speech-button.is-listening {
+  color: var(--wb-entry-background);
+  background: var(--wb-entry-interactive);
+}
+
+.whiteboat-canvas-entry__composer-body {
+  position: relative;
+  flex: 1 1 auto;
+  overflow: hidden;
+  border-radius: var(--wb-entry-composer-inner-radius);
+  background: var(--wb-entry-layer-01);
+}
+
+.whiteboat-canvas-entry__idea {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  resize: none;
+  padding: 0.625rem var(--wb-entry-space-04) 2rem;
+  border: 0;
+  border-radius: inherit;
+  outline: 0;
+  color: var(--wb-entry-text-primary);
+  background: transparent;
+  caret-color: var(--wb-entry-interactive);
+  font-family: var(--wb-entry-font-reading);
+  font-size: var(--wb-entry-type-body);
+  line-height: var(--wb-entry-leading-body);
+}
+
+/* Keep Home's input surface steady when Obsidian applies textarea:hover. */
+.whiteboat-canvas-entry textarea.whiteboat-canvas-entry__idea:hover {
+  background: transparent;
+}
+
+.whiteboat-canvas-entry__idea::placeholder {
+  color: var(--wb-entry-text-placeholder);
+  opacity: 1;
+}
+
+.whiteboat-canvas-entry__accessibility-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.whiteboat-canvas-entry__status {
+  position: absolute;
+  width: var(--wb-entry-space-01);
+  height: var(--wb-entry-space-01);
+  padding: 0;
+  margin: calc(var(--wb-entry-space-01) * -1);
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 48rem), (max-height: 36rem) {
+  .whiteboat-canvas-entry {
+    --wb-entry-header-height: 4.5rem;
+    --wb-entry-header-inline: var(--wb-entry-space-04);
+    --wb-entry-header-padding-block-start: var(--wb-entry-space-05);
+    --wb-entry-header-padding-block-end: var(--wb-entry-space-03);
+    --wb-entry-boat-hit-size: 5.75rem;
+    --wb-entry-composer-land-x: 0rem;
+    --wb-entry-composer-land-y: var(--wb-entry-space-08);
+  }
+
+  .whiteboat-canvas-entry__brand {
+    gap: var(--wb-entry-space-03);
+  }
+
+  .whiteboat-canvas-entry__brand-mark {
+    width: 1.5953rem;
+    height: 1.5rem;
+  }
+
+  .whiteboat-canvas-entry__brand-wordmark {
+    width: 7.357rem;
+    height: 1.255rem;
+  }
+
+  .whiteboat-canvas-entry__composer {
+    height: min(var(--wb-entry-composer-height), 42vh);
+  }
+
+  .whiteboat-canvas-entry__shortcut .whiteboat-canvas-entry__command-key {
+    display: none;
+  }
+}
+
+@media (max-width: 34rem) {
+  .whiteboat-canvas-entry__brand-wordmark {
+    display: none;
+  }
+}
+
+@media (hover: hover) {
+  .whiteboat-canvas-entry__boat:hover .whiteboat-canvas-entry__boat-body {
+    transform: translate(-50%, -50%) rotate(var(--wb-entry-boat-heading))
+      scale(1.025);
+  }
+}
+
+@media (pointer: coarse) {
+  .whiteboat-canvas-entry__shortcut {
+    --wb-entry-shortcut-control-height: 2.75rem;
+  }
+
+  .whiteboat-canvas-entry__shortcut button {
+    min-width: 2.75rem;
+    margin: 0 !important;
+  }
+}
+
+.whiteboat-canvas-entry.is-phone .whiteboat-canvas-entry__water,
+.whiteboat-canvas-entry.is-phone button.whiteboat-canvas-entry__boat {
+  cursor: default;
+}
+
+.whiteboat-canvas-entry.is-phone {
+  --wb-entry-header-height: 0px;
+  --wb-entry-phone-visual-scale: 0.8;
+  --wb-entry-water-visual-scale: var(--wb-entry-phone-visual-scale);
+  --wb-entry-water-top-ratio: 0.055;
+  --wb-entry-boat-hit-size: calc(108px * var(--wb-entry-phone-visual-scale));
+  --wb-entry-boat-body-width: calc(
+    24.4256px * var(--wb-entry-phone-visual-scale)
+  );
+  --wb-entry-boat-body-height: calc(
+    68.7696px * var(--wb-entry-phone-visual-scale)
+  );
+  --wb-entry-boat-shadow-width: calc(
+    55.9392px * var(--wb-entry-phone-visual-scale)
+  );
+  --wb-entry-boat-shadow-height: calc(
+    100.9856px * var(--wb-entry-phone-visual-scale)
+  );
+  --wb-entry-boat-projection-distance: calc(
+    11px * var(--wb-entry-phone-visual-scale)
+  );
+  --wb-entry-composer-projection-distance: 14px;
+  --wb-entry-composer-projection-blur: 10px;
+  min-width: 0;
+  min-height: 0;
+}
+
+.whiteboat-canvas-entry.is-phone .whiteboat-canvas-entry__header {
+  display: flex;
+  min-height: 0;
+  justify-content: flex-end;
+  padding-top: calc(var(--safe-area-inset-top) + var(--wb-entry-space-03));
+  padding-right: max(var(--wb-entry-space-04), var(--safe-area-inset-right));
+  padding-left: max(var(--wb-entry-space-04), var(--safe-area-inset-left));
+}
+
+.whiteboat-canvas-entry.is-phone .whiteboat-canvas-entry__brand {
+  display: none;
+}
+
+.whiteboat-canvas-entry.is-phone .whiteboat-canvas-entry__header-actions {
+  margin-left: auto;
+}
+
+.whiteboat-canvas-entry.is-phone .whiteboat-canvas-entry__sound-toggle,
+.whiteboat-canvas-entry.is-phone .whiteboat-canvas-entry__close {
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  min-height: 44px;
+  background: color-mix(in oklab, var(--wb-entry-layer-01) 82%, transparent);
+  -webkit-backdrop-filter: blur(var(--wb-entry-space-03));
+  backdrop-filter: blur(var(--wb-entry-space-03));
+}
+
+.whiteboat-canvas-entry.is-phone .whiteboat-canvas-entry__composer {
+  width: calc(100% - 2 * var(--wb-entry-phone-composer-inline-gap));
+  height: auto;
+  min-height: var(--wb-entry-phone-composer-min-height);
+  max-height: var(--wb-entry-phone-composer-max-height);
+  transform: translate3d(0, var(--wb-entry-space-05), 0);
+  transform-origin: 50% 100%;
+  transition:
+    opacity var(--wb-entry-duration-state) var(--wb-entry-ease-out),
+    transform var(--wb-entry-duration-enter) var(--wb-entry-ease-out),
+    top var(--wb-entry-duration-fast) var(--wb-entry-ease-out),
+    left var(--wb-entry-duration-fast) var(--wb-entry-ease-out),
+    width var(--wb-entry-duration-fast) var(--wb-entry-ease-out),
+    height var(--wb-entry-duration-fast) var(--wb-entry-ease-out);
+  will-change: top, left, width, height, transform, opacity;
+}
+
+.whiteboat-canvas-entry.is-phone .whiteboat-canvas-entry__composer.is-open {
+  transform: translate3d(0, 0, 0);
+}
+
+.whiteboat-canvas-entry.is-phone .whiteboat-canvas-entry__composer-shadow {
+  border-radius: var(--wb-entry-radius-pill);
+}
+
+.whiteboat-canvas-entry.is-phone.is-recording
+  .whiteboat-canvas-entry__water {
+  touch-action: none;
+  -webkit-touch-callout: none;
+}
+
+.whiteboat-canvas-entry.is-phone .whiteboat-canvas-entry__composer-surface {
+  display: flex;
+  min-height: var(--wb-entry-phone-composer-min-height);
+  max-height: var(--wb-entry-phone-composer-max-height);
+  flex-direction: row;
+  align-items: flex-end;
+  gap: var(--wb-entry-space-02);
+  padding: var(--wb-entry-space-03);
+  border-radius: calc(var(--wb-entry-phone-composer-min-height) / 2);
+  background: var(--wb-entry-layer-01);
+}
+
+.whiteboat-canvas-entry.is-phone .whiteboat-canvas-entry__composer-header {
+  display: flex;
+  order: 2;
+  min-height: 0;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0;
+}
+
+.whiteboat-canvas-entry.is-phone .whiteboat-canvas-entry__composer-title {
+  display: none;
+}
+
+.whiteboat-canvas-entry.is-phone .whiteboat-canvas-entry__composer-body {
+  order: 1;
+  min-width: 0;
+  min-height: 48px;
+  max-height: 128px;
+  flex: 1 1 auto;
+  overflow: hidden;
+  border-radius: 0;
+  background: transparent;
+}
+
+.whiteboat-canvas-entry.is-phone .whiteboat-canvas-entry__idea {
+  height: 48px;
+  min-height: 48px;
+  max-height: 128px;
+  padding: 12px var(--wb-entry-space-03);
+  overflow-y: hidden;
+  border-radius: 0;
+}
+
+.whiteboat-canvas-entry.is-mobile .whiteboat-canvas-entry__shortcut button {
+  min-width: 5.75rem !important;
+  width: auto !important;
+  height: 46px !important;
+  min-height: 46px !important;
+  max-height: 46px !important;
+  margin: calc(var(--wb-entry-space-03) * -1);
+  padding-inline: var(--wb-entry-space-05);
+  color: var(--wb-entry-background);
+  background: var(--wb-entry-interactive);
+  font-size: var(--wb-entry-type-label);
+  font-weight: var(--wb-entry-weight-medium);
+  touch-action: manipulation;
+}
+
+.whiteboat-canvas-entry.is-mobile
+  .whiteboat-canvas-entry__shortcut
+  .whiteboat-canvas-entry__speech-button {
+  width: 46px;
+  min-width: 46px;
+  height: 46px !important;
+  min-height: 46px !important;
+  max-height: 46px !important;
+  padding: 0;
+  color: var(--wb-entry-text-placeholder);
+  background: var(--wb-entry-layer-02);
+}
+
+.whiteboat-canvas-entry.is-mobile
+  .whiteboat-canvas-entry__shortcut
+  .whiteboat-canvas-entry__speech-button.is-listening {
+  color: var(--wb-entry-background);
+  background: var(--wb-entry-interactive);
+}
+
+.whiteboat-canvas-entry.is-phone .whiteboat-canvas-entry__shortcut button {
+  width: 46px;
+  min-width: 46px;
+  height: 46px !important;
+  min-height: 46px !important;
+  max-height: 46px !important;
+  margin: 0;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.whiteboat-canvas-entry.is-phone
+  .whiteboat-canvas-entry__shortcut
+  button
+  :is(svg, img) {
+  width: var(--wb-entry-space-05);
+  height: var(--wb-entry-space-05);
+}
+
+.whiteboat-canvas-entry.is-phone .whiteboat-canvas-entry__submit-anchor {
+  display: block;
+  object-fit: contain;
+}
+
+.whiteboat-canvas-entry.is-phone
+  .whiteboat-canvas-entry__composer.is-submitting
+  .whiteboat-canvas-entry__shortcut
+  button
+  svg {
+  animation: whiteboat-entry-spin 900ms linear infinite;
+}
+
+@keyframes whiteboat-entry-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.whiteboat-canvas-entry.is-mobile
+  .whiteboat-canvas-entry__shortcut
+  button:disabled {
+  cursor: default;
+  opacity: 0.68;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .whiteboat-canvas-entry *,
+  .whiteboat-canvas-entry *::before,
+  .whiteboat-canvas-entry *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .whiteboat-canvas-entry__composer.is-landed {
+    transform: translate3d(0, var(--wb-entry-space-03), 0);
+  }
+
+  .whiteboat-canvas-entry__composer.is-landed
+    .whiteboat-canvas-entry__composer-shadow {
+    --wb-entry-composer-projection-scale-x: 1;
+    --wb-entry-composer-projection-scale-y: 1;
+  }
+
+  .whiteboat-canvas-entry.is-recording
+    .whiteboat-canvas-entry__recording-ripple {
+    display: none;
+    animation: none;
+  }
+
+  .whiteboat-canvas-entry.is-recording
+    .whiteboat-canvas-entry__recording-ripple:first-child {
+    display: block;
+    opacity: var(--wb-entry-wake-opacity-middle);
+    transform: scale(1.4);
+  }
+}
+
+/* Keep the desktop shortcut controls identical even when Obsidian reports a coarse pointer. */
+.whiteboat-canvas-entry:not(.is-mobile) .whiteboat-canvas-entry__shortcut {
+  height: 2rem !important;
+  align-items: stretch !important;
+}
+
+.whiteboat-canvas-entry:not(.is-mobile)
+  .whiteboat-canvas-entry__shortcut
+  > button {
+  height: 2rem !important;
+  min-height: 2rem !important;
+  max-height: 2rem !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.whiteboat-canvas-entry:not(.is-mobile)
+  .whiteboat-canvas-entry__shortcut
+  > .whiteboat-canvas-entry__command-key {
+  width: 2rem !important;
+  min-width: 2rem !important;
+  max-width: 2rem !important;
+  height: 2rem !important;
+  min-height: 2rem !important;
+  max-height: 2rem !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  aspect-ratio: 1 !important;
+}

@@ -1,0 +1,159 @@
+name: Release Obsidian
+
+# Mirrors whiteboat-dsh/.github/workflows/release.yml. Manual dispatch from main only;
+# the obsidian-release environment approval and OBSIDIAN_RELEASE_GATE=enabled are both
+# required before anything is published. Community Plugins submission is a separate step.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version from manifest.json, without a leading v (Obsidian tags are the bare version)
+        required: true
+        type: string
+      prerelease:
+        description: Mark the GitHub Release as a prerelease
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: whiteboat-obsidian-release
+  cancel-in-progress: false
+
+jobs:
+  package:
+    name: Verify and package
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      release_sha: ${{ steps.release.outputs.release_sha }}
+      tag: ${{ steps.release.outputs.tag }}
+    steps:
+      - name: Require main branch
+        run: |
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo "Release Obsidian must be dispatched from main; got $GITHUB_REF" >&2
+            exit 1
+          fi
+      - uses: actions/checkout@v4
+        with:
+          path: whiteboat-obsidian
+          fetch-depth: 0
+      - name: Validate release identity
+        id: release
+        working-directory: whiteboat-obsidian
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Obsidian versions must be plain x.y.z: $VERSION" >&2
+            exit 1
+          fi
+          MANIFEST_VERSION="$(node -p 'require("./manifest.json").version')"
+          PACKAGE_VERSION="$(node -p 'require("./package.json").version')"
+          if [ "$MANIFEST_VERSION" != "$VERSION" ] || [ "$PACKAGE_VERSION" != "$VERSION" ]; then
+            echo "manifest.json is $MANIFEST_VERSION and package.json is $PACKAGE_VERSION but the requested release is $VERSION" >&2
+            exit 1
+          fi
+          MIN_APP="$(node -p 'require("./manifest.json").minAppVersion')"
+          if [ "$(node -p "require('./versions.json')['$VERSION'] || ''")" != "$MIN_APP" ]; then
+            echo "versions.json must map $VERSION to minAppVersion $MIN_APP" >&2
+            exit 1
+          fi
+          if node -p 'require("./manifest.json").description' | grep -Eq '^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}'; then
+            echo "manifest.json description is a development note; write the public description first" >&2
+            exit 1
+          fi
+          if git ls-remote --exit-code --tags origin "refs/tags/$VERSION" >/dev/null 2>&1; then
+            echo "Tag already exists: $VERSION" >&2
+            exit 1
+          fi
+          echo "release_sha=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+          echo "tag=$VERSION" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+      - run: npm ci --ignore-scripts && npm test && npm run build
+        working-directory: whiteboat-obsidian/vendor/whiteboat-core
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+          cache: npm
+          cache-dependency-path: whiteboat-obsidian/package-lock.json
+      - run: npm ci --ignore-scripts
+        working-directory: whiteboat-obsidian
+      - run: npm test
+        working-directory: whiteboat-obsidian
+      - run: npm run build
+        working-directory: whiteboat-obsidian
+      - name: Verify release assets
+        working-directory: whiteboat-obsidian
+        run: |
+          set -euo pipefail
+          npm run check:release
+          node --check main.js
+          mkdir -p ../release-assets
+          cp main.js manifest.json styles.css ../release-assets/
+          sha256sum ../release-assets/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: whiteboat-obsidian-${{ inputs.version }}
+          path: release-assets/
+          if-no-files-found: error
+          retention-days: 30
+
+  release:
+    name: Create GitHub Release
+    needs: package
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      actions: read
+      contents: write
+    environment: obsidian-release
+    steps:
+      - name: Require configured environment gate
+        env:
+          RELEASE_GATE: ${{ vars.OBSIDIAN_RELEASE_GATE }}
+        run: |
+          if [ "$RELEASE_GATE" != "enabled" ]; then
+            echo "obsidian-release must define OBSIDIAN_RELEASE_GATE=enabled before publishing" >&2
+            exit 1
+          fi
+      - uses: actions/download-artifact@v4
+        with:
+          name: whiteboat-obsidian-${{ inputs.version }}
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_SHA: ${{ needs.package.outputs.release_sha }}
+          TAG: ${{ needs.package.outputs.tag }}
+          PRERELEASE: ${{ inputs.prerelease }}
+        run: |
+          set -euo pipefail
+          FLAGS=(
+            --repo "$GITHUB_REPOSITORY"
+            --target "$RELEASE_SHA"
+            --title "Whiteboat $TAG"
+            --generate-notes
+          )
+          if [ "$PRERELEASE" = "true" ]; then
+            FLAGS+=(--prerelease)
+          fi
+          # Obsidian installs from these three individual assets of the release whose tag equals manifest.version.
+          gh release create "$TAG" main.js manifest.json styles.css "${FLAGS[@]}"
+          RELEASE_URL="$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json url --jq .url)"
+          {
+            echo "## Whiteboat for Obsidian released"
+            echo
+            echo "- Release: $RELEASE_URL"
+            echo "- Source: $RELEASE_SHA"
+            echo "- Assets: main.js, manifest.json, styles.css"
+            sha256sum main.js manifest.json styles.css | sed 's/^/- sha256: /'
+            echo "- Community Plugins: not submitted"
+          } >> "$GITHUB_STEP_SUMMARY"

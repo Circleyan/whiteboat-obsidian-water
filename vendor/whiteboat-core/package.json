@@ -1,0 +1,98 @@
+{
+  "name": "whiteboat-core",
+  "version": "0.1.3",
+  "description": "Host-neutral capabilities shared by Whiteboat ecosystem adapters.",
+  "type": "module",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.js"
+    },
+    "./composer-motion": {
+      "types": "./lib/composer-motion.d.ts",
+      "import": "./lib/composer-motion.js"
+    },
+    "./water-field": {
+      "types": "./lib/water-field.d.ts",
+      "import": "./lib/water-field.js"
+    },
+    "./water-impact": {
+      "types": "./lib/water-impact.d.ts",
+      "import": "./lib/water-impact.js"
+    },
+    "./navigation": {
+      "types": "./lib/navigation.d.ts",
+      "import": "./lib/navigation.js"
+    },
+    "./boat-assets": {
+      "types": "./lib/boat-assets.d.ts",
+      "import": "./lib/boat-assets.js"
+    },
+    "./light": {
+      "types": "./lib/light.d.ts",
+      "import": "./lib/light.js"
+    },
+    "./projection": {
+      "types": "./lib/projection.d.ts",
+      "import": "./lib/projection.js"
+    },
+    "./speech-input": {
+      "types": "./lib/speech-input.d.ts",
+      "import": "./lib/speech-input.js"
+    },
+    "./component-recipes.css": "./styles/whiteboat-component-recipes.css",
+    "./boat-water-sound": {
+      "types": "./lib/boat-water-sound.d.ts",
+      "import": "./lib/boat-water-sound.js"
+    },
+    "./boat-water-source": {
+      "types": "./lib/boat-water-source.d.ts",
+      "import": "./lib/boat-water-source.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "generated",
+    "styles",
+    "tokens",
+    "README.md",
+    "ARCHITECTURE.md",
+    "LICENSE",
+    "src/assets/audio/README.md"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "test": "vitest run",
+    "prepack": "npm run test && npm run build"
+  },
+  "keywords": [
+    "whiteboat",
+    "water-surface",
+    "obsidian",
+    "deepseek-harness"
+  ],
+  "author": "千百慧",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Circleyan/whiteboat-core.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Circleyan/whiteboat-core/issues"
+  },
+  "homepage": "https://github.com/Circleyan/whiteboat-core#readme",
+  "devDependencies": {
+    "tsdown": "0.21.3",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.7"
+  },
+  "engines": {
+    "node": ">=20.19"
+  }
+}
