@@ -12,12 +12,23 @@ interface ScreenPointerSource {
   isMinimized(): boolean;
 }
 
+interface ElectronPointerBridge {
+  remote?: {
+    screen?: Pick<ScreenPointerSource, "getCursorScreenPoint">;
+    getCurrentWindow?: () => Pick<ScreenPointerSource, "getContentBounds" | "isMinimized">;
+  };
+  webFrame: Pick<ScreenPointerSource, "getZoomFactor">;
+}
+
 function obsidianScreenPointerSource(): ScreenPointerSource | null {
   if (!Platform.isDesktopApp) return null;
   try {
     // Obsidian desktop exposes Electron's remote bridge. Keep this optional
     // and lazy so mobile never needs Electron or a native dependency.
-    const electron = require("electron");
+    // Electron's optional remote bridge must be resolved inside this guarded
+    // desktop path; a static runtime import would bypass the availability check.
+    // eslint-disable-next-line @typescript-eslint/no-require-imports -- optional desktop-only host API
+    const electron = require("electron") as ElectronPointerBridge;
     const screen = electron.remote?.screen;
     const hostWindow = electron.remote?.getCurrentWindow?.();
     if (!screen?.getCursorScreenPoint || !hostWindow) return null;

@@ -1,4 +1,5 @@
 import { resolveCanvasCreationWaterFlowTiming } from "./canvas-creation-composer-motion";
+import { CANVAS_CREATION_WATER_CSS_PROBE_CLASS } from "./canvas-creation-water-presentation";
 
 const TAU = Math.PI * 2;
 const EPSILON = 0.000001;
@@ -646,11 +647,8 @@ export function resolveCanvasCreationCssPixels(
   }
 
   const probe = document.createElement("div");
-  probe.style.position = "absolute";
-  probe.style.visibility = "hidden";
-  probe.style.pointerEvents = "none";
+  probe.className = CANVAS_CREATION_WATER_CSS_PROBE_CLASS;
   probe.style.width = `var(${name}, ${fallback})`;
-  probe.style.height = "0";
   root.appendChild(probe);
   const measuredPixels = probe.getBoundingClientRect().width;
   probe.remove();
@@ -810,7 +808,7 @@ export class CanvasCreationWaterField {
       "--wb-entry-wake-color-tail",
     ].map((name) => readOptionalToken(this.tokenRoot, name));
     this.wakeToneColors = wakeToneColors.every((color) => color !== null)
-      ? (wakeToneColors as string[])
+      ? wakeToneColors.filter((color): color is string => color !== null)
       : [];
     this.wakeOpacities = [
       readNumericToken(this.tokenRoot, "--wb-entry-wake-opacity-strong", 1),

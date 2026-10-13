@@ -13,9 +13,5 @@ jobs:
         with:
           node-version: 22.18.0
           cache: npm
-      - run: npm ci
-        working-directory: vendor/whiteboat-core
-      - run: npm test && npm run build
-        working-directory: vendor/whiteboat-core
       - run: npm ci --ignore-scripts
-      - run: npm test && npm run build && npm run check:release && node --check main.js
+      - run: npm run build && npm run lint:community && npm test && npm --prefix vendor/whiteboat-core test && npm run check:release && node --check main.js

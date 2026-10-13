@@ -67,9 +67,7 @@ function appendElement<K extends keyof HTMLElementTagNameMap>(
   tagName: K,
   className: string,
 ): HTMLElementTagNameMap[K] {
-  const element = document.createElement(tagName);
-  element.className = className;
-  parentEl.appendChild(element);
+  const element = parentEl.createEl(tagName, { cls: className });
   return element;
 }
 

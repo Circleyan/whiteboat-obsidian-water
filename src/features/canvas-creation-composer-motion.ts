@@ -44,6 +44,10 @@ export class CanvasCreationComposerMotion {
   private generation = 0;
   private restoreReveal: (() => void) | null = null;
 
+  private get ownerWindow(): Window {
+    return this.composer.ownerDocument.defaultView!;
+  }
+
   constructor(private readonly composer: HTMLFormElement,
     private readonly water: HTMLCanvasElement,
     private readonly reduced: () => boolean,
@@ -63,12 +67,11 @@ export class CanvasCreationComposerMotion {
   reset(): void {
     this.generation += 1;
     this.restoreReveal?.();this.restoreReveal=null;
-    if (this.frame!==null) cancelAnimationFrame(this.frame);
+    if (this.frame!==null) this.ownerWindow.cancelAnimationFrame(this.frame);
     this.frame=null;
     this.impact?.destroy();this.impact=null;
     this.animations.forEach(animation=>animation.cancel());this.animations.clear();
     this.ghosts.forEach(ghost=>ghost.remove());this.ghosts.clear();
-    this.composer.style.visibility="";
     this.composer.dataset.motion=this.composer.classList.contains("is-open")?"open":"closed";
     this.finishConfirmation?.();this.finishConfirmation=null;
   }
@@ -76,7 +79,7 @@ export class CanvasCreationComposerMotion {
   /** Called before position changes; the outgoing picture has no input or events. */
   leavePicture(): HTMLElement | null {
     if (this.reduced()) return null;
-    const ghost=document.createElement("div");
+    const ghost=createDiv();
     ghost.className="whiteboat-canvas-entry__composer-ghost";
     ghost.style.cssText=this.composer.style.cssText;
     ghost.style.width=`${this.composer.offsetWidth}px`;
@@ -86,8 +89,8 @@ export class CanvasCreationComposerMotion {
     const original=this.composer.querySelector("textarea");
     const field=ghost.querySelector("textarea");
     if (field && original) {
-      const echo=document.createElement("div");echo.className=field.className;
-      echo.style.cssText=field.style.cssText;echo.style.whiteSpace="pre-wrap";
+      const echo=createDiv();echo.className=field.className;
+      echo.style.cssText=field.style.cssText;echo.classList.add("whiteboat-canvas-entry__idea-echo");
       echo.textContent=original.value||original.placeholder;field.replaceWith(echo);
     }
     ghost.querySelectorAll("[id], [aria-labelledby], [role]").forEach(el=>{
@@ -110,9 +113,8 @@ export class CanvasCreationComposerMotion {
   cancel(): void {
     this.reset();
     this.composer.dataset.motion="cancelling";
-    this.composer.style.visibility="visible";
     void this.animate(this.composer,[STILL,this.reduced()?{opacity:0}:WISP],this.reduced()?MOTION.reducedDurationMs:MOTION.cancel.durationMs,MOTION.cancel.easing)
-      .then(()=>{if (this.composer.dataset.motion==="cancelling") {this.composer.style.visibility="";this.composer.dataset.motion="closed";}});
+      .then(()=>{if (this.composer.dataset.motion==="cancelling") {this.composer.dataset.motion="closed";}});
   }
 
   impactCenter(): {x: number; y: number} {
@@ -160,7 +162,7 @@ export class CanvasCreationComposerMotion {
     this.composer.querySelectorAll<HTMLElement>(".whiteboat-canvas-entry__composer-header, .whiteboat-canvas-entry__composer-body")
       .forEach(el=>{void this.animate(el,[{opacity:1,offset:0},{opacity:1,offset:.3},{opacity:0,offset:1}],MOTION.confirm.fadeDurationMs,"ease-in",true);});
     return new Promise(resolve=>{
-      const started=performance.now();
+      const started=this.ownerWindow.performance.now();
       this.finishConfirmation=resolve;
       const tick=(now: number)=>{
         this.frame=null;
@@ -176,9 +178,9 @@ export class CanvasCreationComposerMotion {
           if (this.composer.dataset.motion !== "impact") this.onImpact?.();
           this.composer.dataset.motion="impact";
         }
-        this.frame=requestAnimationFrame(tick);
+        this.frame=this.ownerWindow.requestAnimationFrame(tick);
       };
-      this.frame=requestAnimationFrame(tick);
+      this.frame=this.ownerWindow.requestAnimationFrame(tick);
     });
   }
 

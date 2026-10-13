@@ -107,7 +107,7 @@ function createHarness(options: {
     },
   });
   const source = {
-    style: { visibility: "visible" }, width: 1280, height: 800,
+    dataset: {} as Record<string, string>, style: { visibility: "visible" }, width: 1280, height: 800,
     clientWidth: 640, clientHeight: 400,
     after: vi.fn((node: unknown) => inserted.push(node)),
   } as unknown as HTMLCanvasElement;
@@ -198,6 +198,7 @@ describe("water impact mount", () => {
     const harness = createHarness({ gl: createGl({ compile: false }) });
     expect(mountCanvasCreationWaterImpact(harness.source, { x: 320, y: 200 }, { accents: ACCENTS }))
       .toBeNull();
+    expect(harness.source.dataset.wbWaterImpactCovered).toBeUndefined();
     expect(harness.source.style.visibility).toBe("visible");
     expect(harness.inserted).toEqual([]);
   });
@@ -266,13 +267,15 @@ describe("water impact mount", () => {
     expect(harness.gl.calls).toContain("texImage2D");
     expect(harness.gl.uniforms.get("elapsed")).toEqual([0.95]);
     expect(harness.gl.uniforms.get("size")).toEqual([640, 400]);
-    expect(harness.source.style.visibility).toBe("hidden");
+    expect(harness.source.dataset.wbWaterImpactCovered).toBe("");
+    expect(harness.source.style.visibility).toBe("visible");
     // The pass mirrors the water's backing resolution, not its CSS size.
     expect(pass.width).toBe(1280);
     expect(pass.height).toBe(800);
     expect(pass.dataset).toEqual({ elapsed: "0.950" });
 
     impact!.destroy();
+    expect(harness.source.dataset.wbWaterImpactCovered).toBeUndefined();
     expect(harness.source.style.visibility).toBe("visible");
     expect(pass.remove).toHaveBeenCalled();
     expect(harness.gl.calls).toContain("loseContext");

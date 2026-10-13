@@ -42,10 +42,10 @@ export function createBoatMoonlight(outline: Vector2[]) {
   const strength = { value: 0 };
   return {
     attach(material: MeshStandardMaterial) {
-      const compile = material.onBeforeCompile;
+      const compile = material.onBeforeCompile.bind(material);
       const cacheKey = material.customProgramCacheKey();
       material.onBeforeCompile = (shader, renderer) => {
-        compile.call(material, shader, renderer);
+        compile(shader, renderer);
         shader.uniforms.wbMoonDirection = direction;
         shader.uniforms.wbMoonModelDirection = modelDirection;
         shader.uniforms.wbMoonStrength = strength;

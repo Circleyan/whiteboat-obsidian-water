@@ -1,8 +1,65 @@
-/* WB-ENTRY-006 · Obsidian-native Canvas creation water */
-body.whiteboat-canvas-entry-open .modal-container,
-.modal-container.whiteboat-canvas-entry-modal-container,
-.modal-container:has(> .whiteboat-canvas-entry-modal),
-.modal-container:has(.whiteboat-canvas-entry:not(.is-settings-preview)) {
+
+
+@keyframes whiteboat-entry-moonlight-drift {
+  from { transform: translate3d(-3%, -2%, 0) scale(1.04); }
+  to { transform: translate3d(5%, 3%, 0) scale(1.12); }
+}
+
+@keyframes whiteboat-entry-cloud-cover {
+  from { transform: translate3d(-12%, 1%, 0) scale(1.08); opacity: 0.76; }
+  to { transform: translate3d(15%, -4%, 0) scale(1.18); opacity: 0.5; }
+}
+
+@property --wb-entry-water-focus-x {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+@property --wb-entry-water-focus-y {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+@property --wb-entry-water-focus-rx {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+@property --wb-entry-water-focus-ry {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+@property --wb-entry-water-focus-amount {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+@keyframes whiteboat-entry-recording-ripple {
+  0% {
+    opacity: var(--wb-entry-wake-opacity-bright);
+    transform: scale(0.42);
+  }
+  72% {
+    opacity: var(--wb-entry-wake-opacity-soft);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(3.4);
+  }
+}
+
+@keyframes whiteboat-entry-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+.modal-container.whiteboat-canvas-entry-modal-container {
   position: fixed !important;
   top: 0 !important;
   right: 0 !important;
@@ -10,7 +67,6 @@ body.whiteboat-canvas-entry-open .modal-container,
   left: 0 !important;
   inset: 0 !important;
   width: 100vw !important;
-  width: 100dvw !important;
   min-width: 0 !important;
   max-width: none !important;
   height: 100dvh !important;
@@ -29,19 +85,11 @@ body.whiteboat-canvas-entry-phone-open {
   overflow: hidden !important;
 }
 
-body.theme-dark.whiteboat-canvas-entry-open .modal-container,
-body.theme-dark .modal-container.whiteboat-canvas-entry-modal-container,
-body.theme-dark .modal-container:has(> .whiteboat-canvas-entry-modal),
-body.theme-dark
-  .modal-container:has(.whiteboat-canvas-entry:not(.is-settings-preview)) {
+body.theme-dark .modal-container.whiteboat-canvas-entry-modal-container {
   background: oklch(20% 0.012 235) !important;
 }
 
-body.whiteboat-canvas-entry-open .modal-container > .modal-bg,
-.modal-container.whiteboat-canvas-entry-modal-container > .modal-bg,
-.modal-container:has(> .whiteboat-canvas-entry-modal) > .modal-bg,
-.modal-container:has(.whiteboat-canvas-entry:not(.is-settings-preview))
-  > .modal-bg {
+.modal-container.whiteboat-canvas-entry-modal-container > .modal-bg {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -50,12 +98,7 @@ body.whiteboat-canvas-entry-open .modal-container > .modal-bg,
   opacity: 1 !important;
 }
 
-body.theme-dark.whiteboat-canvas-entry-open .modal-container > .modal-bg,
-body.theme-dark .modal-container.whiteboat-canvas-entry-modal-container > .modal-bg,
-body.theme-dark .modal-container:has(> .whiteboat-canvas-entry-modal) > .modal-bg,
-body.theme-dark
-  .modal-container:has(.whiteboat-canvas-entry:not(.is-settings-preview))
-  > .modal-bg {
+body.theme-dark .modal-container.whiteboat-canvas-entry-modal-container > .modal-bg {
   background: oklch(20% 0.012 235) !important;
 }
 
@@ -63,9 +106,7 @@ body.theme-dark
   position: fixed !important;
   inset: 0 !important;
   width: 100vw !important;
-  width: 100dvw !important;
   height: 100vh !important;
-  height: 100dvh !important;
   min-width: 0 !important;
   min-height: 0 !important;
   max-width: none !important;
@@ -100,7 +141,7 @@ body.theme-dark
   box-sizing: border-box;
 }
 
-body:has(.whiteboat-canvas-entry:not(.is-settings-preview))
+body.whiteboat-canvas-entry-open
   .sidebar-toggle-button.mod-right {
   visibility: hidden;
 }
@@ -357,19 +398,9 @@ body:has(.whiteboat-canvas-entry:not(.is-settings-preview))
   animation: whiteboat-entry-cloud-cover 34s cubic-bezier(0.42, 0, 0.58, 1) infinite alternate;
 }
 
-@keyframes whiteboat-entry-moonlight-drift {
-  from { transform: translate3d(-3%, -2%, 0) scale(1.04); }
-  to { transform: translate3d(5%, 3%, 0) scale(1.12); }
-}
-
 .whiteboat-canvas-entry[data-water-background="paused"] .whiteboat-canvas-entry__water::before,
 .whiteboat-canvas-entry[data-water-background="paused"] .whiteboat-canvas-entry__water::after {
   animation-play-state: paused;
-}
-
-@keyframes whiteboat-entry-cloud-cover {
-  from { transform: translate3d(-12%, 1%, 0) scale(1.08); opacity: 0.76; }
-  to { transform: translate3d(15%, -4%, 0) scale(1.18); opacity: 0.5; }
 }
 
 .theme-dark .whiteboat-canvas-entry__boat-body {
@@ -494,8 +525,6 @@ body:has(.whiteboat-canvas-entry:not(.is-settings-preview))
   background: var(--wb-entry-layer-02);
   transform: translateY(calc(var(--wb-entry-space-01) * -1));
 }
-
-/* Match the idea card's opaque dark surfaces, scoped above host button rules. */
 body.theme-dark .whiteboat-canvas-entry button:is(.whiteboat-canvas-entry__sound-toggle, .whiteboat-canvas-entry__close) {
   appearance: none;
   color: var(--wb-entry-text-primary);
@@ -595,41 +624,6 @@ body.theme-dark .whiteboat-canvas-entry button:is(.whiteboat-canvas-entry__sound
     rotate(var(--wb-entry-celestial-projection-counter-angle))
     rotate(var(--wb-entry-boat-heading));
 }
-
-@property --wb-entry-water-focus-x {
-  syntax: "<length>";
-  inherits: true;
-  initial-value: 0px;
-}
-
-@property --wb-entry-water-focus-y {
-  syntax: "<length>";
-  inherits: true;
-  initial-value: 0px;
-}
-
-@property --wb-entry-water-focus-rx {
-  syntax: "<length>";
-  inherits: true;
-  initial-value: 0px;
-}
-
-@property --wb-entry-water-focus-ry {
-  syntax: "<length>";
-  inherits: true;
-  initial-value: 0px;
-}
-
-@property --wb-entry-water-focus-amount {
-  syntax: "<number>";
-  inherits: true;
-  initial-value: 0;
-}
-
-/* The veil never animates opacity: Chromium drops backdrop-filter while an
-   opacity transition runs and then snaps the blur in when it ends. The entry
-   script writes the blur amount and clear-area geometry every frame from the
-   boat's voyage, so the blur never runs ahead of the boat and its wake. */
 .whiteboat-canvas-entry__focus-veil {
   position: absolute;
   inset: 0;
@@ -643,10 +637,6 @@ body.theme-dark .whiteboat-canvas-entry button:is(.whiteboat-canvas-entry__sound
   visibility: visible;
   transition: none;
 }
-
-/* Each layer starts farther out and blurs harder; stacked they read as one
-   continuous falloff away from the composer and its moored boat. No colour
-   wash on top: a near-background gradient quantises into visible rings. */
 .whiteboat-canvas-entry__focus-layer {
   position: absolute;
   inset: 0;
@@ -764,20 +754,6 @@ body.theme-dark .whiteboat-canvas-entry button:is(.whiteboat-canvas-entry__sound
   );
 }
 
-@keyframes whiteboat-entry-recording-ripple {
-  0% {
-    opacity: var(--wb-entry-wake-opacity-bright);
-    transform: scale(0.42);
-  }
-  72% {
-    opacity: var(--wb-entry-wake-opacity-soft);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(3.4);
-  }
-}
-
 .whiteboat-canvas-entry__boat-hull {
   width: 100%;
   height: 100%;
@@ -863,8 +839,6 @@ body.theme-dark .whiteboat-canvas-entry button:is(.whiteboat-canvas-entry__sound
   transition-duration: var(--wb-entry-duration-settle);
   transition-timing-function: var(--wb-entry-ease-out-quart);
 }
-
-/* The modal keeps the input alive; WAAPI owns only its temporary presentation. */
 .whiteboat-canvas-entry .whiteboat-canvas-entry__composer[data-motion] {
   transition: none;
   transform-origin: 50% 65%;
@@ -935,11 +909,6 @@ body.theme-dark .whiteboat-canvas-entry button:is(.whiteboat-canvas-entry__sound
 .theme-dark .whiteboat-canvas-entry__composer-surface::after {
   display: none;
 }
-
-/* Moonlight catches only the edge facing the moon, opposite the cast
-   projection, and fades out before the sides; it never closes into an
-   outline. Colour matches the boat's cool hull edge, and the conic peak
-   follows the same moving celestial angle. */
 .theme-dark .whiteboat-canvas-entry__composer-surface::before {
   position: absolute;
   inset: 0;
@@ -1129,8 +1098,6 @@ body.theme-dark .whiteboat-canvas-entry button:is(.whiteboat-canvas-entry__sound
   font-size: var(--wb-entry-type-body);
   line-height: var(--wb-entry-leading-body);
 }
-
-/* Keep Home's input surface steady when Obsidian applies textarea:hover. */
 .whiteboat-canvas-entry textarea.whiteboat-canvas-entry__idea:hover {
   background: transparent;
 }
@@ -1174,24 +1141,39 @@ body.theme-dark .whiteboat-canvas-entry button:is(.whiteboat-canvas-entry__sound
     --wb-entry-composer-land-x: 0rem;
     --wb-entry-composer-land-y: var(--wb-entry-space-08);
   }
+}
+
+@media (max-width: 48rem), (max-height: 36rem) {
 
   .whiteboat-canvas-entry__brand {
     gap: var(--wb-entry-space-03);
   }
+}
+
+@media (max-width: 48rem), (max-height: 36rem) {
 
   .whiteboat-canvas-entry__brand-mark {
     width: 1.5953rem;
     height: 1.5rem;
   }
+}
+
+@media (max-width: 48rem), (max-height: 36rem) {
 
   .whiteboat-canvas-entry__brand-wordmark {
     width: 7.357rem;
     height: 1.255rem;
   }
+}
+
+@media (max-width: 48rem), (max-height: 36rem) {
 
   .whiteboat-canvas-entry__composer {
     height: min(var(--wb-entry-composer-height), 42vh);
   }
+}
+
+@media (max-width: 48rem), (max-height: 36rem) {
 
   .whiteboat-canvas-entry__shortcut .whiteboat-canvas-entry__command-key {
     display: none;
@@ -1215,6 +1197,9 @@ body.theme-dark .whiteboat-canvas-entry button:is(.whiteboat-canvas-entry__sound
   .whiteboat-canvas-entry__shortcut {
     --wb-entry-shortcut-control-height: 2.75rem;
   }
+}
+
+@media (pointer: coarse) {
 
   .whiteboat-canvas-entry__shortcut button {
     min-width: 2.75rem;
@@ -1426,12 +1411,6 @@ body.theme-dark .whiteboat-canvas-entry button:is(.whiteboat-canvas-entry__sound
   animation: whiteboat-entry-spin 900ms linear infinite;
 }
 
-@keyframes whiteboat-entry-spin {
-  to {
-    transform: rotate(1turn);
-  }
-}
-
 .whiteboat-canvas-entry.is-mobile
   .whiteboat-canvas-entry__shortcut
   button:disabled {
@@ -1447,22 +1426,34 @@ body.theme-dark .whiteboat-canvas-entry button:is(.whiteboat-canvas-entry__sound
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
 
   .whiteboat-canvas-entry__composer.is-landed {
     transform: translate3d(0, var(--wb-entry-space-03), 0);
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
 
   .whiteboat-canvas-entry__composer.is-landed
     .whiteboat-canvas-entry__composer-shadow {
     --wb-entry-composer-projection-scale-x: 1;
     --wb-entry-composer-projection-scale-y: 1;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
 
   .whiteboat-canvas-entry.is-recording
     .whiteboat-canvas-entry__recording-ripple {
     display: none;
     animation: none;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
 
   .whiteboat-canvas-entry.is-recording
     .whiteboat-canvas-entry__recording-ripple:first-child {
@@ -1471,8 +1462,6 @@ body.theme-dark .whiteboat-canvas-entry button:is(.whiteboat-canvas-entry__sound
     transform: scale(1.4);
   }
 }
-
-/* Keep the desktop shortcut controls identical even when Obsidian reports a coarse pointer. */
 .whiteboat-canvas-entry:not(.is-mobile) .whiteboat-canvas-entry__shortcut {
   height: 2rem !important;
   align-items: stretch !important;
@@ -1501,3 +1490,33 @@ body.theme-dark .whiteboat-canvas-entry button:is(.whiteboat-canvas-entry__sound
   box-sizing: border-box !important;
   aspect-ratio: 1 !important;
 }
+.whiteboat-canvas-entry__composer[data-motion="cancelling"] { visibility: visible; }
+.whiteboat-canvas-entry__idea-echo { white-space: pre-wrap; }
+.whiteboat-canvas-entry-viewport-frame {
+  position: fixed !important; right: auto !important; bottom: auto !important;
+  min-width: 0 !important; min-height: 0 !important;
+  max-width: none !important; max-height: none !important;
+  padding: 0 !important; margin: 0 !important;
+  overflow: hidden !important; box-sizing: border-box !important;
+}
+.whiteboat-canvas-entry-viewport-root { min-width: 0; min-height: 0; }
+.whiteboat-canvas-entry textarea.whiteboat-canvas-entry__idea-measuring { height: 0; }
+@supports (width: 100dvw) {
+  .modal-container.whiteboat-canvas-entry-modal-container,
+  .whiteboat-canvas-entry-modal.modal { width: 100dvw !important; }
+}
+@supports (height: 100dvh) {
+  .whiteboat-canvas-entry-modal.modal { height: 100dvh !important; }
+}
+
+/* Generated core water presentation. Do not edit this block. */
+.wb-water-css-probe {
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+  height: 0;
+}
+[data-wb-water-impact-covered] {
+  visibility: hidden !important;
+}
+/* End generated core water presentation. */

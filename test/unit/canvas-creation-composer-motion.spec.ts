@@ -5,7 +5,7 @@ afterEach(()=>vi.unstubAllGlobals());
 
 function fixture(reduced=false) {
   const runs: Array<{frames: Keyframe[];options: KeyframeAnimationOptions;cancel: ReturnType<typeof vi.fn>;finish:()=>void}> = [];
-  const composer={dataset:{} as Record<string,string>,style:{visibility:""},isConnected:true,
+  const composer={ownerDocument:{defaultView:{performance, requestAnimationFrame:(cb: FrameRequestCallback)=>requestAnimationFrame(cb), cancelAnimationFrame:(id: number)=>cancelAnimationFrame(id)}},dataset:{} as Record<string,string>,style:{visibility:""},isConnected:true,
     classList:{contains:()=>true},getBoundingClientRect:()=>({left:0,top:0,width:400,height:224}),querySelectorAll:()=>[],
     animate(frames:Keyframe[],options:KeyframeAnimationOptions){let finish!:()=>void,reject!:()=>void;const finished=new Promise<void>((yes,no)=>{finish=yes;reject=()=>no(new Error("cancelled"));});const cancel=vi.fn(reject);runs.push({frames,options,cancel,finish});return {finished,cancel};},
   };

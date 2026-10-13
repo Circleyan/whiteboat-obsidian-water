@@ -93,7 +93,7 @@ function loft(points: Vector2[], rings: Ring[], inward = false): BufferGeometry 
   return geometry;
 }
 
-export function createCanvasCreationBoatModel(assets: { boatHull: string; boatWindow: string }): Group {
+export function createCanvasCreationBoatModel(assets: { boatHull: string; boatWindow: string }): Group & { userData: { gunwaleOutline: Vector2[] } } {
   const group = new Group();
   group.name = "Whiteboat";
   group.userData = { source: "whiteboat-core/boat-assets", forward: "-Z", up: "+Y", length: BOAT_MODEL_LENGTH };
@@ -176,14 +176,14 @@ export function createCanvasCreationBoatModel(assets: { boatHull: string; boatWi
   // A separate material confines the moon reflection to the existing outer rim.
   add("Rounded gunwale", new TubeGeometry(rimPath, 160, 0.013, 6, true), deckMaterial.clone());
   group.userData.gunwaleOutline = outer.map(p => new Vector2(p.x, -p.y));
-  return group;
+  return group as Group & { userData: { gunwaleOutline: Vector2[] } };
 }
 
 export function disposeCanvasCreationBoatModel(group: Group): void {
   const materials = new Set<MeshStandardMaterial>();
   group.traverse(object => {
     if (!(object instanceof Mesh)) return;
-    object.geometry.dispose();
+    (object as Mesh<BufferGeometry, MeshStandardMaterial | MeshStandardMaterial[]>).geometry.dispose();
     for (const material of Array.isArray(object.material) ? object.material : [object.material]) {
       materials.add(material as MeshStandardMaterial);
     }

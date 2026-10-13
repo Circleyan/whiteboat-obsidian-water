@@ -118,7 +118,7 @@ export function getCanvasCreationSpeechRecognitionConstructor(
 }
 
 export async function requestCanvasCreationMicrophonePermission(
-  source: unknown = globalThis.navigator,
+  source: unknown = window.navigator,
 ): Promise<CanvasCreationMicrophonePermissionResult> {
   return requestIdeaMicrophonePermission(source);
 }
@@ -284,7 +284,7 @@ export function formatCanvasCreationAudioError(error: unknown): string {
     typeof DOMException !== "undefined" && error instanceof DOMException
       ? error.name
       : typeof error === "object" && error && "name" in error
-        ? String((error as { name?: unknown }).name ?? "")
+        ? String((error as { name?: string }).name ?? "")
         : "";
   if (name === "NotAllowedError" || name === "PermissionDeniedError") {
     return "Obsidian 没有获得麦克风权限。请在 iOS 设置中允许后再试。";
@@ -398,8 +398,8 @@ export async function resolveUniqueCanvasCreationPath(
 
 function createCanvasNodeId(): string {
   const bytes = new Uint8Array(8);
-  if (globalThis.crypto?.getRandomValues) {
-    globalThis.crypto.getRandomValues(bytes);
+  if (window.crypto?.getRandomValues) {
+    window.crypto.getRandomValues(bytes);
     return Array.from(bytes, (value) =>
       value.toString(16).padStart(2, "0"),
     ).join("");
@@ -630,7 +630,8 @@ export async function createAndOpenCanvasFromEntry(
     audioPaths: options.audioPaths,
   });
   if (options.isActive?.() === false) throw new Error("创建入口已关闭。");
-  const firstNodeId = JSON.parse(content).nodes[0]?.id as string | undefined;
+  const createdData = JSON.parse(content) as { nodes: Array<{ id: string }> };
+  const firstNodeId = createdData.nodes[0]?.id;
   const file = await vault.create(path, content);
   try {
     if (options.isActive?.() === false) throw new Error("创建入口已关闭，画布已保存。");
@@ -967,27 +968,16 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
       this.contentEl,
     ].filter((target): target is HTMLElement => target instanceof HTMLElement);
     fixedTargets.forEach((target) => {
-      target.style.setProperty("position", "fixed", "important");
+      target.classList.add("whiteboat-canvas-entry-viewport-frame");
       target.style.setProperty("left", `${left}px`, "important");
       target.style.setProperty("top", `${top}px`, "important");
-      target.style.setProperty("right", "auto", "important");
-      target.style.setProperty("bottom", "auto", "important");
       target.style.setProperty("width", `${width}px`, "important");
       target.style.setProperty("height", `${height}px`, "important");
-      target.style.setProperty("min-width", "0", "important");
-      target.style.setProperty("min-height", "0", "important");
-      target.style.setProperty("max-width", "none", "important");
-      target.style.setProperty("max-height", "none", "important");
-      target.style.setProperty("padding", "0", "important");
-      target.style.setProperty("margin", "0", "important");
-      target.style.setProperty("overflow", "hidden", "important");
-      target.style.setProperty("box-sizing", "border-box", "important");
     });
     if (this.rootEl) {
       this.rootEl.style.setProperty("width", `${width}px`);
       this.rootEl.style.setProperty("height", `${height}px`);
-      this.rootEl.style.setProperty("min-width", "0");
-      this.rootEl.style.setProperty("min-height", "0");
+      this.rootEl.classList.add("whiteboat-canvas-entry-viewport-root");
     }
   }
 
@@ -1015,11 +1005,13 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
       "box-sizing",
     ];
     fixedTargets.forEach((target) => {
+      target.classList.remove("whiteboat-canvas-entry-viewport-frame");
       frameProperties.forEach((property) =>
         target.style.removeProperty(property),
       );
     });
     if (this.rootEl) {
+      this.rootEl.classList.remove("whiteboat-canvas-entry-viewport-root");
       ["width", "height", "min-width", "min-height"].forEach((property) =>
         this.rootEl.style.removeProperty(property),
       );
@@ -1257,7 +1249,7 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
       },
     });
     if (!this.mobileInput) {
-      const commandKeyEl = shortcut.createEl("button", {
+      shortcut.createEl("button", {
         cls: "whiteboat-canvas-entry__command-key",
         text: "⌘",
         attr: { "aria-hidden": "true", type: "button" },
@@ -1818,7 +1810,7 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
         return result;
       } catch (error) {
         const message =
-          error instanceof Error ? error.message : String(error ?? "录音保存失败");
+          error instanceof Error ? error.message : String((error as string | null | undefined) ?? "录音保存失败");
         this.showSpeechFailureNotice(`录音没有保存：${message}`);
         return null;
       } finally {
@@ -2361,7 +2353,7 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
         ),
       };
     }
-    this.composerEl.style.width = "";
+    this.composerEl.style.removeProperty("width");
     const minimumX = visibleLeft + margin;
     const minimumY = Math.max(headerHeight + 12, visibleTop + 12);
     return {
@@ -2384,11 +2376,11 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
   private fitComposerToVisualViewport(): void {
     const visualViewport = this.mobileInput ? window.visualViewport : null;
     if (this.deviceMode === "phone") {
-      this.composerEl.style.height = "";
+      this.composerEl.style.removeProperty("height");
       return;
     }
     if (!visualViewport) {
-      this.composerEl.style.height = "";
+      this.composerEl.style.removeProperty("height");
       return;
     }
     const waterRect = this.waterEl.getBoundingClientRect();
@@ -2548,8 +2540,10 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
     if (this.deviceMode !== "phone") {
       return;
     }
-    this.ideaEl.style.height = "0px";
+    this.ideaEl.style.removeProperty("height");
+    this.ideaEl.classList.add("whiteboat-canvas-entry__idea-measuring");
     const height = clampWaterValue(this.ideaEl.scrollHeight, 48, 128);
+    this.ideaEl.classList.remove("whiteboat-canvas-entry__idea-measuring");
     this.ideaEl.style.height = `${height}px`;
     this.ideaEl.style.overflowY =
       this.ideaEl.scrollHeight > height ? "auto" : "hidden";

@@ -1,3 +1,10 @@
+## 0.1.1 (candidate)
+
+- Build pinned core automatically from the root, including types and shared presentation CSS.
+- Keep water visuals and motion while replacing static inline styles with shared/host CSS states.
+- Scope the water modal CSS, type host boundaries, and index the same settings on Obsidian 1.13+.
+- Run official community rules in CI and attest future release assets.
+
 # Changelog
 
 ## 0.1.0

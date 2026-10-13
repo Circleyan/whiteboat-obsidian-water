@@ -29,6 +29,10 @@ jobs:
     name: Verify and package
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
     outputs:
       release_sha: ${{ steps.release.outputs.release_sha }}
       tag: ${{ steps.release.outputs.tag }}
@@ -78,8 +82,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.18.0
-      - run: npm ci --ignore-scripts && npm test && npm run build
-        working-directory: whiteboat-obsidian/vendor/whiteboat-core
       - uses: actions/setup-node@v4
         with:
           node-version: 22.18.0
@@ -87,9 +89,7 @@ jobs:
           cache-dependency-path: whiteboat-obsidian/package-lock.json
       - run: npm ci --ignore-scripts
         working-directory: whiteboat-obsidian
-      - run: npm test
-        working-directory: whiteboat-obsidian
-      - run: npm run build
+      - run: npm run build && npm run lint:community && npm test && npm --prefix vendor/whiteboat-core test
         working-directory: whiteboat-obsidian
       - name: Verify release assets
         working-directory: whiteboat-obsidian
@@ -100,6 +100,9 @@ jobs:
           mkdir -p ../release-assets
           cp main.js manifest.json styles.css ../release-assets/
           sha256sum ../release-assets/*
+      - uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: release-assets/*
       - uses: actions/upload-artifact@v4
         with:
           name: whiteboat-obsidian-${{ inputs.version }}

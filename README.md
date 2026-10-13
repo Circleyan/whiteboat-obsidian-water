@@ -34,15 +34,14 @@ Whiteboat is MIT licensed; see [LICENSE](LICENSE). It uses [Three.js](https://th
 ## Build from source
 
 ```sh
-cd vendor/whiteboat-core
 npm ci --ignore-scripts
-npm test
 npm run build
-cd ../..
-npm ci --ignore-scripts
+npm run lint:community
 npm test
-npm run build
+npm --prefix vendor/whiteboat-core test
 npm run check:release
 ```
 
 This repository contains only the first-release source snapshot and the shared water source it consumes. Shared source provenance and exact revisions are recorded in [source-provenance.json](source-provenance.json). No private repository access is needed to build.
+
+The root build prepares and builds the pinned core automatically, including its types and shared water CSS. CI uses this same clean-root sequence. Core owns shared rendering and motion; this repository owns Obsidian APIs, native Canvas lifecycle and packaging.

@@ -295,13 +295,14 @@ export function mountCanvasCreationWaterImpact(
   let buffer: WebGLBuffer | null = null;
   let texture: WebGLTexture | null = null;
   let destroyed = false;
-  const originalVisibility = source.style.visibility;
+  const originalCovered = source.dataset.wbWaterImpactCovered;
   const destroy = (): void => {
     if (destroyed) {
       return;
     }
     destroyed = true;
-    source.style.visibility = originalVisibility;
+    if (originalCovered === undefined) delete source.dataset.wbWaterImpactCovered;
+    else source.dataset.wbWaterImpactCovered = originalCovered;
     canvas.removeEventListener("webglcontextlost", onContextLost);
     canvas.remove();
     gl.deleteTexture(texture);
@@ -409,7 +410,7 @@ export function mountCanvasCreationWaterImpact(
           gl.uniform1f(time, elapsed);
           gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
           gl.drawArrays(gl.TRIANGLES, 0, 6);
-          source.style.visibility = "hidden";
+          source.dataset.wbWaterImpactCovered = "";
           canvas.dataset.elapsed = elapsed.toFixed(3);
         } catch {
           destroy();

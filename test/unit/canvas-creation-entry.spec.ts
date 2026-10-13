@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 import {
   CANVAS_CREATION_AUDIO_NODE_SIZE,
   CANVAS_CREATION_BOAT_FOLLOW_SPEED_LIMITS,
@@ -74,6 +74,8 @@ const boatHullSvg = readFileSync(
   new URL("../../src/assets/canvas-entry-boat-hull.svg", import.meta.url),
   "utf8",
 );
+
+beforeEach(() => { vi.stubGlobal("window", { crypto: globalThis.crypto }); });
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -1527,14 +1529,15 @@ describe("Whiteboat Canvas creation entry", () => {
 
   it("ships a full-stage, tokenized, responsive, reduced-motion surface", () => {
     expect(css).toMatch(
-      /\.modal-container\.whiteboat-canvas-entry-modal-container,[\s\S]*\.modal-container:has\(> \.whiteboat-canvas-entry-modal\)[\s\S]*\{[\s\S]*inset: 0 !important;[\s\S]*height: 100dvh !important;[\s\S]*padding: 0 !important;/u,
+      /\.modal-container\.whiteboat-canvas-entry-modal-container \{[\s\S]*inset: 0 !important;[\s\S]*height: 100dvh !important;[\s\S]*padding: 0 !important;/u,
     );
-    expect(css).toContain("body.whiteboat-canvas-entry-open .modal-container");
+    expect(css).not.toContain("body.whiteboat-canvas-entry-open .modal-container");
+    expect(css).not.toContain(":has(");
     expect(css).toContain("body.whiteboat-canvas-entry-phone-open");
     expect(css).toContain("background: oklch(99.5% 0.003 240) !important");
     expect(css).toContain(".whiteboat-canvas-entry-modal.modal");
     expect(css).toMatch(
-      /\.whiteboat-canvas-entry-modal\.modal \{[\s\S]*position: fixed !important;[\s\S]*inset: 0 !important;[\s\S]*width: 100dvw !important;[\s\S]*height: 100dvh !important;/u,
+      /\.whiteboat-canvas-entry-modal\.modal \{[\s\S]*position: fixed !important;[\s\S]*inset: 0 !important;[\s\S]*width: 100vw !important;[\s\S]*height: 100vh !important;/u,
     );
     expect(css).toMatch(
       /\.whiteboat-canvas-entry-modal > \.modal-content \{[\s\S]*position: absolute;[\s\S]*inset: 0;[\s\S]*max-height: none;/u,
@@ -1543,7 +1546,7 @@ describe("Whiteboat Canvas creation entry", () => {
       /\.whiteboat-canvas-entry-modal > \.modal-close-button,\s*\.whiteboat-canvas-entry-modal > \.modal-header-button \{\s*display: none;/u,
     );
     expect(css).toContain(
-      "body:has(.whiteboat-canvas-entry:not(.is-settings-preview))\n  .sidebar-toggle-button.mod-right",
+      "body.whiteboat-canvas-entry-open\n  .sidebar-toggle-button.mod-right",
     );
     expect(css).toContain("--wb-entry-water-line-quiet");
     expect(css).toContain("--wb-entry-composer-width: 400px");

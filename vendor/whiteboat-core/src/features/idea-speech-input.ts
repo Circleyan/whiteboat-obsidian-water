@@ -87,7 +87,7 @@ function normalizeIdeaSpeechFailureReason(
   error: unknown,
 ): IdeaMicrophonePermissionResult {
   const name = String(
-    (error as { name?: unknown } | null | undefined)?.name ?? "",
+    (error as { name?: string } | null | undefined)?.name ?? "",
   );
   switch (name) {
     case "NotAllowedError":

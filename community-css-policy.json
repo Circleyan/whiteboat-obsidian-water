@@ -1,0 +1,5 @@
+{
+  "max_important_declarations": 96,
+  "reason": "Full-screen water modal and scoped controls preserve accepted host appearance. Removing priority requires light/dark/custom-theme and nested-modal equivalence evidence; no broad global modal selectors.",
+  "baseline": "0.1.0 accepted; 0.1.1 owned selectors and state recipe"
+}

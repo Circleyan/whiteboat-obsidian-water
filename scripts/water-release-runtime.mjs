@@ -29,6 +29,8 @@ try{
  assert.equal(startup.loaded,true);assert.deepEqual(startup.commands,["whiteboat:open-canvas-creation-entry"]);assert.equal(startup.home,1);const baselineFiles=startup.files;
  const baselineEmpty=await evaluate(async()=>{const files=app.vault.getFiles().filter(f=>f.extension==="canvas");const data=await Promise.all(files.map(async f=>JSON.parse(await app.vault.read(f))));return data.filter(c=>c.nodes.length===0&&c.edges.length===0).length;});
  await screenshot("desktop-light-water.png");report.cases.push({name:"startup-water-only",...startup});
+ await evaluate(()=>{const entry=app.plugins.plugins.whiteboat.entry;entry.soundscape.setEnabled(true);entry.soundscape.activate();});
+ for(let i=0;i<40;i++){if(await evaluate(()=>app.plugins.plugins.whiteboat.entry.soundscape.howl?.state()==="loaded"))break;await sleep(100);}
  const audio=await evaluate(()=>{const sound=app.plugins.plugins.whiteboat.entry.soundscape;return {snapshot:sound.getSnapshot(),loaded:sound.howl?.state(),playing:sound.howl?.playing(),loop:sound.howl?._loop};});
  assert.notEqual(audio.snapshot.state,"error");assert.equal(audio.loaded,"loaded");assert.equal(audio.loop,false); // Core restarts at onend instead of Howler native looping.
  await evaluate(()=>app.plugins.plugins.whiteboat.entry.soundscape.setEnabled(false));await sleep(250);

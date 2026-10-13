@@ -8,3 +8,5 @@ export * from "./features/canvas-creation-projection";
 export * from "./features/idea-speech-input";
 export * from "./features/boat-water-sound";
 export * from "./features/boat-water-source";
+
+export * from "./features/canvas-creation-water-presentation";

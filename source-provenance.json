@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "distribution_repository": "Circleyan/whiteboat-obsidian-water",
-  "obsidian_source_commit": "d3e280cdfc55b49e738edc694afcd9c5586ea8bf",
-  "core_source_commit": "95ae08f5d6a686bc3ea3aae55b0f5e4fd64b9228",
+  "obsidian_source_commit": "1af753f677ab0ead8f8ec21238ebf4072dc0e08c",
+  "core_source_commit": "711d1ea919cd1addd2e516d3fabdeb0ab94da735",
   "policy": "Vendored release snapshot only. Shared feature bodies are byte-identical; package/build/index project the consumed water subset. No development Git history is included.",
   "core_source_files": {
     "LICENSE": "5c0cda18399f7e58073f6ce127a111595fddd972687abaaa43fd4247dc649db0",
@@ -10,19 +10,19 @@
     "package-lock.json": "107e912ad03c0a549c70c77afff90d86c41c37e69d904e70e4e06eb3c1597d63",
     "tsconfig.json": "624bb6d078b829cc103253dbb4094f6da152e9643c35695f40bc14c05d421b11",
     "tsdown.config.ts": "daf054ebb8601fb3204974a09890da3f4904a31fc9711bcd15828d30e8ed3f78",
-    "src/index.ts": "867ae58a95fc7a8c6f3713a876ed7d380640654ae12928c0577038bda55980a9",
+    "src/index.ts": "d50a95ccc3f4292603b87f49d89cf26cbe37dba863e4a2b73dac770eabc7b7b1",
     "src/audio.d.ts": "f9b7c7b24fbe1da18e28e95a2908f096cb4cc6fea35fb18d802844af6172b75c",
     "src/svg.d.ts": "d6e4a04dbfe083934adcb67b9736d773b5165411a5f4cf2bf058a5b81f7b458e",
     "src/features/canvas-creation-composer-motion.ts": "22fb065d556cbe9e5409499c352007b2810d7ea2dccd236f38926254210a04b6",
     "src/features/canvas-creation-navigation.ts": "89a75bcce6be75452d8e1eeb85b31364377440f39794ba529cfe770840d92e33",
-    "src/features/canvas-creation-water-field.ts": "7a3c88f829d5c6679f22050c88a6725d7a2a241d0895a12a974d9b57e079a389",
+    "src/features/canvas-creation-water-field.ts": "9b9e7eb51e3b06bb8799ad3024731b434cd5755fa7f56d4b388fba64e0845405",
     "src/features/canvas-creation-projection.ts": "aa5f13a6c0ac4855ded296dea313a41b1ededc8d780bcfada4cb86fb12ee6525",
     "src/features/boat-water-sound.ts": "22a25ca8dd59842d79ffd0655219204727f163c1fbc955650127dfa84e2f78f8",
     "src/features/canvas-creation-boat-assets.ts": "6dd8d8f3c4ee988a107d07d0cddc8812d8a419797ff8cbed016b12177e549f1b",
-    "src/features/canvas-creation-water-impact.ts": "934e30b8a3f6761a1e8f5c16194b19c218958f0105e187beff8385cd3b962d46",
-    "src/features/idea-speech-input.ts": "6634ce6322d2a6087689e913b63de021867f9f2d3edd65d41991d0b83da6ef58",
+    "src/features/canvas-creation-water-impact.ts": "da5343342d8208d85f3f89139a3108c9fdcaeb0ab9228e22eaeff70c69cde33b",
+    "src/features/idea-speech-input.ts": "64d4f6653318dcf01e4df4f29cd0f378accc13b9dd603adc7a0f716d91b82fad",
     "src/features/canvas-creation-light.ts": "23ef2bc845a23bbfbb4a1a2a1f993c2f8d4ec215fe23623009bf13f2853e016c",
-    "src/features/boat-water-source.ts": "7c6a0096a4f3c6308bc68a65ae9109f17da773d25f73fbafb3553257985ddf26",
+    "src/features/boat-water-source.ts": "2bea055972301879cf686adc4ce0c31c2d0d8844c88da235f8ccf8d92de9ee51",
     "src/assets/canvas-entry-boat-shadow.svg": "b02b3104a4f0b1499bd2398df02a00b6da449691eaea498e8e5e07904f319cac",
     "src/assets/canvas-entry-boat-window.svg": "714545eb34ea134805d6e649f978b468857b5fcd2c5960d1e54d2f21e3308a54",
     "src/assets/canvas-entry-boat-hull.svg": "b5e961e082870406908b733eb39940b842e5e9829632ad7ce62e34478446174e",
@@ -37,7 +37,8 @@
     "test/shared-water.spec.ts": "224580b24e1b1bae555f795d69b0588f039c11772f694f7c615f5d9d2ddd6ee6",
     "test/boat-water-sound.spec.ts": "76ea5c35fc566c36579c14b5ae11bee7eed80922a83c1996fe8b368124e93a23",
     "test/shared-speech.spec.ts": "cf8423303dc683c21a40f54329b6ab652282e1bfc7912352633b159eda72776e",
-    "test/water-impact.spec.ts": "1d407330d3d346e306a4deb1258a5d3e9506610590853570d79d047db9dce594"
+    "test/water-impact.spec.ts": "4cd47fdae4b5f48adde4fe3fee86781db53071a3b2b961eb9ec7c2756f9f491d",
+    "src/features/canvas-creation-water-presentation.ts": "07f158f68702719b3a21e7c9a6c6ddcdcfab8ff9bf97229376ac5feedf3aee56"
   },
   "projected_metadata": [
     "package.json",
@@ -65,6 +66,52 @@
     "src/main.ts": {
       "source_commit": "d3e280cdfc55b49e738edc694afcd9c5586ea8bf",
       "change": "Unload closes the water modal immediately, including when its composer is open; prevents orphaned water/audio on reload."
+    },
+    "src/features/canvas-creation-entry.ts": {
+      "source_commit": "1af753f677ab0ead8f8ec21238ebf4072dc0e08c",
+      "change": "Omit full-product requirement-reflection integration only; preserve water behavior."
     }
+  },
+  "obsidian_source_files": {
+    "src/features/canvas-creation-anchor-asset.ts": "46fc9aa1efb95043278f385e1d40273e2bb7396319adf9cd79b80fe2c5ff9942",
+    "src/features/canvas-creation-boat-assets.ts": "20c261560bb1116d12b8f0931dbddde57c3acb90e729307633fd181ec7382845",
+    "src/features/canvas-creation-boat-model.ts": "ed59834a5bc08aacbf6d451585598ded6f7bec8cd8db8169ce25f4f59bbc94c1",
+    "src/features/canvas-creation-boat-moonlight.ts": "d39fdcb284e041aa23cd6dba4a82404841419fdf04104a069e8cec953d4846b0",
+    "src/features/canvas-creation-boat-renderer.ts": "ba64a42cc4bc6eb53365987f9369678ad20ae8e6ea2ffb0241883e126c7f0636",
+    "src/features/canvas-creation-boat-tone.ts": "750cc7336f6796ca276020d96d2dc72ee2c4e80a4928e2965f1c0da94b6a622c",
+    "src/features/canvas-creation-composer-motion.ts": "027c69aee83c831e5b1648518157b79ad031ff82633ad2630de9735a724b1394",
+    "src/features/canvas-creation-entry-window.ts": "2f3dde210485b1e8352e566e119ece251070af7809905b9dd14cb3cebfbcfbe4",
+    "src/features/canvas-creation-entry.ts": "60af58ed17c1705f72160aff95e7d66f614d3372db847a32229b3dd3dd13c768",
+    "src/features/canvas-creation-home-audio.ts": "1bc8299b7a08974d8870862cf65bb22504c5d2e02544e0b2428ca7bbff85272d",
+    "src/features/canvas-creation-light.ts": "dce7652d507fa40476c187b92879b02d0e87270560e938768842d3cb2d18d352",
+    "src/features/canvas-creation-mooring.ts": "bd8367f5b7a29609c5785a24bd5c0b7925c44ee915b0a135100209854448594c",
+    "src/features/canvas-creation-navigation.ts": "8485a98e264bfb86aae4b09460b728b8e62bc275f5978d0ded65fd567bbb86ab",
+    "src/features/canvas-creation-projection.ts": "1651539f00b6e98e61cdce42bbd9fe29e3f86f7c9764439c31c443d3da769c1f",
+    "src/features/canvas-creation-scene.ts": "6a54f4c891b0dfb4e48542e525fe0c053e119b421d12dda8f508752cfc00689f",
+    "src/features/canvas-creation-screen-pointer.ts": "5abbe237fc3056b2b9aa0c6dbe3188941bc1aad93c90b3e9dee5da1eeac7796b",
+    "src/features/canvas-creation-water-field.ts": "48af8f51b00a889e4cf059aac6393a1a338ca45116565e68767a059b5915f6c6",
+    "src/features/canvas-creation-water-impact.ts": "f0cff5255133dee5583be12946041b15b93477c337a58ae4c023d93354ead121",
+    "src/features/canvas-geometry.ts": "c9bc4d4afd5e11cd43bdc3e737cb84df09538e2ef0e7f4794710926da26d48db",
+    "src/features/idea-speech-input.ts": "e0ae4b8c5c07e58848b4fe89ea2d0cfeaa7cd72602b995b85f3de77954d989ea"
+  },
+  "obsidian_css_source_sha256": "30b20e14a061e35f244e3295ab2ade52fcbdce3f020956c619e989a3783d85e3",
+  "distribution_template_files": {
+    "src/main.ts": "bdd09ee06811464bc5b9cef57c7f36bf97c31916be7d74bdfb1517eaa7af428a",
+    "src/canvas/runtime.ts": "0dc348d4068e7679bf9d11cf0790a3a6ed0c04c8eb4c65b984294c45b49110f9",
+    "package.json": "ceda19f4ec6215e9469d64ccdcb71dbc2425ef53d3275cdf0734798bdabe8f6a",
+    "esbuild.config.mjs": "bcd67ced00a601d5b15381673cae3491a67d82092c2117308b8dd43c6807777d",
+    "eslint.config.mjs": "0abc4d6eaa23461cde41ed9bf3d3fd3e7c136c941c05772039d05a5d6e904416",
+    "community-css-policy.json": "5d364337fbcc8ecc243fa3bcc16b3e3474b167472a98cfc929b3c84b4706f47d",
+    ".github/workflows/ci.yml": "4ab05de99e484dd14b56a71c37e67c589e5d4523411f5510467021d2a2842776",
+    ".github/workflows/release.yml": "4b7e6b632b2a6538961405603a87704d7cf787b803cb228bacb44712b1da4233",
+    "scripts/check-community-css.mjs": "a834fdf4a82e809fa6a8c0f97a04148f73a1e1ba768064f5a5802692af95d636",
+    "scripts/check-water-release.mjs": "bf68ad35764f59319e3e5669411d7fd89943c1006d641890396ab73c992ff85f",
+    "scripts/water-release-runtime.mjs": "2a03d8ad116fa3d85ba9590a6ae35f1e37d8ac531bbf3c4598aab273a8fc3020",
+    "scripts/water-equivalence-runtime.mjs": "098c0cc8fd59d7e2ac08efb00ff10b41080156331381e42640f660faa9cad632",
+    "README.md": "446f9d76facd7030167cd5d79b9306ef00f1ab337c66aef81923a0b247ba0d7e",
+    "CONTRIBUTING.md": "aba22daea533ea2106793d626a3d0fa1f8ce01ef075cc1e88d648633b639a811",
+    "tsconfig.json": "2bee4da074b4e3f664083127e8336f2bfb8cbe4558f57b4862b160fabc18b436",
+    "vitest.water.config.mjs": "8cca24b6017584773e08b919683f158427658eaf87fe74aef8e06dd4e032ad03",
+    "test/unit/water-release.spec.ts": "40306320b3ad3419fe365e336aae8321f9d41f38b710b450d31cf4d600ee4a34"
   }
 }
