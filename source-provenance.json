@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "distribution_repository": "Circleyan/whiteboat-obsidian-water",
-  "obsidian_source_commit": "1af753f677ab0ead8f8ec21238ebf4072dc0e08c",
+  "obsidian_source_commit": "6f0c5d6a35f79e4a1aa74b92089f4d87848b136e",
   "core_source_commit": "711d1ea919cd1addd2e516d3fabdeb0ab94da735",
   "policy": "Vendored release snapshot only. Shared feature bodies are byte-identical; package/build/index project the consumed water subset. No development Git history is included.",
   "core_source_files": {
@@ -49,26 +49,15 @@
   ],
   "obsidian_projected_sources": {
     "src/canvas/runtime.ts": {
-      "source_commit": "d3e280cdfc55b49e738edc694afcd9c5586ea8bf",
-      "kept_methods": [
-        "constructor",
-        "getActiveCanvasView",
-        "getCanvasViewByPath",
-        "isCanvasView",
-        "getRuntimeNodeId",
-        "getRuntimeNodeData",
-        "findRuntimeNodeById",
-        "getCanvasNodes",
-        "isRuntimeNode"
-      ],
-      "purpose": "Retain only the read-only native Canvas lookup used by the water reveal; omit other Canvas mutation features and their full-product vocabulary."
+      "source_commit": "6f0c5d6a35f79e4a1aa74b92089f4d87848b136e",
+      "change": "Use the versioned water-only host contract from distribution/water; canonical full-product entry and Canvas mutations are excluded."
     },
     "src/main.ts": {
-      "source_commit": "d3e280cdfc55b49e738edc694afcd9c5586ea8bf",
-      "change": "Unload closes the water modal immediately, including when its composer is open; prevents orphaned water/audio on reload."
+      "source_commit": "6f0c5d6a35f79e4a1aa74b92089f4d87848b136e",
+      "change": "Use the versioned water-only host contract from distribution/water; canonical full-product entry and Canvas mutations are excluded."
     },
     "src/features/canvas-creation-entry.ts": {
-      "source_commit": "1af753f677ab0ead8f8ec21238ebf4072dc0e08c",
+      "source_commit": "6f0c5d6a35f79e4a1aa74b92089f4d87848b136e",
       "change": "Omit full-product requirement-reflection integration only; preserve water behavior."
     }
   },
@@ -105,7 +94,7 @@
     ".github/workflows/ci.yml": "4ab05de99e484dd14b56a71c37e67c589e5d4523411f5510467021d2a2842776",
     ".github/workflows/release.yml": "4b7e6b632b2a6538961405603a87704d7cf787b803cb228bacb44712b1da4233",
     "scripts/check-community-css.mjs": "a834fdf4a82e809fa6a8c0f97a04148f73a1e1ba768064f5a5802692af95d636",
-    "scripts/check-water-release.mjs": "bf68ad35764f59319e3e5669411d7fd89943c1006d641890396ab73c992ff85f",
+    "scripts/check-water-release.mjs": "a765a443050abe4af658a9b4c5ac99715349dcd8ba69fa444094b2a44eed33a9",
     "scripts/water-release-runtime.mjs": "2a03d8ad116fa3d85ba9590a6ae35f1e37d8ac531bbf3c4598aab273a8fc3020",
     "scripts/water-equivalence-runtime.mjs": "098c0cc8fd59d7e2ac08efb00ff10b41080156331381e42640f660faa9cad632",
     "README.md": "446f9d76facd7030167cd5d79b9306ef00f1ab337c66aef81923a0b247ba0d7e",

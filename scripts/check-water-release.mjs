@@ -28,3 +28,13 @@ for (const [file, hash] of Object.entries(provenance.core_source_files)) {
  assert.equal(createHash("sha256").update(fs.readFileSync(`vendor/whiteboat-core/${file}`)).digest("hex"), hash, `Shared source drift: ${file}`);
 }
 console.log("Shared water source matches the recorded revision snapshot.");
+for (const [group, files] of Object.entries({
+ "Obsidian water": provenance.obsidian_source_files,
+ "distribution template": provenance.distribution_template_files,
+})) {
+ assert.ok(files && Object.keys(files).length > 0, `Missing ${group} provenance`);
+ for (const [file, hash] of Object.entries(files)) {
+  assert.equal(createHash("sha256").update(fs.readFileSync(file)).digest("hex"), hash, `${group} source drift: ${file}`);
+ }
+}
+console.log("Obsidian water source and distribution templates match the recorded projection.");
