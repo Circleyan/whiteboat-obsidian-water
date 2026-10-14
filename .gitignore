@@ -7,8 +7,7 @@ coverage/
 dist/
 .vite/
 .gstack/
-
 main.js
 release-assets/
-
+community-check-reports/
 vendor/whiteboat-core/lib/

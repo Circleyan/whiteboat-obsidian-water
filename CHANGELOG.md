@@ -1,19 +1,19 @@
-## 0.1.1 (candidate)
-
-- Build pinned core automatically from the root, including types and shared presentation CSS.
-- Keep water visuals and motion while replacing static inline styles with shared/host CSS states.
-- Scope the water modal CSS, type host boundaries, and index the same settings on Obsidian 1.13+.
-- Run official community rules in CI and attest future release assets.
-
 # Changelog
+
+## 0.1.2
+
+- Follow the Obsidian interface language with English, Simplified Chinese and Traditional Chinese support and an English fallback.
+- Choose the interface language in settings; open drafts and water effects stay in place when switching.
+- Use Canvases / 随手画布 / 隨手畫布 for the automatic Canvas folder. Existing files stay in place and custom folders retain their names.
+- Check community source before and after building, blocking new diagnostics while keeping existing findings visible.
+
+## 0.1.1
+
+- Build pinned core automatically, verify release source and attest GitHub assets.
+- Preserve water visuals and motion with scoped CSS and native settings.
 
 ## 0.1.0
 
-- Begin on a water surface with a boat and an optional bundled water sound.
-- Create a native Canvas from a thought or an empty entry.
-- Save your Canvas folder, water sound, boat speed, light intensity, and water depth preferences.
-- Support light/dark themes and reduced motion.
-
-The initial community release is limited to the water entry. Other Whiteboat Canvas tools are not registered by this build.
-
-- Unloading closes the water surface and sound even if the input is open.
+- Open a quiet water surface and create a native Canvas from a thought or an empty entry.
+- Save water sound, Canvas folder, boat speed, light intensity and water depth preferences.
+- Support desktop light/dark themes and reduced motion.

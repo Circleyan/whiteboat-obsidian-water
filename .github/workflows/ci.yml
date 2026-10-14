@@ -14,4 +14,12 @@ jobs:
           node-version: 22.18.0
           cache: npm
       - run: npm ci --ignore-scripts
-      - run: npm run build && npm run lint:community && npm test && npm --prefix vendor/whiteboat-core test && npm run check:release && node --check main.js
+      - run: npm run check:community
+      - name: Upload community source scans
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: community-source-scans
+          path: community-check-reports/
+          if-no-files-found: error
+      - run: npm run test:community-source && npm test && npm --prefix vendor/whiteboat-core test && npm run check:release && node --check main.js

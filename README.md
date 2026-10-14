@@ -8,7 +8,7 @@ Begin on a quiet water surface. Watch the boat, listen to the water, and write a
 - Click the water or the boat to write. Use the visible submit control or Command/Ctrl + Enter to create a Canvas.
 - An empty submission creates an empty Canvas. Text becomes a normal editable text node.
 - Press Escape to dismiss the input, then Escape again to close the surface. Closing the surface does not create a Canvas.
-- Change the Canvas folder, boat speed, light intensity, water depth, and water sound in the plugin preferences. The default folder is `随手画布`.
+- Change the Canvas folder, boat speed, light intensity, water depth, and water sound in the plugin preferences. The default folder follows the interface language: `Canvases`, `随手画布`, or `隨手畫布`.
 - Once the Canvas opens, editing is handled by Obsidian. This initial release contains the water entry and its soundscape. Source scope and Product IDs are recorded in [release-scope.json](release-scope.json).
 
 ## Install
@@ -35,8 +35,8 @@ Whiteboat is MIT licensed; see [LICENSE](LICENSE). It uses [Three.js](https://th
 
 ```sh
 npm ci --ignore-scripts
-npm run build
-npm run lint:community
+npm run check:community
+npm run test:community-source
 npm test
 npm --prefix vendor/whiteboat-core test
 npm run check:release
@@ -44,4 +44,12 @@ npm run check:release
 
 This repository contains only the first-release source snapshot and the shared water source it consumes. Shared source provenance and exact revisions are recorded in [source-provenance.json](source-provenance.json). No private repository access is needed to build.
 
-The root build prepares and builds the pinned core automatically, including its types and shared water CSS. CI uses this same clean-root sequence. Core owns shared rendering and motion; this repository owns Obsidian APIs, native Canvas lifecycle and packaging.
+The root build prepares and builds the pinned core automatically, including its types and shared water CSS. Core owns shared rendering and motion; this repository owns Obsidian APIs, native Canvas lifecycle and packaging.
+
+`check:community` scans an isolated clean source snapshot without generated core types, builds, then scans the built source and checks CSS. This works even after a local build and never deletes your generated files. CI and the Release packaging gate run this same sequence and upload full JSON diagnostics from `community-check-reports/`, including failures.
+
+The clean scan retains the 358 known type diagnostics reproduced from release `0.1.1` with the pinned ESLint configuration. They remain visible and unresolved. A reviewed fingerprint baseline permits those existing findings only; a new file, rule, severity, message, expression or increased count fails. Resolved findings may disappear. There is no automatic baseline update. The built scan requires zero diagnostics. This uses the local recommended Obsidian configuration (including the documented host-neutral core exceptions); it does not claim to reproduce every official server check.
+
+## Interface language
+
+Whiteboat follows the Obsidian language by default, with English as the fallback. English, Simplified Chinese and Traditional Chinese are supported. Choose a language in Whiteboat settings to override Obsidian. The default Canvas folder changes with the language for new files; existing files stay in place. A custom folder keeps its name. Clear the folder setting to restore the automatic default. Switching languages preserves your draft. Water sound controls both background water and thought-drop sounds.

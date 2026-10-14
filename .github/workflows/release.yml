@@ -89,7 +89,16 @@ jobs:
           cache-dependency-path: whiteboat-obsidian/package-lock.json
       - run: npm ci --ignore-scripts
         working-directory: whiteboat-obsidian
-      - run: npm run build && npm run lint:community && npm test && npm --prefix vendor/whiteboat-core test
+      - run: npm run check:community
+        working-directory: whiteboat-obsidian
+      - name: Upload community source scans
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: community-source-scans-release
+          path: whiteboat-obsidian/community-check-reports/
+          if-no-files-found: error
+      - run: npm run test:community-source && npm test && npm --prefix vendor/whiteboat-core test
         working-directory: whiteboat-obsidian
       - name: Verify release assets
         working-directory: whiteboat-obsidian

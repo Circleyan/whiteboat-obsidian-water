@@ -51,6 +51,8 @@ import {
   type IdeaSpeechRecognitionLike,
 } from "./idea-speech-input";
 
+import { defaultCanvasCreationEntryText, type CanvasCreationEntryText } from "./canvas-creation-entry-text";
+
 import { CanvasRuntimeAdapter } from "../canvas/runtime";
 import type { ObsidianAppLike, RuntimeCanvasLike } from "../canvas/types";
 
@@ -301,6 +303,7 @@ export function formatCanvasCreationAudioError(error: unknown): string {
 export interface CanvasCreationEntryOptions {
   getDefaultFolder: () => string;
   getDefaultTextNodeSize: () => CanvasTextNodeSize;
+  text?: CanvasCreationEntryText;
   getBoatFollowSpeed?: () => number;
   getLightIntensity?: () => number;
   getWaterDepth?: () => number;
@@ -359,7 +362,7 @@ export function formatCanvasCreationTimestamp(now: Date): string {
 
 export function createCanvasCreationCandidatePath(
   now: Date,
-  options: { folder?: string; suffix?: number } = {},
+  options: { folder?: string; suffix?: number; text?: CanvasCreationEntryText } = {},
 ): string {
   const folder = normalizeCanvasCreationFolder(options.folder);
   const suffix =
@@ -367,23 +370,24 @@ export function createCanvasCreationCandidatePath(
       ? ` ${Math.floor(options.suffix)}`
       : "";
   return normalizePath(
-    `${folder}/${formatCanvasCreationTimestamp(now)} 画布${suffix}.canvas`,
+    `${folder}/${formatCanvasCreationTimestamp(now)} ${(options.text ?? defaultCanvasCreationEntryText)("canvasName")}${suffix}.canvas`,
   );
 }
 
 export async function resolveUniqueCanvasCreationPath(
   app: CanvasCreationAppLike,
   now: Date,
-  options: { folder?: string } = {},
+  options: { folder?: string; text?: CanvasCreationEntryText } = {},
 ): Promise<string> {
   const vault = app.vault as CanvasCreationVaultLike | undefined;
   if (!vault) {
-    throw new Error("当前 Obsidian Vault 不可用。");
+    throw new Error((options.text ?? defaultCanvasCreationEntryText)("vaultUnavailable"));
   }
   for (let suffix = 1; suffix <= 999; suffix += 1) {
     const path = createCanvasCreationCandidatePath(now, {
       folder: options.folder,
       suffix,
+      text: options.text,
     });
     const abstractFile = vault.getAbstractFileByPath?.(path);
     const adapterExists = vault.adapter?.exists
@@ -393,7 +397,7 @@ export async function resolveUniqueCanvasCreationPath(
       return path;
     }
   }
-  throw new Error("这个时间点已经存在太多画布，请稍后再试。");
+  throw new Error((options.text ?? defaultCanvasCreationEntryText)("pathLimit"));
 }
 
 function createCanvasNodeId(): string {
@@ -470,20 +474,23 @@ export function createCanvasCreationContent(
 async function ensureCanvasCreationFolder(
   app: CanvasCreationAppLike,
   folder: string,
+  text: CanvasCreationEntryText = defaultCanvasCreationEntryText,
 ): Promise<void> {
   await ensureCanvasCreationVaultFolderPath(
     app,
     normalizeCanvasCreationFolder(folder),
+    text,
   );
 }
 
 async function ensureCanvasCreationVaultFolderPath(
   app: CanvasCreationAppLike,
   folder: string,
+  text: CanvasCreationEntryText = defaultCanvasCreationEntryText,
 ): Promise<void> {
   const vault = app.vault as CanvasCreationVaultLike | undefined;
   if (!vault) {
-    throw new Error("当前 Obsidian Vault 不可用。");
+    throw new Error(text("vaultUnavailable"));
   }
   const normalizedFolder = normalizePath(folder).replace(/^\/+|\/+$/gu, "");
   if (!normalizedFolder) {
@@ -510,7 +517,7 @@ async function ensureCanvasCreationVaultFolderPath(
       await vault.adapter.mkdir(current);
       continue;
     }
-    throw new Error(`无法创建画布目录：${current}`);
+    throw new Error(text("folderFailed", { path: current }));
   }
 }
 
@@ -583,6 +590,7 @@ async function openCreatedCanvas(
   app: CanvasCreationAppLike,
   file: unknown,
   path: string,
+  text: CanvasCreationEntryText = defaultCanvasCreationEntryText,
 ): Promise<void> {
   const workspace = app.workspace as CanvasCreationWorkspaceLike | undefined;
   const leaf = workspace?.getLeaf?.(false);
@@ -600,7 +608,7 @@ async function openCreatedCanvas(
     await workspace.openLinkText(path, "", false);
     return;
   }
-  throw new Error("Obsidian 工作区暂时无法打开新画布。");
+  throw new Error(text("openFailed"));
 }
 
 export async function createAndOpenCanvasFromEntry(
@@ -612,30 +620,32 @@ export async function createAndOpenCanvasFromEntry(
     nodeSize?: Partial<CanvasTextNodeSize>;
     audioPaths?: string[];
     isActive?: () => boolean;
+    text?: CanvasCreationEntryText;
   } = {},
 ): Promise<CanvasCreationResult> {
+  const text = options.text ?? defaultCanvasCreationEntryText;
   const vault = app.vault as CanvasCreationVaultLike | undefined;
   if (!vault?.create) {
-    throw new Error("当前 Obsidian Vault 不支持创建文件。");
+    throw new Error(text("createUnavailable"));
   }
   const folder = normalizeCanvasCreationFolder(options.folder);
-  await ensureCanvasCreationFolder(app, folder);
+  await ensureCanvasCreationFolder(app, folder, text);
   const path = await resolveUniqueCanvasCreationPath(
     app,
     options.now ?? new Date(),
-    { folder },
+    { folder, text },
   );
   const content = createCanvasCreationContent(input, {
     nodeSize: options.nodeSize,
     audioPaths: options.audioPaths,
   });
-  if (options.isActive?.() === false) throw new Error("创建入口已关闭。");
+  if (options.isActive?.() === false) throw new Error(text("entryClosed"));
   const createdData = JSON.parse(content) as { nodes: Array<{ id: string }> };
   const firstNodeId = createdData.nodes[0]?.id;
   const file = await vault.create(path, content);
   try {
-    if (options.isActive?.() === false) throw new Error("创建入口已关闭，画布已保存。");
-    await openCreatedCanvas(app, file, path);
+    if (options.isActive?.() === false) throw new Error(text("entryClosedSaved"));
+    await openCreatedCanvas(app, file, path, text);
     return {
       path,
       file,
@@ -738,6 +748,25 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
     private readonly options: CanvasCreationEntryOptions,
   ) {
     super(app);
+  }
+
+  private get t(): CanvasCreationEntryText { return this.options.text ?? defaultCanvasCreationEntryText; }
+
+  /** Update copy in place: retain draft, focus, and every effect instance. */
+  refreshText(): void {
+    if (!this.rootEl) return;
+    const label = this.rootEl.querySelector("#whiteboat-canvas-entry-boat-label");
+    if (label) label.setText(this.t("boatLabel"));
+    const title = this.rootEl.querySelector("label[for=whiteboat-canvas-entry-idea]");
+    if (title) title.setText(this.t("composerTitle"));
+    this.ideaEl.placeholder = this.t("placeholder");
+    this.rootEl.querySelector(".whiteboat-canvas-entry__close")?.setAttribute("aria-label", this.t("close"));
+    this.rootEl.querySelector(".whiteboat-canvas-entry__shortcut")?.setAttribute("aria-label", this.t(this.mobileInput ? "enterCanvas" : "enterShortcut"));
+    this.submitEl.setText(this.t(this.state.submitting ? "creating" : this.composerEl.hasClass("is-error") ? "retry" : this.mobileInput ? "enterCanvas" : "enterKey"));
+    this.submitEl.setAttribute("aria-label", this.t(this.state.submitting ? "creatingLabel" : "enterKeyLabel"));
+    this.updateSoundLabel(this.soundToggleEl?.dataset.soundState === "error");
+    this.statusEl.setText("");
+    this.syncComposerPosition();
   }
 
   close(): void {
@@ -1054,7 +1083,7 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
       cls: "whiteboat-canvas-entry__sound-toggle",
       attr: {
         type: "button",
-        "aria-label": this.soundEnabled ? "关闭水面音效" : "开启水面音效",
+        "aria-label": this.soundEnabled ? this.t("soundOff") : this.t("soundOn"),
         "aria-pressed": String(this.soundEnabled),
       },
     });
@@ -1068,7 +1097,7 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
     });
     const closeButton = actions.createEl("button", {
       cls: "whiteboat-canvas-entry__close",
-      attr: { type: "button", "aria-label": "关闭创建入口" },
+      attr: { type: "button", "aria-label": this.t("close") },
     });
     setIcon(closeButton, "x");
     closeButton.addEventListener("click", () => {
@@ -1105,7 +1134,7 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
           activated: false,
         },
       );
-      new Notice("水面音效设置没有保存，请再试一次。");
+      new Notice(this.t("soundSaveFailed"));
     }
   }
 
@@ -1126,13 +1155,17 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
     );
     this.soundToggleEl.dataset.soundState = snapshot.state;
     this.soundToggleEl.setAttribute("aria-pressed", String(this.soundEnabled));
-    this.soundToggleEl.setAttribute(
+    this.updateSoundLabel(unavailable);
+  }
+
+  private updateSoundLabel(unavailable: boolean): void {
+    this.soundToggleEl?.setAttribute(
       "aria-label",
       unavailable
-        ? "水面音效暂不可用"
+        ? this.t("soundUnavailable")
         : this.soundEnabled
-          ? "关闭水面音效"
-          : "开启水面音效",
+          ? this.t("soundOff")
+          : this.t("soundOn"),
     );
   }
 
@@ -1167,7 +1200,7 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
     }
     this.waterEl.createSpan({
       cls: "whiteboat-canvas-entry__accessibility-label",
-      text: "投入一个想法",
+      text: this.t("boatLabel"),
       attr: { id: "whiteboat-canvas-entry-boat-label" },
     });
     this.boatEl = this.waterEl.createEl("button", {
@@ -1207,7 +1240,7 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
       attr: {
         role: "dialog",
         ...(this.deviceMode === "phone"
-          ? { "aria-label": "投入想法" }
+          ? { "aria-label": this.t("composerTitle") }
           : { "aria-labelledby": "whiteboat-canvas-entry-title" }),
         "aria-modal": "false",
         "aria-hidden": "true",
@@ -1237,15 +1270,15 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
       },
     });
     title.createEl("label", {
-      text: "投入想法",
+      text: this.t("composerTitle"),
       attr: { for: "whiteboat-canvas-entry-idea" },
     });
     const shortcut = composerHeader.createDiv({
       cls: "whiteboat-canvas-entry__shortcut",
       attr: {
         "aria-label": this.mobileInput
-          ? "进入画布"
-          : "按 Command 或 Control 加回车进入画布",
+          ? this.t("enterCanvas")
+          : this.t("enterShortcut"),
       },
     });
     if (!this.mobileInput) {
@@ -1275,11 +1308,11 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
         this.deviceMode === "phone"
           ? ""
           : this.mobileInput
-            ? "进入画布"
-            : "回车",
+            ? this.t("enterCanvas")
+            : this.t("enterKey"),
       attr: {
         type: "submit",
-        "aria-label": this.mobileInput ? "进入画布" : "回车进入画布",
+        "aria-label": this.mobileInput ? this.t("enterCanvas") : this.t("enterKeyLabel"),
       },
     });
     if (this.deviceMode === "phone") {
@@ -1294,7 +1327,7 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
         id: "whiteboat-canvas-entry-idea",
         name: "idea",
         rows: this.deviceMode === "phone" ? "1" : "4",
-        placeholder: "随便说说，你想到什么了？",
+        placeholder: this.t("placeholder"),
         autocomplete: "off",
         enterkeyhint: this.mobileInput ? "go" : "enter",
       },
@@ -2579,7 +2612,7 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
     this.syncComposerPosition();
     if (this.deviceMode !== "phone") this.setWaterFocus(true);
     const appearance = this.composerMotion?.appear(outgoing);
-    this.announce("想法窗口已经打开。");
+    this.announce(this.t("composerOpened"));
     if (options.focus !== false) {
       this.ideaEl.focus({ preventScroll: true });
       void appearance?.then(() => {
@@ -2605,7 +2638,7 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
     this.composerEl.inert = true;
     this.composerMotion?.cancel();
     this.state.composerAnchor = null;
-    this.announce("想法窗口已经收起。");
+    this.announce(this.t("composerClosed"));
     if (options.returnFocus) {
       this.boatEl.removeClass("is-initial-focus");
       this.boatEl.focus();
@@ -2958,12 +2991,12 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
     if (this.deviceMode === "phone") {
       this.submitEl.empty();
       setIcon(this.submitEl, "loader-circle");
-      this.submitEl.setAttribute("aria-label", "正在创建画布");
+      this.submitEl.setAttribute("aria-label", this.t("creatingLabel"));
     } else {
-      this.submitEl.setText("创建中…");
+      this.submitEl.setText(this.t("creating"));
     }
     this.syncComposerPosition();
-    this.announce("正在创建新的 Canvas。");
+    this.announce(this.t("creatingNotice"));
     try {
       this.composerEl.inert = true;
       this.composerMotion?.reset();
@@ -2976,14 +3009,15 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
           nodeSize: this.options.getDefaultTextNodeSize(),
           audioPaths: [...this.recordedAudioPaths],
           isActive: () => this.rootEl.isConnected,
+          text: this.t,
         },
       );
       if (!this.rootEl.isConnected) return;
       if (!result.opened) {
-        const message = result.openError || "Obsidian 工作区暂时无法打开。";
-        this.announce(`Canvas 已创建，但暂时无法自动打开：${result.path}`);
+        const message = result.openError || this.t("workspaceUnavailable");
+        this.announce(this.t("createdNotOpened", { path: result.path }));
         new Notice(
-          `Canvas 已创建到 ${result.path}，但暂时无法自动打开：${message}`,
+          this.t("createdNotOpenedDetail", { path: result.path, message }),
         );
         this.closeEntry();
         return;
@@ -2998,7 +3032,7 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
         await this.composerMotion?.confirm(result.seeded,reveal);
       } catch { this.composerMotion?.reset(); }
       if (!this.rootEl.isConnected) return;
-      new Notice(`已创建并打开 Canvas：${result.path}`);
+      new Notice(this.t("created", { path: result.path }));
       this.closeEntry();
     } catch (error) {
       if (!this.rootEl.isConnected) return;
@@ -3016,18 +3050,18 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
         this.speechEl.disabled = false;
       }
       if (this.deviceMode === "phone") {
-        this.renderPhoneSubmitAnchorIcon("重试进入画布");
+        this.renderPhoneSubmitAnchorIcon(this.t("retryEnter"));
       } else {
-        this.submitEl.setText("重试");
+        this.submitEl.setText(this.t("retry"));
       }
       this.syncComposerPosition();
-      this.announce(`创建失败：${message}`);
-      new Notice(`创建 Canvas 失败：${message}`);
+      this.announce(this.t("failedStatus", { message }));
+      new Notice(this.t("failed", { message }));
       this.ideaEl.focus();
     }
   }
 
-  private renderPhoneSubmitAnchorIcon(label = "进入画布"): void {
+  private renderPhoneSubmitAnchorIcon(label = this.t("enterCanvas")): void {
     this.submitEl.empty();
     this.submitEl.createEl("img", {
       cls: "whiteboat-canvas-entry__submit-anchor",

@@ -1,6 +1,6 @@
 {
   "name": "whiteboat",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "description": "Begin on a quiet water surface and turn a thought into a new Canvas.",
   "main": "main.js",
@@ -10,6 +10,10 @@
     "test": "vitest run --config vitest.water.config.mjs",
     "test:unit": "vitest run --config vitest.water.config.mjs",
     "check:release": "node scripts/check-water-release.mjs",
+    "check:community-source:clean": "node scripts/check-community-source.mjs clean",
+    "check:community-source:built": "node scripts/check-community-source.mjs built",
+    "test:community-source": "node --test test/unit/community-source-check.test.mjs",
+    "check:community": "node scripts/check-community-source.mjs all",
     "core:build": "node scripts/build-core.mjs",
     "prebuild": "npm run core:build && node scripts/sync-core-water-css.mjs",
     "lint:community": "eslint src vendor/whiteboat-core/src && npm run check:community-css",

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "distribution_repository": "Circleyan/whiteboat-obsidian-water",
-  "obsidian_source_commit": "6f0c5d6a35f79e4a1aa74b92089f4d87848b136e",
+  "obsidian_source_commit": "d68373369b45b1c09769ad3d61b44897712d7843",
   "core_source_commit": "711d1ea919cd1addd2e516d3fabdeb0ab94da735",
   "policy": "Vendored release snapshot only. Shared feature bodies are byte-identical; package/build/index project the consumed water subset. No development Git history is included.",
   "core_source_files": {
@@ -49,15 +49,15 @@
   ],
   "obsidian_projected_sources": {
     "src/canvas/runtime.ts": {
-      "source_commit": "6f0c5d6a35f79e4a1aa74b92089f4d87848b136e",
+      "source_commit": "d68373369b45b1c09769ad3d61b44897712d7843",
       "change": "Use the versioned water-only host contract from distribution/water; canonical full-product entry and Canvas mutations are excluded."
     },
     "src/main.ts": {
-      "source_commit": "6f0c5d6a35f79e4a1aa74b92089f4d87848b136e",
+      "source_commit": "d68373369b45b1c09769ad3d61b44897712d7843",
       "change": "Use the versioned water-only host contract from distribution/water; canonical full-product entry and Canvas mutations are excluded."
     },
     "src/features/canvas-creation-entry.ts": {
-      "source_commit": "6f0c5d6a35f79e4a1aa74b92089f4d87848b136e",
+      "source_commit": "d68373369b45b1c09769ad3d61b44897712d7843",
       "change": "Omit full-product requirement-reflection integration only; preserve water behavior."
     }
   },
@@ -69,8 +69,9 @@
     "src/features/canvas-creation-boat-renderer.ts": "ba64a42cc4bc6eb53365987f9369678ad20ae8e6ea2ffb0241883e126c7f0636",
     "src/features/canvas-creation-boat-tone.ts": "750cc7336f6796ca276020d96d2dc72ee2c4e80a4928e2965f1c0da94b6a622c",
     "src/features/canvas-creation-composer-motion.ts": "027c69aee83c831e5b1648518157b79ad031ff82633ad2630de9735a724b1394",
+    "src/features/canvas-creation-entry-text.ts": "46d5ab3acbee9cc5cf806827216410831e11a8896701b282d02f18d71f357d93",
     "src/features/canvas-creation-entry-window.ts": "2f3dde210485b1e8352e566e119ece251070af7809905b9dd14cb3cebfbcfbe4",
-    "src/features/canvas-creation-entry.ts": "60af58ed17c1705f72160aff95e7d66f614d3372db847a32229b3dd3dd13c768",
+    "src/features/canvas-creation-entry.ts": "4bb2e3500f5a9a203432f4347a50813857846bed51a411d2a06d589d513b9a8e",
     "src/features/canvas-creation-home-audio.ts": "1bc8299b7a08974d8870862cf65bb22504c5d2e02544e0b2428ca7bbff85272d",
     "src/features/canvas-creation-light.ts": "dce7652d507fa40476c187b92879b02d0e87270560e938768842d3cb2d18d352",
     "src/features/canvas-creation-mooring.ts": "bd8367f5b7a29609c5785a24bd5c0b7925c44ee915b0a135100209854448594c",
@@ -85,22 +86,31 @@
   },
   "obsidian_css_source_sha256": "30b20e14a061e35f244e3295ab2ade52fcbdce3f020956c619e989a3783d85e3",
   "distribution_template_files": {
-    "src/main.ts": "bdd09ee06811464bc5b9cef57c7f36bf97c31916be7d74bdfb1517eaa7af428a",
+    "src/main.ts": "19bc1f8bcfb52d2534d123274a0f87576fe639a3a122c0ce48bd15be2dc76a6b",
     "src/canvas/runtime.ts": "0dc348d4068e7679bf9d11cf0790a3a6ed0c04c8eb4c65b984294c45b49110f9",
-    "package.json": "ceda19f4ec6215e9469d64ccdcb71dbc2425ef53d3275cdf0734798bdabe8f6a",
+    "package.json": "0696194b45fdcd4efe83c29afd28aca8c7d4e9c1d0e5f1d52e847a86b54f9bf7",
     "esbuild.config.mjs": "bcd67ced00a601d5b15381673cae3491a67d82092c2117308b8dd43c6807777d",
     "eslint.config.mjs": "0abc4d6eaa23461cde41ed9bf3d3fd3e7c136c941c05772039d05a5d6e904416",
+    ".gitignore": "0f3a3b9014bde02dfd6f8d83e017eb92769949136ca880497f5a341f9f52f7f3",
     "community-css-policy.json": "5d364337fbcc8ecc243fa3bcc16b3e3474b167472a98cfc929b3c84b4706f47d",
-    ".github/workflows/ci.yml": "4ab05de99e484dd14b56a71c37e67c589e5d4523411f5510467021d2a2842776",
-    ".github/workflows/release.yml": "4b7e6b632b2a6538961405603a87704d7cf787b803cb228bacb44712b1da4233",
+    "community-source-baseline.json": "0c7ef85dceeb7244bee262983c3fca6574185a6024986c3e55ae0666563bc1a6",
+    ".github/workflows/ci.yml": "8b4c72cb4760dff42c178735d622d31275fd7967870a005abf6287a942324f7e",
+    ".github/workflows/release.yml": "49dfbe70c35da0be140085f7ff1df595f70cbe4c929c2f69242ffc9189e212de",
     "scripts/check-community-css.mjs": "a834fdf4a82e809fa6a8c0f97a04148f73a1e1ba768064f5a5802692af95d636",
+    "scripts/check-community-source.mjs": "7dbc9d34c018e9cd83ff4521f79ff5df4ec914f816824b5e6b11a31118bb72a7",
     "scripts/check-water-release.mjs": "a765a443050abe4af658a9b4c5ac99715349dcd8ba69fa444094b2a44eed33a9",
     "scripts/water-release-runtime.mjs": "2a03d8ad116fa3d85ba9590a6ae35f1e37d8ac531bbf3c4598aab273a8fc3020",
     "scripts/water-equivalence-runtime.mjs": "098c0cc8fd59d7e2ac08efb00ff10b41080156331381e42640f660faa9cad632",
-    "README.md": "446f9d76facd7030167cd5d79b9306ef00f1ab337c66aef81923a0b247ba0d7e",
-    "CONTRIBUTING.md": "aba22daea533ea2106793d626a3d0fa1f8ce01ef075cc1e88d648633b639a811",
+    "README.md": "1c95231edd9924ad841c38cf707b2f1cb127b855d486108b3de223d368ac1e1d",
+    "CONTRIBUTING.md": "e6a3364f01dc1b481f91b18d1ce08f58eb27f8b4fec828ecce600aeefa9186c5",
     "tsconfig.json": "2bee4da074b4e3f664083127e8336f2bfb8cbe4558f57b4862b160fabc18b436",
-    "vitest.water.config.mjs": "8cca24b6017584773e08b919683f158427658eaf87fe74aef8e06dd4e032ad03",
-    "test/unit/water-release.spec.ts": "40306320b3ad3419fe365e336aae8321f9d41f38b710b450d31cf4d600ee4a34"
+    "vitest.water.config.mjs": "b6b50d395dc945456f00693bb672453e1d82319d3afab470799ff76b950ca653",
+    "test/unit/water-release.spec.ts": "40306320b3ad3419fe365e336aae8321f9d41f38b710b450d31cf4d600ee4a34",
+    "test/unit/community-source-check.test.mjs": "e51b885265fe99f02284ef3e136e2b9f13f2718a06df391e3862585349b626bf",
+    "src/i18n.ts": "4534d0d25da4b5e60033e526e0b692a7754f8e0f740da9f5a9270ef93dd661e3",
+    "test/unit/water-i18n.spec.ts": "83ee769fd4900352dbd7e5e8322370fd226133b1008dc0ea639ab2ec8b980ae3",
+    "scripts/water-i18n-runtime.mjs": "fbb26814130e084962ce85c4c12e99b79d19047caa88abfd4da3dbcac63e07b7",
+    "CHANGELOG.md": "8cd129966e330916db19db6cfcf4c03f0a69ca424b8740f06e68de95f2f19147",
+    "release-scope.json": "1ddc42533009ebb557e956d1e2cc998d0b318f7198bb05951ea79f145eba05e3"
   }
 }
