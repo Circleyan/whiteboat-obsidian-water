@@ -1529,15 +1529,15 @@ describe("Whiteboat Canvas creation entry", () => {
 
   it("ships a full-stage, tokenized, responsive, reduced-motion surface", () => {
     expect(css).toMatch(
-      /\.modal-container\.whiteboat-canvas-entry-modal-container \{[\s\S]*inset: 0 !important;[\s\S]*height: 100dvh !important;[\s\S]*padding: 0 !important;/u,
+      /\.modal-container\.whiteboat-canvas-entry-modal-container \{[\s\S]*inset: 0;[\s\S]*height: 100dvh;[\s\S]*padding: 0;/u,
     );
-    expect(css).not.toContain("body.whiteboat-canvas-entry-open .modal-container");
-    expect(css).not.toContain(":has(");
+    expect(css).not.toMatch(/body\.whiteboat-canvas-entry-open \.modal-container\s*\{/u);
+    expect(css).not.toContain(".modal-container:has(.whiteboat-canvas-entry");
     expect(css).toContain("body.whiteboat-canvas-entry-phone-open");
-    expect(css).toContain("background: oklch(99.5% 0.003 240) !important");
+    expect(css).toContain("background: oklch(99.5% 0.003 240)");
     expect(css).toContain(".whiteboat-canvas-entry-modal.modal");
     expect(css).toMatch(
-      /\.whiteboat-canvas-entry-modal\.modal \{[\s\S]*position: fixed !important;[\s\S]*inset: 0 !important;[\s\S]*width: 100vw !important;[\s\S]*height: 100vh !important;/u,
+      /\.whiteboat-canvas-entry-modal\.modal \{[\s\S]*position: fixed;[\s\S]*inset: 0;[\s\S]*width: 100vw;[\s\S]*height: 100vh;/u,
     );
     expect(css).toMatch(
       /\.whiteboat-canvas-entry-modal > \.modal-content \{[\s\S]*position: absolute;[\s\S]*inset: 0;[\s\S]*max-height: none;/u,
@@ -1576,13 +1576,13 @@ describe("Whiteboat Canvas creation entry", () => {
       /\.whiteboat-canvas-entry__shortcut \{[\s\S]*--wb-entry-shortcut-control-height:[\s\S]*display: flex;/u,
     );
     expect(css).toMatch(
-      /\.whiteboat-canvas-entry__shortcut \.whiteboat-canvas-entry__command-key \{[\s\S]*width: var\(--wb-entry-shortcut-control-height\) !important;[\s\S]*aspect-ratio: 1;/u,
+      /\.whiteboat-canvas-entry__shortcut \.whiteboat-canvas-entry__command-key \{[\s\S]*width: var\(--wb-entry-shortcut-control-height\);[\s\S]*aspect-ratio: 1;/u,
     );
     expect(css).toMatch(
-      /\.whiteboat-canvas-entry__shortcut \.whiteboat-canvas-entry__command-key,[\s\S]*height: var\(--wb-entry-shortcut-control-height\) !important;[\s\S]*max-height: var\(--wb-entry-shortcut-control-height\) !important;/u,
+      /\.whiteboat-canvas-entry__shortcut \.whiteboat-canvas-entry__command-key,[\s\S]*height: var\(--wb-entry-shortcut-control-height\);[\s\S]*max-height: var\(--wb-entry-shortcut-control-height\);/u,
     );
     expect(css).toMatch(
-      /\.whiteboat-canvas-entry__shortcut \.whiteboat-canvas-entry__command-key,[\s\S]*height: var\(--wb-entry-shortcut-control-height\) !important;[\s\S]*padding: 0 var\(--wb-entry-space-03\) !important;[\s\S]*line-height: 1 !important;/u,
+      /\.whiteboat-canvas-entry__shortcut \.whiteboat-canvas-entry__command-key,[\s\S]*height: var\(--wb-entry-shortcut-control-height\);[\s\S]*padding: 0 var\(--wb-entry-space-03\);[\s\S]*line-height: 1;/u,
     );
     expect(css).toMatch(
       /@media \(pointer: coarse\) \{[\s\S]*\.whiteboat-canvas-entry__shortcut \{[\s\S]*--wb-entry-shortcut-control-height: 2\.75rem;/u,
@@ -1596,7 +1596,7 @@ describe("Whiteboat Canvas creation entry", () => {
     expect(css).toContain("--wb-entry-rim-highlight");
     expect(css).toContain("--wb-entry-rim-highlight-soft");
     expect(css).toMatch(
-      /\.theme-dark \.whiteboat-canvas-entry__composer-surface \{[\s\S]*border: 0 !important;[\s\S]*border-color: transparent;[\s\S]*box-shadow: none;/u,
+      /\.theme-dark \.whiteboat-canvas-entry__composer-surface \{[\s\S]*border: 0;[\s\S]*border-color: transparent;[\s\S]*box-shadow: none;/u,
     );
     expect(css).toMatch(
       /\.theme-dark \.whiteboat-canvas-entry__composer-surface::after \{[\s\S]*display: none;/u,
@@ -1843,7 +1843,7 @@ describe("Whiteboat Canvas creation entry", () => {
       /\.whiteboat-canvas-entry\.is-phone[\s\S]*\.whiteboat-canvas-entry__composer-surface \{[\s\S]*flex-direction: row;[\s\S]*border-radius: calc\(var\(--wb-entry-phone-composer-min-height\) \/ 2\);/u,
     );
     expect(css).toMatch(
-      /\.whiteboat-canvas-entry\.is-phone \.whiteboat-canvas-entry__shortcut button \{[\s\S]*width: 46px;[\s\S]*height: 46px(?: !important)?;[\s\S]*border-radius: 50%;/u,
+      /\.whiteboat-canvas-entry\.is-phone \.whiteboat-canvas-entry__shortcut button \{[\s\S]*width: 46px;[\s\S]*height: 46px;[\s\S]*border-radius: 50%;/u,
     );
     expect(css).toContain(".whiteboat-canvas-entry__speech-button");
     expect(css).toContain(
@@ -1859,11 +1859,11 @@ describe("Whiteboat Canvas creation entry", () => {
       /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.whiteboat-canvas-entry\.is-recording[\s\S]*\.whiteboat-canvas-entry__recording-ripple \{[\s\S]*animation: none;/u,
     );
     expect(css).toMatch(
-      /\.whiteboat-canvas-entry\.is-mobile[\s\S]*\.whiteboat-canvas-entry__speech-button \{[\s\S]*width: 46px;[\s\S]*min-width: 46px;[\s\S]*height: 46px !important;[\s\S]*min-height: 46px !important;/u,
+      /\.whiteboat-canvas-entry\.is-mobile[\s\S]*\.whiteboat-canvas-entry__speech-button \{[\s\S]*width: 46px;[\s\S]*min-width: 46px;[\s\S]*height: 46px;[\s\S]*min-height: 46px;/u,
     );
     expect(css).toContain(".whiteboat-canvas-entry__submit-anchor");
     expect(css).toContain("min-width: 5.75rem");
-    expect(css).toContain("height: 46px !important");
+    expect(css).toContain("height: 46px");
     expect(entrySource).toContain("private closeEntry(): void");
     expect(entrySource).not.toContain("renderFooter");
     expect(entrySource).not.toContain("可交互的白舟水面");

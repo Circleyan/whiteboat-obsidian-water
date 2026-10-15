@@ -83,6 +83,8 @@ describe("water field flow pause", () => {
     } as unknown as HTMLCanvasElement;
     const field = new CanvasCreationWaterField(canvas, {
       tokenRoot: {} as HTMLElement,
+      createProbe: () => document.createElement("div"),
+      ownerWindow: { requestAnimationFrame, cancelAnimationFrame },
       reducedMotion,
       ...options,
     });

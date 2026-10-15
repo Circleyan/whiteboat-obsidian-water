@@ -1,5 +1,5 @@
 {
-  "max_important_declarations": 96,
-  "reason": "Full-screen water modal and scoped controls preserve accepted host appearance. Removing priority requires light/dark/custom-theme and nested-modal equivalence evidence; no broad global modal selectors.",
-  "baseline": "0.1.0 accepted; 0.1.1 owned selectors and state recipe"
+  "max_important_declarations": 0,
+  "reason": "Water uses owned modal state and scoped selectors. Both source scans and CSS checks reject regressions; accepted appearance is checked in isolated host runtime.",
+  "baseline": "Review remediation candidate; theme/zoom equivalence required before release"
 }

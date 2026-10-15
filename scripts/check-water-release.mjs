@@ -30,6 +30,7 @@ for (const [file, hash] of Object.entries(provenance.core_source_files)) {
 console.log("Shared water source matches the recorded revision snapshot.");
 for (const [group, files] of Object.entries({
  "Obsidian water": provenance.obsidian_source_files,
+ "Obsidian tests": provenance.obsidian_test_files,
  "distribution template": provenance.distribution_template_files,
 })) {
  assert.ok(files && Object.keys(files).length > 0, `Missing ${group} provenance`);

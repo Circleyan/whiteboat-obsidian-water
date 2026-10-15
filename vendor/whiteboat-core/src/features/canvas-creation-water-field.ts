@@ -639,6 +639,7 @@ export function resolveCanvasCreationCssPixels(
   root: HTMLElement,
   name: string,
   fallback: string,
+  createProbe: (root: HTMLElement) => HTMLDivElement,
 ): number {
   const directValue = readToken(root, name, fallback);
   const directPixels = Number.parseFloat(directValue);
@@ -646,7 +647,7 @@ export function resolveCanvasCreationCssPixels(
     return directPixels;
   }
 
-  const probe = document.createElement("div");
+  const probe = createProbe(root);
   probe.className = CANVAS_CREATION_WATER_CSS_PROBE_CLASS;
   probe.style.width = `var(${name}, ${fallback})`;
   root.appendChild(probe);
@@ -684,6 +685,8 @@ export class CanvasCreationWaterField {
   private readonly context: CanvasRenderingContext2D;
   private readonly config: WaterConfig;
   private readonly tokenRoot: HTMLElement;
+  private readonly createProbe: (root: HTMLElement) => HTMLDivElement;
+  private readonly ownerWindow: Pick<Window, "requestAnimationFrame" | "cancelAnimationFrame">;
   private readonly resizeObserver: ResizeObserver | null;
   private readonly handleWindowResize: () => void;
   private readonly handleVisibility: () => void;
@@ -724,6 +727,8 @@ export class CanvasCreationWaterField {
     private readonly canvas: HTMLCanvasElement,
     options: {
       tokenRoot: HTMLElement;
+      createProbe: (root: HTMLElement) => HTMLDivElement;
+      ownerWindow: Pick<Window, "requestAnimationFrame" | "cancelAnimationFrame">;
       reducedMotion?: boolean;
       flowTimeScale?: number;
       config?: WaterConfig;
@@ -735,6 +740,8 @@ export class CanvasCreationWaterField {
     }
     this.context = context;
     this.tokenRoot = options.tokenRoot;
+    this.createProbe = options.createProbe;
+    this.ownerWindow = options.ownerWindow;
     this.config = options.config ?? CANVAS_CREATION_WATER_DEFAULTS;
     this.reducedMotion = options.reducedMotion === true;
     const timeScale = options.flowTimeScale ?? 1;
@@ -945,7 +952,7 @@ export class CanvasCreationWaterField {
 
   destroy(): void {
     if (this.frameId !== null) {
-      cancelAnimationFrame(this.frameId);
+      this.ownerWindow.cancelAnimationFrame(this.frameId);
       this.frameId = null;
     }
     this.resizeObserver?.disconnect();
@@ -958,7 +965,7 @@ export class CanvasCreationWaterField {
     if (this.frameId !== null || !this.visible) {
       return;
     }
-    this.frameId = requestAnimationFrame((timestamp) => {
+    this.frameId = this.ownerWindow.requestAnimationFrame((timestamp) => {
       this.frameId = null;
       this.render(timestamp);
       if (!this.reducedMotion) {
@@ -1063,6 +1070,7 @@ export class CanvasCreationWaterField {
         this.tokenRoot,
         "--wb-entry-water-top-inset",
         "12px",
+        this.createProbe,
       ),
       topInsetRatio,
     });

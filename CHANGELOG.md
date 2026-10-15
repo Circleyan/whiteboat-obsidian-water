@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.3
+
+- Resolve shared core types directly from source and require zero diagnostics before and after building.
+- Supply DOM helpers and browser timers from the host while retaining core water and audio behavior.
+- Replace water CSS priority overrides with owned, scoped selectors and verify theme, zoom and motion equivalence.
+
 ## 0.1.2
 
 - Follow the Obsidian interface language with English, Simplified Chinese and Traditional Chinese support and an English fallback.

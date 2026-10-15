@@ -2,10 +2,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 // Exercise the built package used by the Obsidian adapter, not sibling core source.
 import {
   CANVAS_CREATION_WATER_DEFAULTS,
-  CanvasCreationWaterField,
   hashWaterPoint,
   sampleCanvasCreationFlowPosition,
 } from "whiteboat-core";
+import { CanvasCreationWaterField } from "../../src/features/canvas-creation-water-field";
 
 const cases = [22, 24, 30, 48].flatMap((spacing) => [
   { spacing, width: spacing * 40, height: spacing * 25, topInset: 0 },
@@ -128,6 +128,7 @@ describe("Obsidian consumed water-field rendered sample count", () => {
         stroke: (path: CountedPath) => { renderedLines += path.lines; },
       };
       const canvas = {
+        win: { requestAnimationFrame, cancelAnimationFrame },
         getContext: () => context,
         getBoundingClientRect: () => ({ width, height }),
       } as unknown as HTMLCanvasElement;

@@ -15,6 +15,7 @@ function call(method,params={}){const id=nextId++;return new Promise((resolve,re
 async function evaluate(fn,arg){const result=await call("Runtime.evaluate",{expression:`(${fn.toString()})(${JSON.stringify(arg)})`,returnByValue:true,awaitPromise:true});if(result.exceptionDetails)throw new Error(result.exceptionDetails.exception?.description||result.exceptionDetails.text);return result.result.value;}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 await call("Runtime.enable");await call("Page.enable");
+await call("Page.bringToFront");await call("Emulation.setFocusEmulationEnabled",{enabled:true});
 const vault=await evaluate(()=>app.vault.adapter.basePath);
 assert.equal(path.resolve(vault),path.resolve(expected),"Refusing to operate on an unregistered Vault");
 const report={kind:"whiteboat-water-i18n-runtime",vault,recordedAt:new Date().toISOString(),cases:[],errors};
@@ -118,7 +119,8 @@ try {
    vault.create=async()=>{throw new Error("Test write failure");};
    document.querySelector("textarea").value="原始内容不翻译";
    document.querySelector(".whiteboat-canvas-entry__composer").dispatchEvent(new Event("submit",{bubbles:true,cancelable:true}));
- });await sleep(400);
+ });
+ for(let i=0;i<40;i++){if(await evaluate(()=>document.querySelector(".whiteboat-canvas-entry__status")?.textContent.includes("Creation failed")))break;await sleep(100);}
  const failed=await evaluate(()=>({button:document.querySelector(".whiteboat-canvas-entry__composer button[type=submit]").textContent,status:document.querySelector(".whiteboat-canvas-entry__status").textContent,draft:document.querySelector("textarea").value,notices:[...document.querySelectorAll(".notice")].map(e=>e.textContent)}));
  assert.equal(failed.button,"Retry");assert.match(failed.status,/Creation failed/);assert.equal(failed.draft,"原始内容不翻译");assert.ok(!/[\u3400-\u9fff]/u.test(JSON.stringify([failed.status,failed.notices])));
  await evaluate(()=>{app.vault.create=window.__i18nCreateOriginal;delete window.__i18nCreateOriginal;});

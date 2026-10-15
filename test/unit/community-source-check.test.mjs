@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { createCleanSource, fingerprintDiagnostics, compareBaseline, validateScan } from "../../scripts/check-community-source.mjs";
+import { createCleanSource, fingerprintDiagnostics, compareBaseline, validateScan, unacceptedDiagnostics } from "../../scripts/check-community-source.mjs";
 
 async function fixture(run) {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), "whiteboat-scan-test-"));
@@ -64,4 +64,12 @@ test("ESLint operational failures and contradictory status fail closed", () => {
   assert.throws(() => validateScan({ status: 1 }, [{ errorCount: 0 }]), /contradicts/u);
   assert.throws(() => validateScan({ status: 0 }, diagnostics), /contradicts/u);
   assert.throws(() => validateScan({ status: 0 }, []), /did not complete/u);
+});
+
+
+test("both phases reject even a finding previously accepted by the historical baseline", () => {
+  const old = { ["a".repeat(64)]: 2 };
+  assert.deepEqual(compareBaseline(old, { schemaVersion: 1, fingerprints: old }), []);
+  assert.deepEqual(unacceptedDiagnostics(old), Object.entries(old));
+  assert.deepEqual(unacceptedDiagnostics({}), []);
 });

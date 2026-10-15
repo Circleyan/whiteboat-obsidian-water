@@ -23,6 +23,7 @@ export type WhiteboatHomeSoundState = WhiteboatSoundSnapshot["state"];
 export type WhiteboatHomeSoundSnapshot = WhiteboatSoundSnapshot;
 export interface WhiteboatHomeSoundscapeOptions {
   enabled: boolean;
+  ownerWindow: Pick<Window, "setTimeout" | "clearTimeout">;
   reducedMotion?: boolean;
   createHowl?: (options: HowlOptions) => Howl;
   onStateChange?: (snapshot: WhiteboatHomeSoundSnapshot) => void;
@@ -41,6 +42,7 @@ export class WhiteboatHomeBoatSoundscape extends WhiteboatBoatSoundscape {
       enabled: options.enabled,
       reducedMotion: options.reducedMotion,
       source: BOAT_WATER_SOURCE,
+      timers: options.ownerWindow,
       createHowl: options.createHowl ?? ((howlOptions) => new Howl(howlOptions)),
       onStateChange: options.onStateChange,
     };

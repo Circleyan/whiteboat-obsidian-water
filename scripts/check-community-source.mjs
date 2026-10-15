@@ -54,6 +54,11 @@ export function compareBaseline(actual, baseline) {
   return Object.entries(actual).map(([key, count]) => [key, count - (baseline.fingerprints[key] ?? 0)]).filter(([, count]) => count > 0);
 }
 
+// The old baseline remains an audit artifact; all present findings fail.
+export function unacceptedDiagnostics(fingerprints) {
+  return Object.entries(fingerprints);
+}
+
 export function validateScan(result, results) {
   if (result.error || result.signal || ![0, 1].includes(result.status) || !Array.isArray(results) || !results.length) {
     throw new Error(`ESLint did not complete: ${result.error?.message ?? result.stderr ?? result.status}`);
@@ -82,8 +87,7 @@ export async function checkCommunitySource(root, phase) {
     if (scratch) await createCleanSource(root, scratch);
     else await fs.access(path.join(root, "vendor/whiteboat-core/lib/index.d.ts"));
     const { results, fingerprints } = await scan(scratch ?? root, phase, output);
-    const baseline = JSON.parse(await fs.readFile(path.join(root, "community-source-baseline.json"), "utf8"));
-    const unexpected = phase === "clean" ? compareBaseline(fingerprints, baseline) : Object.entries(fingerprints);
+    const unexpected = unacceptedDiagnostics(fingerprints);
     const counts = {};
     for (const file of results) for (const message of file.messages) counts[message.ruleId] = (counts[message.ruleId] ?? 0) + 1;
     const summary = { phase, diagnostics: Object.values(counts).reduce((a, b) => a + b, 0), counts,
@@ -91,7 +95,6 @@ export async function checkCommunitySource(root, phase) {
     await fs.writeFile(path.join(output, `${phase}-summary.json`), JSON.stringify(summary, null, 2) + "\n");
     console.log(JSON.stringify(summary, null, 2));
     if (unexpected.length) throw new Error(`${phase} source scan has unaccepted diagnostics; inspect ${output}`);
-    if (summary.diagnostics) console.warn("Known clean-source diagnostics remain; passing the regression gate does not resolve community risks.");
     return summary;
   } catch (error) {
     await fs.mkdir(output, { recursive: true });

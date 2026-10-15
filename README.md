@@ -48,7 +48,9 @@ The root build prepares and builds the pinned core automatically, including its 
 
 `check:community` scans an isolated clean source snapshot without generated core types, builds, then scans the built source and checks CSS. This works even after a local build and never deletes your generated files. CI and the Release packaging gate run this same sequence and upload full JSON diagnostics from `community-check-reports/`, including failures.
 
-The clean scan retains the 358 known type diagnostics reproduced from release `0.1.1` with the pinned ESLint configuration. They remain visible and unresolved. A reviewed fingerprint baseline permits those existing findings only; a new file, rule, severity, message, expression or increased count fails. Resolved findings may disappear. There is no automatic baseline update. The built scan requires zero diagnostics. This uses the local recommended Obsidian configuration (including the documented host-neutral core exceptions); it does not claim to reproduce every official server check.
+Both clean and built scans require zero diagnostics. The root TypeScript configuration resolves the pinned core directly from its source, so a clean checkout does not depend on generated declarations. The historical fingerprint baseline is retained as an audit record and no longer permits warnings. CI records full diagnostics rather than updating the baseline automatically. These checks use the recommended Obsidian ESLint configuration; the official server also runs separate checks.
+
+CSS priority changes also have a host regression fixture: run `scripts/water-css-equivalence-runtime.mjs` against an explicit isolated Vault, with `WB_BASELINE_CSS` pointing to the previously accepted release. It compares default, Minimal and Cupertino themes in light/dark and wide/narrow states, while keeping the live DOM fixed. Install these themes in the isolated Vault before running it. Runtime tests require explicit `WB_CDP_ENDPOINT`, `WB_CDP_VAULT_ROOT` and `WB_RUNTIME_OUTPUT`.
 
 ## Interface language
 

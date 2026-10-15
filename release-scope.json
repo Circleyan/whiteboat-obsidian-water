@@ -1,16 +1,17 @@
 {
-  "version": "0.1.2",
+  "version": "0.1.3",
   "product_ids": [
     "WB-ENTRY-006",
     "WB-ENTRY-008",
     "WB-ENTRY-010",
     "WB-DEV-008",
-    "WB-DEV-011"
+    "WB-DEV-011",
+    "WB-DEV-009"
   ],
   "entry": "src/main.ts",
   "entry_feature": "src/features/canvas-creation-entry.ts",
   "audio_feature": "src/features/canvas-creation-home-audio.ts",
-  "core_pin": "711d1ea919cd1addd2e516d3fabdeb0ab94da735",
+  "core_pin": "eaae784cccad94048b4778754acf9be85e4f9337",
   "tests": [
     "test/unit/canvas-creation-entry.spec.ts",
     "test/unit/canvas-creation-home-audio.spec.ts",

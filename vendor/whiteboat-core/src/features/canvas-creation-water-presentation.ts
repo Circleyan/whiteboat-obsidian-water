@@ -6,8 +6,8 @@ export const CANVAS_CREATION_WATER_PRESENTATION_CSS = `
   pointer-events: none;
   height: 0;
 }
-[data-wb-water-impact-covered] {
-  visibility: hidden !important;
+canvas[data-wb-water-impact-covered] {
+  visibility: hidden;
 }
 `;
 

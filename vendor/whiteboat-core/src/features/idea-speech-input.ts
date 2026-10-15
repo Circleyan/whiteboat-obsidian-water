@@ -106,7 +106,7 @@ function normalizeIdeaSpeechFailureReason(
 }
 
 export async function requestIdeaMicrophonePermission(
-  source: unknown = globalThis.navigator,
+  source: unknown,
 ): Promise<IdeaMicrophonePermissionResult> {
   const mediaDevices = (source as IdeaNavigatorLike | null)?.mediaDevices;
   const getUserMedia = mediaDevices?.getUserMedia;

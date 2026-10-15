@@ -26,6 +26,8 @@ export interface WhiteboatSoundscapeOptions {
   reducedMotion?: boolean;
   source: string;
   createHowl: (options: HowlOptions) => Howl;
+  /** The adapter owns the browser or test clock; Core owns fade timing. */
+  timers: Pick<Window, "setTimeout" | "clearTimeout">;
   onStateChange?: (snapshot: WhiteboatSoundSnapshot) => void;
 }
 
@@ -64,7 +66,7 @@ export class WhiteboatBoatSoundscape {
   private boatSpeed = 0;
   private currentVolume = 0;
   private cleanupGeneration = 0;
-  private pauseTimer: ReturnType<typeof setTimeout> | null = null;
+  private pauseTimer: number | null = null;
   private dropHowls: Howl[] = [];
 
   constructor(private readonly options: WhiteboatSoundscapeOptions) {
@@ -176,7 +178,7 @@ export class WhiteboatBoatSoundscape {
         WHITEBOAT_WATER_SOUND_DUCK_MS,
         soundId,
       );
-      globalThis.setTimeout(() => {
+      this.options.timers.setTimeout(() => {
         if (generation !== this.cleanupGeneration) {
           return;
         }
@@ -400,7 +402,7 @@ export class WhiteboatBoatSoundscape {
     if (!howl || soundId === null || !howl.playing(soundId)) {
       return;
     }
-    this.pauseTimer = globalThis.setTimeout(() => {
+    this.pauseTimer = this.options.timers.setTimeout(() => {
       this.pauseTimer = null;
       if (
         this.destroyed ||
@@ -416,7 +418,7 @@ export class WhiteboatBoatSoundscape {
     if (this.pauseTimer === null) {
       return;
     }
-    globalThis.clearTimeout(this.pauseTimer);
+    this.options.timers.clearTimeout(this.pauseTimer);
     this.pauseTimer = null;
   }
 

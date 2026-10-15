@@ -90,6 +90,7 @@ function createHarness(enabled = true) {
   let howlOptions: HowlOptions | null = null;
   const soundscape = new WhiteboatHomeBoatSoundscape({
     enabled,
+    ownerWindow: { setTimeout: (callback, delay) => setTimeout(callback as () => void, delay) as unknown as number, clearTimeout: (id) => clearTimeout(id) },
     createHowl: (options) => {
       howlOptions = options;
       return howl as unknown as Howl;

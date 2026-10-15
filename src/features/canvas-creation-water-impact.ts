@@ -9,7 +9,6 @@ export {
   CANVAS_CREATION_WATER_IMPACT_REACH_SECONDS,
   CANVAS_CREATION_WATER_IMPACT_REFERENCE_POINT_WIDTH,
   isCanvasCreationWaterImpactActive,
-  mountCanvasCreationWaterImpact,
   resolveCanvasCreationWaterImpactReach,
   resolveCanvasCreationWaterImpactRevealBand,
   resolveCanvasCreationWaterImpactRingRadius,
@@ -17,5 +16,11 @@ export {
 } from "whiteboat-core";
 export type {
   CanvasCreationWaterImpact,
-  CanvasCreationWaterImpactOptions,
 } from "whiteboat-core";
+
+import { mountCanvasCreationWaterImpact as mountCoreImpact, type CanvasCreationWaterImpactOptions as CoreImpactOptions } from "whiteboat-core";
+export type CanvasCreationWaterImpactOptions = Omit<CoreImpactOptions, "createCanvas">;
+
+export function mountCanvasCreationWaterImpact(source: HTMLCanvasElement, origin: { x: number; y: number }, options: CanvasCreationWaterImpactOptions) {
+  return mountCoreImpact(source, origin, { ...options, createCanvas: () => createEl("canvas") });
+}

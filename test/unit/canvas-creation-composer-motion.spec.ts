@@ -12,6 +12,7 @@ function fixture(reduced=false) {
   const water={getBoundingClientRect:()=>({left:0,top:0,width:1000,height:700})};
   const createElement=vi.fn(()=>({className:"",setAttribute:vi.fn(),getContext:()=>null}));
   vi.stubGlobal("document",{createElement});
+  vi.stubGlobal("createEl",createElement);
   vi.stubGlobal("requestAnimationFrame",vi.fn(()=>42));
   vi.stubGlobal("cancelAnimationFrame",vi.fn());
   // The motion reads the host's wake accents off the water before it mounts the

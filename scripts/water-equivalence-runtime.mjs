@@ -34,6 +34,7 @@ const results = [];
 try {
   await call("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "no-preference" }] });
   await call("Page.bringToFront");
+  await call("Emulation.setFocusEmulationEnabled", { enabled: true });
   for (const theme of ["light", "dark"]) {
     for (const zoom of [1, 1.25]) {
       await evaluate(async ({ theme, zoom }) => {
@@ -42,13 +43,15 @@ try {
         document.body.classList.toggle("theme-dark", theme === "dark");
         document.body.classList.toggle("theme-light", theme === "light");
         await app.plugins.loadPlugin("whiteboat");
+        await app.plugins.plugins.whiteboat.updateLanguage("auto");
       }, { theme, zoom });
       for (let retry = 0; retry < 40; retry++) {
         if (await evaluate(() => !!document.querySelector(".whiteboat-canvas-entry__water"))) break;
         await pause(100);
       }
       await evaluate(() => document.querySelector(".whiteboat-canvas-entry__water").dispatchEvent(new MouseEvent("click", { bubbles: true, clientX: 450, clientY: 300 })));
-      await pause(800);
+      await evaluate(async () => { await Promise.all([...document.querySelectorAll(".whiteboat-canvas-entry__composer")].flatMap(el => el.getAnimations().map(a => a.finished.catch(() => {})))); });
+      await pause(100);
       const state = await evaluate(() => {
         const selectors = [".whiteboat-canvas-entry-modal-container", ".whiteboat-canvas-entry", ".whiteboat-canvas-entry__composer", ".whiteboat-canvas-entry__idea"];
         return selectors.map(selector => {
@@ -68,7 +71,8 @@ try {
       });
       assert.equal(motion.cancelling, "visible");
       assert.equal(motion.echoWhiteSpace, "pre-wrap");
-      await pause(350);
+      await evaluate(async () => { await Promise.all([...document.querySelectorAll(".whiteboat-canvas-entry__composer")].flatMap(el => el.getAnimations().map(a => a.finished.catch(() => {})))); });
+      await pause(100);
       const closed = await evaluate(() => ({ visibility: getComputedStyle(app.plugins.plugins.whiteboat.entry.composerMotion.composer).visibility, motion: app.plugins.plugins.whiteboat.entry.composerMotion.composer.dataset.motion }));
       // cancel() alone does not change the modal's is-open; compare the state to baseline.
       await evaluate(() => app.plugins.plugins.whiteboat.entry.composerMotion.reset());

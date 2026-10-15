@@ -130,6 +130,8 @@ void main(){
  * platform accepts works — the values are painted, not parsed.
  */
 export interface CanvasCreationWaterImpactOptions {
+  /** The adapter creates detached canvases using its host DOM helpers. */
+  createCanvas: () => HTMLCanvasElement;
   accents: [string, string, string, string];
   /** Multiplies the drop point's proportions; 1 keeps the reference sizing. */
   visualScale?: number;
@@ -277,7 +279,7 @@ export function mountCanvasCreationWaterImpact(
   options: CanvasCreationWaterImpactOptions,
 ): CanvasCreationWaterImpact | null {
   const scale = options.visualScale ?? 1;
-  const canvas = document.createElement("canvas");
+  const canvas = options.createCanvas();
   canvas.className = options.canvasClassName ?? CANVAS_CREATION_WATER_IMPACT_CANVAS_CLASS;
   canvas.setAttribute("aria-hidden", "true");
   const gl = canvas.getContext("webgl", {
@@ -376,7 +378,7 @@ export function mountCanvasCreationWaterImpact(
       )) / scale,
     );
     // Canvas resolves CSS Color 4 tokens (including oklch) to sRGB for WebGL.
-    const probe = document.createElement("canvas");
+    const probe = options.createCanvas();
     probe.width = 1;
     probe.height = 1;
     const paint = probe.getContext("2d", { willReadFrequently: true });

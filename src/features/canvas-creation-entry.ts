@@ -843,6 +843,7 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
     this.updateCelestialProjection(this.celestialStartedAt);
     this.soundEnabled = this.options.getSoundEnabled?.() ?? true;
     this.soundscape = new WhiteboatHomeBoatSoundscape({
+      ownerWindow: this.rootEl.win,
       enabled: this.soundEnabled,
       reducedMotion: this.motionQuery.matches,
       onStateChange: (snapshot) => this.updateSoundSurface(snapshot),

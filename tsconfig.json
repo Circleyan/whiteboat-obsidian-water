@@ -15,7 +15,12 @@
     "forceConsistentCasingInFileNames": true,
     "types": [
       "node"
-    ]
+    ],
+    "paths": {
+      "whiteboat-core": [
+        "vendor/whiteboat-core/src/index.ts"
+      ]
+    }
   },
   "include": [
     "src/main.ts",

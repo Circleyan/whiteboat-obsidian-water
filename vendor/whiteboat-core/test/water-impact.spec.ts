@@ -189,14 +189,14 @@ describe("water impact mount", () => {
       }),
     });
     const source = { style: { visibility: "visible" } } as unknown as HTMLCanvasElement;
-    expect(mountCanvasCreationWaterImpact(source, { x: 320, y: 200 }, { accents: ACCENTS }))
+    expect(mountCanvasCreationWaterImpact(source, { x: 320, y: 200 }, { createCanvas: () => document.createElement("canvas"), accents: ACCENTS }))
       .toBeNull();
     expect(source.style.visibility).toBe("visible");
   });
 
   it("returns null when the shader will not compile, leaving the source visible", () => {
     const harness = createHarness({ gl: createGl({ compile: false }) });
-    expect(mountCanvasCreationWaterImpact(harness.source, { x: 320, y: 200 }, { accents: ACCENTS }))
+    expect(mountCanvasCreationWaterImpact(harness.source, { x: 320, y: 200 }, { createCanvas: () => document.createElement("canvas"), accents: ACCENTS }))
       .toBeNull();
     expect(harness.source.dataset.wbWaterImpactCovered).toBeUndefined();
     expect(harness.source.style.visibility).toBe("visible");
@@ -207,6 +207,7 @@ describe("water impact mount", () => {
     const harness = createHarness();
     const reach = resolveCanvasCreationWaterImpactReach(640, 400, 320, 200, 1.4);
     mountCanvasCreationWaterImpact(harness.source, { x: 320, y: 200 }, {
+      createCanvas: () => document.createElement("canvas"),
       accents: ACCENTS, visualScale: 1.4, reach,
     });
     // The shader divides every distance by `scale` before measuring it, so the
@@ -220,6 +221,7 @@ describe("water impact mount", () => {
   it("defaults the reach to the source's own geometry when the caller omits it", () => {
     const harness = createHarness();
     mountCanvasCreationWaterImpact(harness.source, { x: 320, y: 200 }, {
+      createCanvas: () => document.createElement("canvas"),
       accents: ACCENTS, visualScale: 2,
     });
     const expected = resolveCanvasCreationWaterImpactReach(640, 400, 320, 200, 2) / 2;
@@ -228,7 +230,7 @@ describe("water impact mount", () => {
 
   it("resolves the host's accents through the platform, and degrades to one tone", () => {
     const harness = createHarness();
-    mountCanvasCreationWaterImpact(harness.source, { x: 0, y: 0 }, { accents: ACCENTS });
+    mountCanvasCreationWaterImpact(harness.source, { x: 0, y: 0 }, { createCanvas: () => document.createElement("canvas"), accents: ACCENTS });
     const expected: Triple[] = [[1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 1, 1]];
     expected.forEach((triple, index) => {
       expect(harness.gl.uniforms.get(`wake${index}`)).toEqual(triple);
@@ -236,7 +238,7 @@ describe("water impact mount", () => {
 
     vi.unstubAllGlobals();
     const noPaint = createHarness({ paint: null });
-    mountCanvasCreationWaterImpact(noPaint.source, { x: 0, y: 0 }, { accents: ACCENTS });
+    mountCanvasCreationWaterImpact(noPaint.source, { x: 0, y: 0 }, { createCanvas: () => document.createElement("canvas"), accents: ACCENTS });
     for (let index = 0; index < 4; index += 1) {
       expect(noPaint.gl.uniforms.get(`wake${index}`)).toEqual([0, 0, 0]);
     }
@@ -245,6 +247,7 @@ describe("water impact mount", () => {
   it("carries the host's classes so the host keeps owning placement", () => {
     const harness = createHarness();
     mountCanvasCreationWaterImpact(harness.source, { x: 0, y: 0 }, {
+      createCanvas: () => document.createElement("canvas"),
       accents: ACCENTS, canvasClassName: "host-canvas host-water-impact",
     });
     expect(harness.created[0].className).toBe("host-canvas host-water-impact");
@@ -252,13 +255,13 @@ describe("water impact mount", () => {
 
     vi.unstubAllGlobals();
     const fallback = createHarness();
-    mountCanvasCreationWaterImpact(fallback.source, { x: 0, y: 0 }, { accents: ACCENTS });
+    mountCanvasCreationWaterImpact(fallback.source, { x: 0, y: 0 }, { createCanvas: () => document.createElement("canvas"), accents: ACCENTS });
     expect(fallback.created[0].className).toBe(CANVAS_CREATION_WATER_IMPACT_CANVAS_CLASS);
   });
 
   it("uploads the live canvas, hides it for the pass, and restores it on destroy", () => {
     const harness = createHarness();
-    const impact = mountCanvasCreationWaterImpact(harness.source, { x: 320, y: 200 }, { accents: ACCENTS });
+    const impact = mountCanvasCreationWaterImpact(harness.source, { x: 320, y: 200 }, { createCanvas: () => document.createElement("canvas"), accents: ACCENTS });
     expect(impact).not.toBeNull();
     const pass = harness.created[0];
     expect(harness.source.after).toHaveBeenCalledWith(pass);
@@ -283,7 +286,7 @@ describe("water impact mount", () => {
 
   it("ignores draw after destroy and never leaves the water hidden", () => {
     const harness = createHarness();
-    const impact = mountCanvasCreationWaterImpact(harness.source, { x: 0, y: 0 }, { accents: ACCENTS });
+    const impact = mountCanvasCreationWaterImpact(harness.source, { x: 0, y: 0 }, { createCanvas: () => document.createElement("canvas"), accents: ACCENTS });
     impact!.draw(0.6);
     impact!.destroy();
     const draws = () => harness.gl.calls.filter((call) => call === "drawArrays").length;
@@ -296,7 +299,7 @@ describe("water impact mount", () => {
 
   it("releases the context when a frame throws, restoring the source", () => {
     const harness = createHarness({ gl: createGl({ failUpload: true }) });
-    const impact = mountCanvasCreationWaterImpact(harness.source, { x: 0, y: 0 }, { accents: ACCENTS });
+    const impact = mountCanvasCreationWaterImpact(harness.source, { x: 0, y: 0 }, { createCanvas: () => document.createElement("canvas"), accents: ACCENTS });
     expect(impact).not.toBeNull();
     impact!.draw(0.7);
     expect(harness.gl.calls).toContain("loseContext");

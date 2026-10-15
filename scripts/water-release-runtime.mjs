@@ -15,6 +15,8 @@ function call(method,params={}){const id=nextId++;return new Promise((resolve,re
 async function evaluate(fn,arg){const result=await call("Runtime.evaluate",{expression:`(${fn.toString()})(${JSON.stringify(arg)})`,returnByValue:true,awaitPromise:true});if(result.exceptionDetails)throw new Error(result.exceptionDetails.exception?.description||result.exceptionDetails.text);return result.result.value;}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 await call("Runtime.enable");await call("Page.enable");
+await call("Page.bringToFront");
+await call("Emulation.setFocusEmulationEnabled",{enabled:true});
 const vault=await evaluate(()=>app.vault.adapter.basePath);
 assert.equal(path.resolve(vault),path.resolve(expected),"Refusing to operate on an unregistered Vault");
 const report={kind:"whiteboat-water-release-runtime",vault,recordedAt:new Date().toISOString(),cases:[],errors};
