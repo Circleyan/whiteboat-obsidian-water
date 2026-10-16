@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "distribution_repository": "Circleyan/whiteboat-obsidian-water",
-  "obsidian_source_commit": "63be6c1b8890b1e3f6d52deda174ec03332e0560",
+  "obsidian_source_commit": "05f71be0e9aee1c56f5c4caf4668eff18257f86a",
   "core_source_commit": "c182f53aabfdb8b1ff69cc286676ba27a25e4205",
   "policy": "Vendored release snapshot only. Shared feature bodies are byte-identical; package/build/index project the consumed water subset. No development Git history is included.",
   "core_source_files": {
@@ -49,15 +49,15 @@
   ],
   "obsidian_projected_sources": {
     "src/canvas/runtime.ts": {
-      "source_commit": "63be6c1b8890b1e3f6d52deda174ec03332e0560",
+      "source_commit": "05f71be0e9aee1c56f5c4caf4668eff18257f86a",
       "change": "Use the versioned water-only host contract from distribution/water; canonical full-product entry and Canvas mutations are excluded."
     },
     "src/main.ts": {
-      "source_commit": "63be6c1b8890b1e3f6d52deda174ec03332e0560",
+      "source_commit": "05f71be0e9aee1c56f5c4caf4668eff18257f86a",
       "change": "Use the versioned water-only host contract from distribution/water; canonical full-product entry and Canvas mutations are excluded."
     },
     "src/features/canvas-creation-entry.ts": {
-      "source_commit": "63be6c1b8890b1e3f6d52deda174ec03332e0560",
+      "source_commit": "05f71be0e9aee1c56f5c4caf4668eff18257f86a",
       "change": "Omit full-product requirement-reflection integration only; preserve water behavior."
     }
   },
@@ -84,7 +84,7 @@
     "src/features/canvas-geometry.ts": "c9bc4d4afd5e11cd43bdc3e737cb84df09538e2ef0e7f4794710926da26d48db",
     "src/features/idea-speech-input.ts": "e0ae4b8c5c07e58848b4fe89ea2d0cfeaa7cd72602b995b85f3de77954d989ea"
   },
-  "obsidian_css_source_sha256": "5c3e4fabd351e6114c6253b15e6cee536d8f4ae7f2f3a6a5b2c9e4fc599c134e",
+  "obsidian_css_source_sha256": "a2f24eb1989f434c6fa99c13f693155614c9761c0e0be14d8e232765bba5765f",
   "distribution_template_files": {
     "src/main.ts": "19bc1f8bcfb52d2534d123274a0f87576fe639a3a122c0ce48bd15be2dc76a6b",
     "src/canvas/runtime.ts": "0dc348d4068e7679bf9d11cf0790a3a6ed0c04c8eb4c65b984294c45b49110f9",
@@ -111,7 +111,7 @@
     "test/unit/water-i18n.spec.ts": "83ee769fd4900352dbd7e5e8322370fd226133b1008dc0ea639ab2ec8b980ae3",
     "scripts/water-i18n-runtime.mjs": "e308f4061b7b576b99dccd4aa291ccbfd4e38cdea28a6cce846720253d267224",
     "CHANGELOG.md": "e99408a5acde41862a5a8dde8e960177ba611d93ec62467c3bfd88f5c9d88690",
-    "release-scope.json": "947d3b3a57702b7a7c89fb682fedf94751e38af55faf014c91721ac9f5153d41",
+    "release-scope.json": "e4f776081b4c8169f1260372dc38748869116d71dfce4aee7ebab198cdda386e",
     "scripts/water-css-equivalence-runtime.mjs": "1b856d0a5be423c6ce4a9046ba4306c42f616511a3e1132acb51f15566e7e9b5",
     "scripts/water-focused-resize-runtime.mjs": "df7ca635c163982e60dcc1bf57efd1bd3cbaa6ce98103a26b7da26cae9e486dc"
   },

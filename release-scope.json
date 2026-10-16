@@ -11,7 +11,7 @@
   "entry": "src/main.ts",
   "entry_feature": "src/features/canvas-creation-entry.ts",
   "audio_feature": "src/features/canvas-creation-home-audio.ts",
-  "core_pin": "eaae784cccad94048b4778754acf9be85e4f9337",
+  "core_pin": "c182f53aabfdb8b1ff69cc286676ba27a25e4205",
   "tests": [
     "test/unit/canvas-creation-entry.spec.ts",
     "test/unit/canvas-creation-home-audio.spec.ts",
@@ -24,5 +24,6 @@
   "platform": "desktop",
   "core_distribution": "vendor/whiteboat-core: source snapshot, private history excluded",
   "repository": "Circleyan/whiteboat-obsidian-water",
-  "language_runtime": "scripts/water-i18n-runtime.mjs"
+  "language_runtime": "scripts/water-i18n-runtime.mjs",
+  "resize_runtime": "scripts/water-focused-resize-runtime.mjs"
 }
