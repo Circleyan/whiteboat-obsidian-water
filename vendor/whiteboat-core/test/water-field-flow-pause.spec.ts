@@ -77,9 +77,18 @@ describe("water field flow pause", () => {
         });
       },
     };
+    let width = 640;
+    let height = 400;
+    let pixelWidth = 0;
+    let pixelHeight = 0;
+    let resets = 0;
     const canvas = {
+      get width() { return pixelWidth; },
+      set width(value: number) { pixelWidth = value; strokes = []; resets++; },
+      get height() { return pixelHeight; },
+      set height(value: number) { pixelHeight = value; strokes = []; resets++; },
       getContext: () => context,
-      getBoundingClientRect: () => ({ width: 640, height: 400 }),
+      getBoundingClientRect: () => ({ width, height }),
     } as unknown as HTMLCanvasElement;
     const field = new CanvasCreationWaterField(canvas, {
       tokenRoot: {} as HTMLElement,
@@ -89,7 +98,16 @@ describe("water field flow pause", () => {
       ...options,
     });
     fields.push(field);
-    return { field, snapshot: () => structuredClone(strokes) };
+    return {
+      field,
+      snapshot: () => structuredClone(strokes),
+      resets: () => resets,
+      resizeTo: (nextWidth: number, nextHeight: number) => {
+        width = nextWidth;
+        height = nextHeight;
+        field.resize();
+      },
+    };
   }
 
   function renderAt(timestamp: number): void {
@@ -115,6 +133,29 @@ describe("water field flow pause", () => {
       transition: Reflect.get(field, "flowTransition"),
     };
   }
+
+  it.each([false, true])("paints a resized backing store before the next RAF (reduced motion: %s)", (reducedMotion) => {
+    const { field, snapshot, resets, resizeTo } = createField(reducedMotion);
+    field.setFlowPaused(true);
+    renderAt(2000);
+    const frozenClock = clock(field).timestamp;
+    const painted = () => snapshot().some((stroke) => stroke.points.length > 0);
+    expect(painted()).toBe(true);
+    for (let index = 0; index < 12; index++) {
+      // Resize occurs only 1ms after a painted frame, inside the FPS limit.
+      now = 2001 + index;
+      resizeTo(650 + index, 410 + index);
+      expect(painted()).toBe(true);
+      expect(clock(field).timestamp).toBe(frozenClock);
+      const beforeDuplicate = snapshot();
+      const previousResets = resets();
+      field.resize();
+      expect(resets()).toBe(previousResets);
+      expect(snapshot()).toEqual(beforeDuplicate);
+      renderAt(now);
+      expect(painted()).toBe(true);
+    }
+  });
 
   it("times the stop and restart to the composer's appear and cancel motion", () => {
     expect(resolveCanvasCreationWaterFlowTiming(false)).toEqual({

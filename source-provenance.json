@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "distribution_repository": "Circleyan/whiteboat-obsidian-water",
-  "obsidian_source_commit": "506a579ec692e116aceb4fa86a9b5eceb5bdfebc",
-  "core_source_commit": "eaae784cccad94048b4778754acf9be85e4f9337",
+  "obsidian_source_commit": "63be6c1b8890b1e3f6d52deda174ec03332e0560",
+  "core_source_commit": "c182f53aabfdb8b1ff69cc286676ba27a25e4205",
   "policy": "Vendored release snapshot only. Shared feature bodies are byte-identical; package/build/index project the consumed water subset. No development Git history is included.",
   "core_source_files": {
     "LICENSE": "5c0cda18399f7e58073f6ce127a111595fddd972687abaaa43fd4247dc649db0",
@@ -15,7 +15,7 @@
     "src/svg.d.ts": "d6e4a04dbfe083934adcb67b9736d773b5165411a5f4cf2bf058a5b81f7b458e",
     "src/features/canvas-creation-composer-motion.ts": "22fb065d556cbe9e5409499c352007b2810d7ea2dccd236f38926254210a04b6",
     "src/features/canvas-creation-navigation.ts": "89a75bcce6be75452d8e1eeb85b31364377440f39794ba529cfe770840d92e33",
-    "src/features/canvas-creation-water-field.ts": "20329cce86ef0273be4c3197fddbc980079224d0419cc3654d715945a7f6b397",
+    "src/features/canvas-creation-water-field.ts": "05ed80d237ca271fc5be559fb627a464d6833e6356ed2e2217fdba6533c67ee7",
     "src/features/canvas-creation-projection.ts": "aa5f13a6c0ac4855ded296dea313a41b1ededc8d780bcfada4cb86fb12ee6525",
     "src/features/boat-water-sound.ts": "6c1cbbfd9775a0eca8f597c694b442e625d029a8630cf0a4a4c9e7e3a7eaac7c",
     "src/features/canvas-creation-boat-assets.ts": "6dd8d8f3c4ee988a107d07d0cddc8812d8a419797ff8cbed016b12177e549f1b",
@@ -33,7 +33,7 @@
     "src/assets/audio/idea-drops/big-rock-splash-2.mp3": "f533648ae764cabf8ac4e0f19aeaef681c7fa6f584c6dce115609238e1f1576a",
     "src/assets/audio/idea-drops/big-rock-splash-1.mp3": "e786c2e44e7cfb725f20c99177554e3ca6f36b4d4086a9370161684cfb8beba9",
     "src/assets/audio/idea-drops/big-rock-splash-4.mp3": "e02e76f17232ec91ba48283723795149a00c27351da658103b04d924e96ab31f",
-    "test/water-field-flow-pause.spec.ts": "08df30e667877bf603e9dd45ad47242a485740905acab8e6e66c1b9b683dbb0b",
+    "test/water-field-flow-pause.spec.ts": "b1a2cc73a2778554532a7cebec4f4bf6f53b69b47909bb94cf7b5d3fdf7f3897",
     "test/shared-water.spec.ts": "224580b24e1b1bae555f795d69b0588f039c11772f694f7c615f5d9d2ddd6ee6",
     "test/boat-water-sound.spec.ts": "9321dc0a0e212dd2bb5cf87108b6d5d7833abaa40f3a3b1caf70e2ed1aabf2b5",
     "test/shared-speech.spec.ts": "cf8423303dc683c21a40f54329b6ab652282e1bfc7912352633b159eda72776e",
@@ -49,15 +49,15 @@
   ],
   "obsidian_projected_sources": {
     "src/canvas/runtime.ts": {
-      "source_commit": "506a579ec692e116aceb4fa86a9b5eceb5bdfebc",
+      "source_commit": "63be6c1b8890b1e3f6d52deda174ec03332e0560",
       "change": "Use the versioned water-only host contract from distribution/water; canonical full-product entry and Canvas mutations are excluded."
     },
     "src/main.ts": {
-      "source_commit": "506a579ec692e116aceb4fa86a9b5eceb5bdfebc",
+      "source_commit": "63be6c1b8890b1e3f6d52deda174ec03332e0560",
       "change": "Use the versioned water-only host contract from distribution/water; canonical full-product entry and Canvas mutations are excluded."
     },
     "src/features/canvas-creation-entry.ts": {
-      "source_commit": "506a579ec692e116aceb4fa86a9b5eceb5bdfebc",
+      "source_commit": "63be6c1b8890b1e3f6d52deda174ec03332e0560",
       "change": "Omit full-product requirement-reflection integration only; preserve water behavior."
     }
   },
@@ -110,9 +110,10 @@
     "src/i18n.ts": "4534d0d25da4b5e60033e526e0b692a7754f8e0f740da9f5a9270ef93dd661e3",
     "test/unit/water-i18n.spec.ts": "83ee769fd4900352dbd7e5e8322370fd226133b1008dc0ea639ab2ec8b980ae3",
     "scripts/water-i18n-runtime.mjs": "e308f4061b7b576b99dccd4aa291ccbfd4e38cdea28a6cce846720253d267224",
-    "CHANGELOG.md": "14e1731a31db9e63b1c44d41c0de98b8523188aabdb5945e0b7777426caa4b51",
+    "CHANGELOG.md": "e99408a5acde41862a5a8dde8e960177ba611d93ec62467c3bfd88f5c9d88690",
     "release-scope.json": "947d3b3a57702b7a7c89fb682fedf94751e38af55faf014c91721ac9f5153d41",
-    "scripts/water-css-equivalence-runtime.mjs": "1b856d0a5be423c6ce4a9046ba4306c42f616511a3e1132acb51f15566e7e9b5"
+    "scripts/water-css-equivalence-runtime.mjs": "1b856d0a5be423c6ce4a9046ba4306c42f616511a3e1132acb51f15566e7e9b5",
+    "scripts/water-focused-resize-runtime.mjs": "df7ca635c163982e60dcc1bf57efd1bd3cbaa6ce98103a26b7da26cae9e486dc"
   },
   "obsidian_test_files": {
     "test/unit/canvas-creation-composer-motion.spec.ts": "1e79bd735fa131f2c86ca8267b102e076df3edb9be092ab22a79c138676c7c28",

@@ -2,6 +2,7 @@
 
 ## 0.1.3
 
+- Keep the focused water surface painted while resizing the desktop window, preserving the draft and focus blur.
 - Resolve shared core types directly from source and require zero diagnostics before and after building.
 - Supply DOM helpers and browser timers from the host while retaining core water and audio behavior.
 - Replace water CSS priority overrides with owned, scoped selectors and verify theme, zoom and motion equivalence.

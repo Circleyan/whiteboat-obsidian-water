@@ -847,8 +847,16 @@ export class CanvasCreationWaterField {
       devicePixelRatio: window.devicePixelRatio ?? 1,
       config: this.config,
     });
-    this.canvas.width = Math.round(this.width * this.quality.pixelRatio);
-    this.canvas.height = Math.round(this.height * this.quality.pixelRatio);
+    const pixelWidth = Math.round(this.width * this.quality.pixelRatio);
+    const pixelHeight = Math.round(this.height * this.quality.pixelRatio);
+    const backingChanged =
+      this.canvas.width !== pixelWidth || this.canvas.height !== pixelHeight;
+    // Assigning even the same canvas size clears its backing store. Resize
+    // observers and host viewport events can both arrive in one frame.
+    if (backingChanged) {
+      this.canvas.width = pixelWidth;
+      this.canvas.height = pixelHeight;
+    }
     this.context.setTransform(
       this.quality.pixelRatio,
       0,
@@ -857,6 +865,9 @@ export class CanvasCreationWaterField {
       0,
       0,
     );
+    // ResizeObserver runs after RAF, before paint. Waiting for another
+    // throttled RAF would expose an empty water layer to the focus blur.
+    if (backingChanged) this.render(performance.now(), true);
     this.requestRender();
   }
 
@@ -1004,10 +1015,10 @@ export class CanvasCreationWaterField {
     return this.flowTimestamp;
   }
 
-  private render(timestamp: number): void {
+  private render(timestamp: number, force = false): void {
     const frameDuration = this.quality.fps > 0 ? 1000 / this.quality.fps : 0;
     if (
-      frameDuration > 0 &&
+      !force && frameDuration > 0 &&
       timestamp - this.lastFrameAt < frameDuration
     ) {
       return;
