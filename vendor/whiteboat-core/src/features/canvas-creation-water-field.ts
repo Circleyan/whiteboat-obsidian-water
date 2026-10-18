@@ -173,6 +173,9 @@ export function sampleCanvasCreationBaseVector(
     const dy = y - centerY;
     const radius = vortex.radius * Math.min(safeWidth, safeHeight);
     const distance = Math.hypot(dx, dy);
+    // Outside the vortex, blending has no effect. Avoid its tangent and
+    // time-dependent drift work for the rest of a large water surface.
+    if (distance >= radius) return;
     const influence =
       (1 - smoothWaterStep(radius * 0.14, radius, distance)) *
       vortex.strength;
@@ -285,6 +288,14 @@ function sampleBoatInfluence(
   const radius = config.boatRadius;
   const dx = x - boat.x;
   const dy = y - boat.y;
+  // Enclose every speed-dependent hull ellipse, including stationary contact.
+  // Most dashes on a desktop surface cannot touch this boat.
+  if (Math.abs(dx) > radius * 1.3 || Math.abs(dy) > radius * 1.3) {
+    return {
+      vector: null, influence: 0, accent: 0,
+      offsetX: 0, offsetY: 0, lengthScale: 1,
+    };
+  }
   const forwardX = Math.cos(boat.heading);
   const forwardY = Math.sin(boat.heading);
   const sideX = -forwardY;
@@ -393,6 +404,9 @@ export function sampleCanvasCreationWakeAccent(
     }
     const dx = x - wake.x;
     const dy = y - wake.y;
+    // The entire aging wake stays within 130px of its recorded boat point.
+    // Reject distant dashes before doing trigonometry for all 24 samples.
+    if (Math.abs(dx) > 130 || Math.abs(dy) > 130) return;
     const forwardX = Math.cos(wake.heading);
     const forwardY = Math.sin(wake.heading);
     const sideX = -forwardY;
@@ -403,6 +417,8 @@ export function sampleCanvasCreationWakeAccent(
     const centerBehindStern = 26 + age * 22;
     const longitudinalRadius = 46 + age * 30;
     const lateralRadius = 24 + age * 58;
+    if (Math.abs(longitudinal + centerBehindStern) >= longitudinalRadius ||
+        Math.abs(lateral) >= lateralRadius) return;
     const normalizedDistance = Math.hypot(
       (longitudinal + centerBehindStern) / longitudinalRadius,
       lateral / lateralRadius,
@@ -1017,13 +1033,21 @@ export class CanvasCreationWaterField {
 
   private render(timestamp: number, force = false): void {
     const frameDuration = this.quality.fps > 0 ? 1000 / this.quality.fps : 0;
+    const frameElapsed = timestamp - this.lastFrameAt;
     if (
       !force && frameDuration > 0 &&
-      timestamp - this.lastFrameAt < frameDuration
+      frameElapsed < frameDuration - 0.5
     ) {
       return;
     }
-    this.lastFrameAt = timestamp;
+    // RAF's 60Hz timestamps can alternate between 16.6 and 16.7ms. Keep the
+    // target cadence's phase instead of dropping every slightly early frame
+    // and resetting the deadline to each accepted timestamp.
+    this.lastFrameAt = !force && frameDuration > 0
+      ? frameElapsed < frameDuration
+        ? this.lastFrameAt + frameDuration
+        : timestamp - frameElapsed % frameDuration
+      : timestamp;
     const flowTimestamp = this.advanceFlowClock(timestamp);
     const elapsed = this.reducedMotion ? 0 : (flowTimestamp - this.startedAt) / 1000;
     const mooring = this.mooring ? {

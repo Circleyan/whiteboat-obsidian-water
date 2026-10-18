@@ -1,6 +1,6 @@
 {
   "name": "whiteboat",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": true,
   "description": "Begin on a quiet water surface and turn a thought into a new Canvas.",
   "main": "main.js",

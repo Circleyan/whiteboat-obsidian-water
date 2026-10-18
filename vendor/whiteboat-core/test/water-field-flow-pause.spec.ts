@@ -134,6 +134,21 @@ describe("water field flow pause", () => {
     };
   }
 
+  it.each([60, 120, 144])("keeps 60fps water cadence with rounded %sHz RAF timestamps", (refreshRate) => {
+    const { snapshot } = createField();
+    renderAt(1200);
+    let previous = snapshot();
+    let painted = 0;
+    for (let index = 1; index <= refreshRate; index++) {
+      renderAt(Math.round((1200 + index * 1000 / refreshRate) * 10) / 10);
+      const next = snapshot();
+      if (JSON.stringify(next) !== JSON.stringify(previous)) painted++;
+      previous = next;
+    }
+    expect(painted).toBeGreaterThanOrEqual(59);
+    expect(painted).toBeLessThanOrEqual(61);
+  });
+
   it.each([false, true])("paints a resized backing store before the next RAF (reduced motion: %s)", (reducedMotion) => {
     const { field, snapshot, resets, resizeTo } = createField(reducedMotion);
     field.setFlowPaused(true);

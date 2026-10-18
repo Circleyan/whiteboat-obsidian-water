@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
+import { createHash } from "node:crypto";
 import {
   CANVAS_CREATION_STATIONARY_WAKE_RADIUS_SCALE,
   resolveCanvasCreationWakeFadeTier,
   sampleCanvasCreationBoatResponse,
   sampleCanvasCreationFlowPosition,
+  sampleCanvasCreationFieldVector,
 } from "../src/features/canvas-creation-water-field";
 import {
   advanceCanvasCreationBoatFollow,
@@ -16,6 +18,36 @@ import {
 } from "../src/features/canvas-creation-light";
 
 describe("Whiteboat shared water capabilities", () => {
+  it("preserves the original desktop field across hull, wake and vortex boundaries", () => {
+    const inputs: Parameters<typeof sampleCanvasCreationFieldVector>[0][] = [];
+    for (let i = 0; i < 6000; i++) {
+      const heading = (i % 37) * Math.PI / 18;
+      inputs.push({
+        x: (i * 317 % 2800) - 120, y: (i * 193 % 1680) - 120,
+        width: 2560, height: 1440, time: i % 71 * 0.37,
+        boat: { x: 1280, y: 720, heading, speed: (i % 11) / 10, visible: true },
+        wakes: [{ x: 1280, y: 720, heading, life: (i % 19) / 18 }],
+        mooring: i % 3 === 0 ? { x: 1280, y: 720, elapsedMs: 1000 } : null,
+        freezeGeometry: i % 7 === 0,
+      });
+    }
+    for (let i = 0; i < 6000; i++) {
+      inputs.push({
+        x: 1280 + (i * 17 % 281) - 140, y: 720 + (i * 31 % 281) - 140,
+        width: 2560, height: 1440, time: 3.7,
+        boat: { x: 1280, y: 720, heading: i % 31 * 0.21, speed: i % 11 / 10, visible: true },
+        wakes: [{ x: 1280, y: 720, heading: i % 31 * 0.21, life: i % 19 / 18 }],
+      });
+    }
+    const hash = createHash("sha256");
+    for (const input of inputs) {
+      const sample = sampleCanvasCreationFieldVector(input);
+      hash.update(JSON.stringify(Object.values(sample).map(value => Number(value.toFixed(7)))));
+    }
+    // Captured from c182f53 before optimizing distant field samples.
+    expect(hash.digest("hex")).toBe("925553495fa987ff323747a0df969e48811590d5c2225d4bc99c54b939c3fbda");
+  });
+
   it("follows fine pointers only before a composer opens", () => {
     expect(shouldCanvasCreationBoatFollowPointer("desktop", false, false)).toBe(true);
     expect(shouldCanvasCreationBoatFollowPointer("tablet", false, false)).toBe(true);

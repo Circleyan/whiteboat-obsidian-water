@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.4
+
+- Reduce water drawing work during boat and pointer movement on large desktop displays.
+- Keep 60 Hz frame scheduling steady when animation timestamps are rounded.
+- Preserve the existing water density, colors, boat motion, sound and Canvas behavior.
+
 ## 0.1.3
 
 - Keep the focused water surface painted while resizing the desktop window, preserving the draft and focus blur.

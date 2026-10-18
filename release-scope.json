@@ -1,5 +1,5 @@
 {
-  "version": "0.1.3",
+  "version": "0.1.4",
   "product_ids": [
     "WB-ENTRY-006",
     "WB-ENTRY-008",
@@ -11,7 +11,7 @@
   "entry": "src/main.ts",
   "entry_feature": "src/features/canvas-creation-entry.ts",
   "audio_feature": "src/features/canvas-creation-home-audio.ts",
-  "core_pin": "c182f53aabfdb8b1ff69cc286676ba27a25e4205",
+  "core_pin": "bde0f6700894238afd0f5b5b2f34ee3bfcaf535b",
   "tests": [
     "test/unit/canvas-creation-entry.spec.ts",
     "test/unit/canvas-creation-home-audio.spec.ts",
