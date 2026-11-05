@@ -12,6 +12,12 @@ export const DEFAULT_DISC_WATER_SETTINGS = Object.freeze({
   mode: 5,
 }) as Readonly<DiscWaterSettings>;
 
+export const CANVAS_WATER_SCALE_LIMITS = { min: 0.5, max: 2, step: 0.1, defaultValue: 1 } as const;
+export function normalizeCanvasWaterScale(value: unknown): number {
+  if (typeof value !== "number" || !Number.isFinite(value)) return CANVAS_WATER_SCALE_LIMITS.defaultValue;
+  return Math.round(Math.max(CANVAS_WATER_SCALE_LIMITS.min, Math.min(CANVAS_WATER_SCALE_LIMITS.max, value)) * 10) / 10;
+}
+
 /** Saved experiments never pass NaN or unbounded values into GPU allocation. */
 export function normalizeDiscWaterSettings(value: unknown): DiscWaterSettings {
   const raw = value && typeof value === "object" ? value as Partial<DiscWaterSettings> : {};

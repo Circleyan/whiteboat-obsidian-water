@@ -13,6 +13,7 @@ uniform float boatRoll;
 uniform int boatVisible, wakeCount, reducedMotion;
 uniform vec4 wakes[24]; // screen x/y, heading, remaining life
 uniform int mode, dark;
+uniform int transparentBackground;
 uniform sampler2D waveState;
 uniform vec2 waveExtent;
 uniform vec3 inspirations[3]; // x/y, visible age in seconds
@@ -207,6 +208,7 @@ void main() {
   vec3 base=waterBase, light=waterInk;
   vec3 result=base;
   float bestCoverage=0.0;
+  float resultOpacity=0.0;
   // Search neighboring projected patches: height/tilt can move a disc across its grid cell.
   for(int j=-2;j<=2;j++) for(int i=-1;i<=1;i++) {
     vec2 id=cell+vec2(float(i),float(j));
@@ -257,14 +259,22 @@ void main() {
     vec3 surfaceColor=mix(base,mix(light,pigment,tint),quiet);
     // The solar peak lightens colored wakes too, on the same surface normals.
     float peakGain=mode==5?mix(.32,3.4,eventGlow):(mode==0?1.6:1.25);
-    surfaceColor=mix(surfaceColor,mix(light,mix(pigment,light,.25),tint),min(1.0,glint*brightness*peakGain));
+    float peak=min(1.0,glint*brightness*peakGain);
+    surfaceColor=mix(surfaceColor,mix(light,mix(pigment,light,.25),tint),peak);
+    float surfaceOpacity=quiet+peak*(1.0-quiet);
     if(mode==1) {
       float edge=smoothstep(0.88,0.99,distance)*0.12;
       surfaceColor=mix(base,light,0.06+max(0.0,dot(N,L))*0.13+edge+glint*1.5);
     }
     if(mode==2) surfaceColor=N*0.5+0.5;
+    if(mode==1 || mode==2) surfaceOpacity=1.0;
     result=mix(base,surfaceColor,coverage);
+    resultOpacity=coverage*surfaceOpacity;
     bestCoverage=coverage;
   }
-  color=vec4(result,1.0);
+  // Canvas backgrounds retain only the existing reflected marks. RGB is
+  // premultiplied for browser compositing; the standalone scene stays opaque.
+  color=transparentBackground==1
+    ? vec4(max(result-base*(1.0-resultOpacity),vec3(0.0)),resultOpacity)
+    : vec4(result,1.0);
 }`;

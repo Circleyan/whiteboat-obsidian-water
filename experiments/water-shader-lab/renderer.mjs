@@ -4,9 +4,10 @@ import { WaterPressure } from './pressure.mjs';
 import { REFERENCE_DEFAULTS, FUSION_DEFAULTS, INSPIRATION_DEFAULTS, referenceExtent } from './field.mjs';
 
 export class WaterRenderer {
-  constructor(canvas) {
+  constructor(canvas, { transparentBackground = false } = {}) {
     this.canvas = canvas;
-    const gl = this.gl = canvas.getContext('webgl2', { alpha: false, antialias: false });
+    this.transparentBackground = transparentBackground;
+    const gl = this.gl = canvas.getContext('webgl2', { alpha: transparentBackground, antialias: false });
     if (!gl) throw new Error('当前浏览器无法使用 WebGL 2，请换一个支持图形加速的浏览器。');
     const shaders = [];
     const program = this.program = gl.createProgram();
@@ -23,6 +24,7 @@ export class WaterRenderer {
     } catch (error) { gl.deleteProgram(program); throw error; }
     finally { shaders.forEach(shader => gl.deleteShader(shader)); }
     gl.useProgram(program);
+    this.transparentUniform = gl.getUniformLocation(program, 'transparentBackground');
     this.vao = gl.createVertexArray(); gl.bindVertexArray(this.vao);
     this.buffer = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,3,-1,-1,3]), gl.STATIC_DRAW);
@@ -52,6 +54,7 @@ export class WaterRenderer {
   draw(settings, time, width = this.canvas.width, height = this.canvas.height, dpr = this.dpr) {
     const gl = this.gl, u = this.uniforms;
     gl.useProgram(this.program); gl.bindVertexArray(this.vao); gl.viewport(0,0,width,height);
+    gl.uniform1i(this.transparentUniform,this.transparentBackground ? 1 : 0);
     gl.uniform2f(u.resolution,width,height); gl.uniform1f(u.dpr,dpr); gl.uniform1f(u.time,time);
     for (const name of ['strength','spacing','curvature','roughness','azimuth','elevation','view','swirl','brightness']) gl.uniform1f(u[name],settings[name]);
     gl.uniform3fv(u.waterBase,settings.dark?[0.072,0.088,0.099]:[0.985,0.995,1.0]);

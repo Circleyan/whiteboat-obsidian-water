@@ -4,6 +4,8 @@
 
 ### Added
 
+- Scale the Canvas water pattern from 50% to 200% with **Water mark size**; the default is 100%.
+
 - Optionally display water behind the current Canvas with the **Water surface** preference, off by default. Background drawing is limited to 30 fps and approximately two million pixels, and stops when hidden.
 
 ### Changed
@@ -14,6 +16,7 @@
 
 ### Fixed
 
+- Keep the Canvas theme background visible beneath the water marks, without a blue water fill.
 - Restore the water safely after graphics context loss, with a 2D fallback when WebGL 2 is unavailable.
 
 ## 0.1.4

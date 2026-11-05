@@ -8,13 +8,15 @@ import {
 import { WaterRenderer } from "../../experiments/water-shader-lab/renderer.mjs";
 import { WaterPressure } from "../../experiments/water-shader-lab/pressure.mjs";
 import { InspirationBursts } from "../../experiments/water-shader-lab/field.mjs";
-import { normalizeDiscWaterSettings, type DiscWaterSettings } from "./disc-water-settings";
+import { normalizeCanvasWaterScale, normalizeDiscWaterSettings, type DiscWaterSettings } from "./disc-water-settings";
 
 type Options = Omit<ConstructorParameters<typeof CoreWaterField>[1], "createProbe" | "ownerWindow"> & {
   getDiscWaterSettings?: () => DiscWaterSettings;
   maxFps?: number;
   maxPixels?: number;
   maxDpr?: number;
+  transparentBackground?: boolean;
+  getWaterScale?: () => number;
 };
 
 /** Obsidian owns lifecycle and interaction; the live lab owns the GPU material. */
@@ -78,7 +80,7 @@ export class ObsidianDiscWaterField {
 
   private initialize(): void {
     try {
-      this.renderer = new WaterRenderer(this.canvas);
+      this.renderer = new WaterRenderer(this.canvas, { transparentBackground: this.options.transparentBackground });
       this.canvas.dataset.waterRenderer = "disc-lab-webgl2";
       this.resize();
     } catch (error) {
@@ -109,12 +111,22 @@ export class ObsidianDiscWaterField {
     if (this.running) this.fallback.start();
   }
 
-  private settings(): DiscWaterSettings { return normalizeDiscWaterSettings(this.options.getDiscWaterSettings?.()); }
+  private settings(): DiscWaterSettings {
+    const settings = normalizeDiscWaterSettings(this.options.getDiscWaterSettings?.());
+    settings.spacing *= normalizeCanvasWaterScale(this.options.getWaterScale?.());
+    return settings;
+  }
 
   private updateDrawingBudget(): number {
     const rect = this.canvas.getBoundingClientRect();
     const scale = Math.min(this.owner.devicePixelRatio || 1, this.options.maxDpr ?? 1.5, Math.sqrt((this.options.maxPixels ?? 4000000)/Math.max(1, rect.width*rect.height)));
     Object.assign(this.fallbackConfig, {
+      spacing: CANVAS_CREATION_WATER_DEFAULTS.spacing * normalizeCanvasWaterScale(this.options.getWaterScale?.()),
+      compactSpacing: CANVAS_CREATION_WATER_DEFAULTS.compactSpacing * normalizeCanvasWaterScale(this.options.getWaterScale?.()),
+      lowPowerSpacing: CANVAS_CREATION_WATER_DEFAULTS.lowPowerSpacing * normalizeCanvasWaterScale(this.options.getWaterScale?.()),
+      dashLength: CANVAS_CREATION_WATER_DEFAULTS.dashLength * normalizeCanvasWaterScale(this.options.getWaterScale?.()),
+      compactDashLength: CANVAS_CREATION_WATER_DEFAULTS.compactDashLength * normalizeCanvasWaterScale(this.options.getWaterScale?.()),
+      lineWidth: CANVAS_CREATION_WATER_DEFAULTS.lineWidth * normalizeCanvasWaterScale(this.options.getWaterScale?.()),
       targetFps: this.options.maxFps ?? 60,
       lowPowerFps: Math.min(this.options.maxFps ?? 60, CANVAS_CREATION_WATER_DEFAULTS.lowPowerFps),
       maxPixelRatio: scale, lowPowerPixelRatio: scale,

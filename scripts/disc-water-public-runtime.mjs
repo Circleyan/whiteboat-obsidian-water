@@ -52,7 +52,7 @@ try {
   report.checks.push({ name: "original-lab-gpu-material-solver-probe", gpu });
   await ev(() => { app.setting.open(); app.setting.openTabById("whiteboat"); }); await sleep(300);
   const settings = await ev(() => { const el = app.setting.activeTab.containerEl; return { text: el.textContent, selects: el.querySelectorAll('select:not([aria-hidden="true"])').length, sliders: el.querySelectorAll('input[type="range"]').length }; });
-  assert.equal(settings.selects, 1); assert.equal(settings.sliders, 3);
+  assert.equal(settings.selects, 1); assert.equal(settings.sliders, 4);
   assert.ok(!/水面形态|观察方式|圆盘曲率|Water appearance|Observation/u.test(settings.text));
   report.checks.push({ name: "public-settings-no-experimental-appearance", settings });
   await ev(() => app.setting.close());

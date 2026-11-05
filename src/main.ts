@@ -4,7 +4,7 @@ import { WhiteboatCanvasCreationEntryModal } from "./features/canvas-creation-en
 import { openCanvasCreationEntryInMainWindow } from "./features/canvas-creation-entry-window";
 import { normalizeCanvasCreationBoatFollowSpeed } from "./features/canvas-creation-navigation";
 import { normalizeCanvasCreationLightIntensity, normalizeCanvasCreationWaterDepth } from "./features/canvas-creation-light";
-import { normalizeDiscWaterSettings } from "./features/disc-water-settings";
+import { normalizeCanvasWaterScale, normalizeDiscWaterSettings } from "./features/disc-water-settings";
 import { normalizeTextNodeSize } from "./features/canvas-geometry";
 
 import { canvasCreationEntryText, currentWaterLanguage, normalizeWaterLanguage, waterUiText, type WaterLanguagePreference, type WaterUiTextKey } from "./i18n";
@@ -17,6 +17,7 @@ interface WaterPreferences {
   waterDepth: number;
   soundEnabled: boolean;
   canvasWaterEnabled: boolean;
+  canvasWaterScale: number;
 }
 function asRecord(value: unknown): Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {};
@@ -35,7 +36,7 @@ export default class WhiteboatPlugin extends Plugin {
   async onload(): Promise<void> {
     const loaded: unknown = await this.loadData();
     this.savedData = asRecord(loaded);
-    this.canvasWater = new CanvasDiscWaterBackground(this.app, () => this.preferences.canvasWaterEnabled);
+    this.canvasWater = new CanvasDiscWaterBackground(this.app, () => this.preferences.canvasWaterEnabled, () => this.preferences.canvasWaterScale);
     this.canvasWater.register(this);
     this.waterCommand = this.addCommand({ id: "open-canvas-creation-entry", name: this.ui("open"), callback: () => this.openWater() });
     this.ribbon = this.addRibbonIcon("sailboat", this.ui("ribbon"), () => this.openWater());
@@ -82,6 +83,7 @@ export default class WhiteboatPlugin extends Plugin {
       lightIntensity: normalizeCanvasCreationLightIntensity(saved.lightIntensity),
       waterDepth: normalizeCanvasCreationWaterDepth(saved.waterDepth),
       canvasWaterEnabled: saved.canvasWaterEnabled === true,
+      canvasWaterScale: normalizeCanvasWaterScale(saved.canvasWaterScale),
       soundEnabled: typeof saved.soundEnabled === "boolean" ? saved.soundEnabled : true,
     };
   }
@@ -178,6 +180,9 @@ class WaterSettingTab extends PluginSettingTab {
       } },
       { name: this.waterPlugin.ui("canvasWater"), desc: this.waterPlugin.ui("canvasWaterDesc"), nameKey: "canvasWater", descKey: "canvasWaterDesc", render: setting => {
         setting.addToggle(toggle => toggle.setValue(this.waterPlugin.preferences.canvasWaterEnabled).onChange(value => this.waterPlugin.updateWaterPreferences({ canvasWaterEnabled: value })));
+      } },
+      { name: this.waterPlugin.ui("canvasWaterScale"), desc: this.waterPlugin.ui("canvasWaterScaleDesc"), nameKey: "canvasWaterScale", descKey: "canvasWaterScaleDesc", render: setting => {
+        setting.addSlider(slider => slider.setLimits(50, 200, 10).setValue(prefs.canvasWaterScale * 100).setInstant(true).setDynamicTooltip().onChange(value => { void this.waterPlugin.updateWaterPreferences({ canvasWaterScale: value / 100 }); }));
       } },
       { name: this.waterPlugin.ui("sound"), desc: this.waterPlugin.ui("soundDesc"), nameKey: "sound", descKey: "soundDesc", render: setting => {
         setting.addToggle(toggle => toggle.setValue(prefs.soundEnabled).onChange(value => this.waterPlugin.updateWaterPreferences({ soundEnabled: value })));

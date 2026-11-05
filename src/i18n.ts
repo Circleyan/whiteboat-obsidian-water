@@ -53,6 +53,8 @@ export const WATER_UI_TEXT = {
     "zh-TW": "新畫布儲存於此資料夾。清空後使用目前語言的預設資料夾，既有檔案保持原位。"
   },
   "canvasWater": { "en": "Water surface", "zh-CN": "水面", "zh-TW": "水面" },
+  "canvasWaterScale": { "en": "Water mark size", "zh-CN": "水纹大小", "zh-TW": "水紋大小" },
+  "canvasWaterScaleDesc": { "en": "Scale water marks in Canvas; 100% is the original size.", "zh-CN": "缩放画布中的水纹，100% 为原始大小。", "zh-TW": "縮放畫布中的水紋，100% 為原始大小。" },
   "canvasWaterDesc": { "en": "Show water behind the current Canvas. May use more power; pauses in the background.", "zh-CN": "为当前画布开启水面，可能增加耗电；后台自动暂停。", "zh-TW": "為目前畫布開啟水面，可能增加耗電；背景自動暫停。" },
   "sound": {
     "en": "Water sound",

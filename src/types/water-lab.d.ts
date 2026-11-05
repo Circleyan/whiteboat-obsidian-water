@@ -8,7 +8,7 @@ declare module "*water-shader-lab/renderer.mjs" {
     inspirations: { x: number; y: number; age: number }[];
   }
   export class WaterRenderer {
-    constructor(canvas: HTMLCanvasElement);
+    constructor(canvas: HTMLCanvasElement, options?: { transparentBackground?: boolean });
     frames: number;
     dpr: number;
     ensureSolver(pitch: number, reference?: boolean): void;
