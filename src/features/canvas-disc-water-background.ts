@@ -9,7 +9,7 @@ export class CanvasDiscWaterBackground {
   private destroyed = false;
   private scale = 1;
 
-  constructor(private readonly app: App, private readonly enabled: () => boolean, private readonly getScale: () => number = () => 1) {}
+  constructor(private readonly app: App, private readonly enabled: () => boolean, private readonly getScale: () => number = () => normalizeCanvasWaterScale(undefined)) {}
 
   register(plugin: Plugin): void {
     plugin.registerEvent(this.app.workspace.on("layout-change", () => this.sync()));

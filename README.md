@@ -9,7 +9,7 @@ Begin on a quiet water surface of fine lines. Watch the boat, listen to the wate
 - An empty submission creates an empty Canvas. Text becomes a normal editable text node.
 - Press Escape to dismiss the input, then Escape again to close the surface. Closing the surface does not create a Canvas.
 - Change the Canvas folder, boat speed, light intensity, water depth, and water sound in the plugin preferences. The default folder follows the interface language: `Canvases`, `随手画布`, or `隨手畫布`.
-- Enable **Water surface** in preferences to show water behind the current Canvas. It is off by default. **Water mark size** scales the Canvas pattern from 50% to 200%, with 100% as the default. The background stays transparent and follows your theme. Obsidian continues to handle node selection, dragging, editing and saving.
+- Enable **Water surface** in preferences to show water behind the current Canvas. It is off by default. **Water mark size** scales the Canvas pattern from 50% to 200%, with 90% as the default. The background stays transparent and follows your theme. Obsidian continues to handle node selection, dragging, editing and saving.
 - The default boat speed is 60%; previously saved speed preferences are preserved.
 - This release contains the water entry, its soundscape and the optional Canvas background. Source scope and Product IDs are recorded in [release-scope.json](release-scope.json).
 

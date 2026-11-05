@@ -113,7 +113,7 @@ export class ObsidianDiscWaterField {
 
   private settings(): DiscWaterSettings {
     const settings = normalizeDiscWaterSettings(this.options.getDiscWaterSettings?.());
-    settings.spacing *= normalizeCanvasWaterScale(this.options.getWaterScale?.());
+    settings.spacing *= (this.options.getWaterScale ? normalizeCanvasWaterScale(this.options.getWaterScale()) : 1);
     return settings;
   }
 
@@ -121,12 +121,12 @@ export class ObsidianDiscWaterField {
     const rect = this.canvas.getBoundingClientRect();
     const scale = Math.min(this.owner.devicePixelRatio || 1, this.options.maxDpr ?? 1.5, Math.sqrt((this.options.maxPixels ?? 4000000)/Math.max(1, rect.width*rect.height)));
     Object.assign(this.fallbackConfig, {
-      spacing: CANVAS_CREATION_WATER_DEFAULTS.spacing * normalizeCanvasWaterScale(this.options.getWaterScale?.()),
-      compactSpacing: CANVAS_CREATION_WATER_DEFAULTS.compactSpacing * normalizeCanvasWaterScale(this.options.getWaterScale?.()),
-      lowPowerSpacing: CANVAS_CREATION_WATER_DEFAULTS.lowPowerSpacing * normalizeCanvasWaterScale(this.options.getWaterScale?.()),
-      dashLength: CANVAS_CREATION_WATER_DEFAULTS.dashLength * normalizeCanvasWaterScale(this.options.getWaterScale?.()),
-      compactDashLength: CANVAS_CREATION_WATER_DEFAULTS.compactDashLength * normalizeCanvasWaterScale(this.options.getWaterScale?.()),
-      lineWidth: CANVAS_CREATION_WATER_DEFAULTS.lineWidth * normalizeCanvasWaterScale(this.options.getWaterScale?.()),
+      spacing: CANVAS_CREATION_WATER_DEFAULTS.spacing * (this.options.getWaterScale ? normalizeCanvasWaterScale(this.options.getWaterScale()) : 1),
+      compactSpacing: CANVAS_CREATION_WATER_DEFAULTS.compactSpacing * (this.options.getWaterScale ? normalizeCanvasWaterScale(this.options.getWaterScale()) : 1),
+      lowPowerSpacing: CANVAS_CREATION_WATER_DEFAULTS.lowPowerSpacing * (this.options.getWaterScale ? normalizeCanvasWaterScale(this.options.getWaterScale()) : 1),
+      dashLength: CANVAS_CREATION_WATER_DEFAULTS.dashLength * (this.options.getWaterScale ? normalizeCanvasWaterScale(this.options.getWaterScale()) : 1),
+      compactDashLength: CANVAS_CREATION_WATER_DEFAULTS.compactDashLength * (this.options.getWaterScale ? normalizeCanvasWaterScale(this.options.getWaterScale()) : 1),
+      lineWidth: CANVAS_CREATION_WATER_DEFAULTS.lineWidth * (this.options.getWaterScale ? normalizeCanvasWaterScale(this.options.getWaterScale()) : 1),
       targetFps: this.options.maxFps ?? 60,
       lowPowerFps: Math.min(this.options.maxFps ?? 60, CANVAS_CREATION_WATER_DEFAULTS.lowPowerFps),
       maxPixelRatio: scale, lowPowerPixelRatio: scale,

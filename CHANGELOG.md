@@ -4,7 +4,7 @@
 
 ### Added
 
-- Scale the Canvas water pattern from 50% to 200% with **Water mark size**; the default is 100%.
+- Scale the Canvas water pattern from 50% to 200% with **Water mark size**; the default is 90%.
 
 - Optionally display water behind the current Canvas with the **Water surface** preference, off by default. Background drawing is limited to 30 fps and approximately two million pixels, and stops when hidden.
 
