@@ -130,6 +130,8 @@ void main(){
  * platform accepts works — the values are painted, not parsed.
  */
 export interface CanvasCreationWaterImpactOptions {
+  /** Paint a transient GPU source immediately before importing its pixels. */
+  prepareSource?: () => void;
   /** The adapter creates detached canvases using its host DOM helpers. */
   createCanvas: () => HTMLCanvasElement;
   accents: [string, string, string, string];
@@ -410,6 +412,7 @@ export function mountCanvasCreationWaterImpact(
           }
           gl.uniform2f(size, source.clientWidth, source.clientHeight);
           gl.uniform1f(time, elapsed);
+          options.prepareSource?.();
           gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
           gl.drawArrays(gl.TRIANGLES, 0, 6);
           source.dataset.wbWaterImpactCovered = "";

@@ -1,11 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 // Exercise the built package used by the Obsidian adapter, not sibling core source.
 import {
+  CanvasCreationWaterField as FallbackWaterField,
   CANVAS_CREATION_WATER_DEFAULTS,
   hashWaterPoint,
   sampleCanvasCreationFlowPosition,
 } from "whiteboat-core";
-import { CanvasCreationWaterField } from "../../src/features/canvas-creation-water-field";
+
 
 const cases = [22, 24, 30, 48].flatMap((spacing) => [
   { spacing, width: spacing * 40, height: spacing * 25, topInset: 0 },
@@ -69,11 +70,11 @@ describe("Obsidian consumed water-field package seam regression", () => {
   );
 });
 
-describe("Obsidian consumed water-field rendered sample count", () => {
+describe("Obsidian 2D fallback rendered sample count", () => {
   let now: number;
   let nextFrameId: number;
   let frames: Map<number, FrameRequestCallback>;
-  let field: CanvasCreationWaterField | undefined;
+  let field: FallbackWaterField | undefined;
 
   class CountedPath {
     lines = 0;
@@ -132,8 +133,10 @@ describe("Obsidian consumed water-field rendered sample count", () => {
         getContext: () => context,
         getBoundingClientRect: () => ({ width, height }),
       } as unknown as HTMLCanvasElement;
-      field = new CanvasCreationWaterField(canvas, {
+      field = new FallbackWaterField(canvas, {
         tokenRoot: {} as HTMLElement,
+        createProbe: root => root.createDiv(),
+        ownerWindow: { requestAnimationFrame, cancelAnimationFrame },
         config: {
           ...CANVAS_CREATION_WATER_DEFAULTS,
           spacing,

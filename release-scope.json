@@ -1,5 +1,5 @@
 {
-  "version": "0.1.4",
+  "version": "0.2.0",
   "product_ids": [
     "WB-ENTRY-006",
     "WB-ENTRY-008",
@@ -11,7 +11,7 @@
   "entry": "src/main.ts",
   "entry_feature": "src/features/canvas-creation-entry.ts",
   "audio_feature": "src/features/canvas-creation-home-audio.ts",
-  "core_pin": "bde0f6700894238afd0f5b5b2f34ee3bfcaf535b",
+  "core_pin": "38114258299251e9000dfe22e882d6db9d816c4f",
   "tests": [
     "test/unit/canvas-creation-entry.spec.ts",
     "test/unit/canvas-creation-home-audio.spec.ts",
@@ -25,5 +25,8 @@
   "core_distribution": "vendor/whiteboat-core: source snapshot, private history excluded",
   "repository": "Circleyan/whiteboat-obsidian-water",
   "language_runtime": "scripts/water-i18n-runtime.mjs",
-  "resize_runtime": "scripts/water-focused-resize-runtime.mjs"
+  "resize_runtime": "scripts/water-focused-resize-runtime.mjs",
+  "canvas_feature": "src/features/canvas-disc-water-background.ts",
+  "canvas_runtime": "scripts/canvas-water-runtime.mjs",
+  "disc_runtime": "scripts/disc-water-public-runtime.mjs"
 }

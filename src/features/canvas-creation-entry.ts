@@ -1,3 +1,4 @@
+import type { DiscWaterSettings } from "./disc-water-settings";
 import {
   Modal,
   Notice,
@@ -307,6 +308,7 @@ export interface CanvasCreationEntryOptions {
   getBoatFollowSpeed?: () => number;
   getLightIntensity?: () => number;
   getWaterDepth?: () => number;
+  getDiscWaterSettings?: () => DiscWaterSettings;
   getSoundEnabled?: () => boolean;
   onSoundEnabledChange?: (enabled: boolean) => void | Promise<void>;
   now?: () => Date;
@@ -670,6 +672,8 @@ export async function createAndOpenCanvasFromEntry(
 }
 
 export class WhiteboatCanvasCreationEntryModal extends Modal {
+  triggerWaterInspiration(): void { this.waterField?.triggerInspiration(); }
+  dropWaterStone(): void { this.waterField?.drop(); }
   private readonly motionQuery = window.matchMedia(
     "(prefers-reduced-motion: reduce)",
   );
@@ -866,6 +870,7 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
     this.waterField = new CanvasCreationWaterField(
       this.waterEl.querySelector("canvas") as HTMLCanvasElement,
       {
+        getDiscWaterSettings: this.options.getDiscWaterSettings,
         tokenRoot: this.rootEl,
         reducedMotion: this.motionQuery.matches,
         ...CANVAS_CREATION_HOME_WATER_MOTION,
@@ -1283,10 +1288,10 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
       },
     });
     if (!this.mobileInput) {
-      shortcut.createEl("button", {
+      shortcut.createEl("kbd", {
         cls: "whiteboat-canvas-entry__command-key",
         text: "⌘",
-        attr: { "aria-hidden": "true", type: "button" },
+        attr: { "aria-hidden": "true" },
       });
     }
     if (shouldShowCanvasCreationSpeechInput(this.deviceMode)) {

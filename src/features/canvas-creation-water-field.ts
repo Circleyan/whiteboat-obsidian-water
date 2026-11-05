@@ -20,20 +20,10 @@ export type {
 } from "whiteboat-core";
 
 import {
-  CanvasCreationWaterField as CoreWaterField,
   resolveCanvasCreationCssPixels as resolveCoreCssPixels,
 } from "whiteboat-core";
 
-/** DOM and frame ownership belong to the Obsidian adapter. */
-export class CanvasCreationWaterField extends CoreWaterField {
-  constructor(canvas: HTMLCanvasElement, options: Omit<ConstructorParameters<typeof CoreWaterField>[1], "createProbe" | "ownerWindow">) {
-    super(canvas, {
-      ...options,
-      createProbe: (root) => root.createDiv(),
-      ownerWindow: canvas.win,
-    });
-  }
-}
+export { ObsidianDiscWaterField as CanvasCreationWaterField } from "./obsidian-disc-water-field";
 
 export function resolveCanvasCreationCssPixels(root: HTMLElement, name: string, fallback: string): number {
   return resolveCoreCssPixels(root, name, fallback, (parent) => parent.createDiv());

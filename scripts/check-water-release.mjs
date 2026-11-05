@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
+import postcss from "postcss";
 const manifest = JSON.parse(fs.readFileSync("manifest.json", "utf8"));
 const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
 const versions = JSON.parse(fs.readFileSync("versions.json", "utf8"));
@@ -15,10 +16,17 @@ for (const file of ["main.js", "manifest.json", "styles.css", "README.md", "LICE
 const bundle = fs.readFileSync("main.js", "utf8");
 assert.ok(!bundle.includes("// src/text.ts") && !bundle.includes("deepDiveCanvasScope"), "Full-product vocabulary leaked into water distribution");
 const css = fs.readFileSync("styles.css", "utf8");
+postcss.parse(css).walkRules(rule => {
+ for (const selector of rule.selector.split(",")) {
+  if (/\.canvas(?:\b|-background\b|-wrapper\b)/u.test(selector)) {
+   assert.match(selector.trim(), /^\.whiteboat-disc-water-host\s*>\s*\.canvas(?:-background)?$/u, `Unscoped native Canvas rule: ${selector}`);
+  }
+ }
+});
 for (const name of ["child_process", "fs", "http", "net", "claudian", "mind-elixir", "web-clipper-bridge", "deep-dive-answer-modal", "requirement-reflection-home"]) {
  assert.ok(!bundle.includes(`require("${name}")`) && !bundle.includes(`src/features/${name}`), `Unexpected dependency: ${name}`);
 }
-for (const hostSelector of [".canvas-wrapper", ".markdown-preview-view", ".workspace-leaf", "whiteboat-wake-host", "whiteboat-html-parameter"]) assert.ok(!css.includes(hostSelector), `Canvas-wide CSS leaked: ${hostSelector}`);
+for (const hostSelector of [".markdown-preview-view", ".workspace-leaf", "whiteboat-wake-host", "whiteboat-html-parameter"]) assert.ok(!css.includes(hostSelector), `Canvas-wide CSS leaked: ${hostSelector}`);
 console.log(`Whiteboat ${manifest.version}: release identity, files, dependency and CSS boundaries passed.`);
 
 const provenance = JSON.parse(fs.readFileSync("source-provenance.json", "utf8"));

@@ -1,6 +1,6 @@
 # Whiteboat / 白舟
 
-Begin on a quiet water surface. Watch the boat, listen to the water, and write a thought when you are ready. Enter a new native Canvas with that thought, or start with an empty Canvas.
+Begin on a quiet water surface of fine lines. Watch the boat, listen to the water, and write a thought when you are ready. Enter a new native Canvas with that thought, or start with an empty Canvas.
 
 ## Use
 
@@ -9,7 +9,15 @@ Begin on a quiet water surface. Watch the boat, listen to the water, and write a
 - An empty submission creates an empty Canvas. Text becomes a normal editable text node.
 - Press Escape to dismiss the input, then Escape again to close the surface. Closing the surface does not create a Canvas.
 - Change the Canvas folder, boat speed, light intensity, water depth, and water sound in the plugin preferences. The default folder follows the interface language: `Canvases`, `随手画布`, or `隨手畫布`.
-- Once the Canvas opens, editing is handled by Obsidian. This initial release contains the water entry and its soundscape. Source scope and Product IDs are recorded in [release-scope.json](release-scope.json).
+- Enable **Water surface** in preferences to show water behind the current Canvas. It is off by default. Obsidian continues to handle node selection, dragging, editing and saving.
+- The default boat speed is 60%; previously saved speed preferences are preserved.
+- This release contains the water entry, its soundscape and the optional Canvas background. Source scope and Product IDs are recorded in [release-scope.json](release-scope.json).
+
+## Performance
+
+Canvas water is limited to 30 frames per second, a backing surface of approximately two million pixels, and a pixel ratio no greater than 1. Only the current Canvas renders. Opening the water entry or hiding the window releases the Canvas background; reduced motion shows a still surface. The 2D fallback uses the same drawing budget.
+
+Water adds graphics work and can increase power use. An isolated test with 200 cards on one Mac kept browser frame scheduling near 60 fps while water drew around 27–29 fps. This is a short test, not a guarantee for slower devices, physical 4K displays or battery life. Turn **Water surface** off if editing becomes less responsive.
 
 ## Install
 
@@ -42,7 +50,7 @@ npm --prefix vendor/whiteboat-core test
 npm run check:release
 ```
 
-This repository contains only the first-release source snapshot and the shared water source it consumes. Shared source provenance and exact revisions are recorded in [source-provenance.json](source-provenance.json). No private repository access is needed to build.
+This repository contains only the water-entry source snapshot and the shared water source it consumes. Shared source provenance and exact revisions are recorded in [source-provenance.json](source-provenance.json). No private repository access is needed to build.
 
 The root build prepares and builds the pinned core automatically, including its types and shared water CSS. Core owns shared rendering and motion; this repository owns Obsidian APIs, native Canvas lifecycle and packaging.
 

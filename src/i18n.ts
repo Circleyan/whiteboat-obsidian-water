@@ -52,6 +52,8 @@ export const WATER_UI_TEXT = {
     "zh-CN": "新画布保存到此目录。清空后使用当前语言的默认目录，已有文件保持原位。",
     "zh-TW": "新畫布儲存於此資料夾。清空後使用目前語言的預設資料夾，既有檔案保持原位。"
   },
+  "canvasWater": { "en": "Water surface", "zh-CN": "水面", "zh-TW": "水面" },
+  "canvasWaterDesc": { "en": "Show water behind the current Canvas. May use more power; pauses in the background.", "zh-CN": "为当前画布开启水面，可能增加耗电；后台自动暂停。", "zh-TW": "為目前畫布開啟水面，可能增加耗電；背景自動暫停。" },
   "sound": {
     "en": "Water sound",
     "zh-CN": "水声",

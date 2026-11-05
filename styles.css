@@ -59,6 +59,7 @@
     transform: rotate(1turn);
   }
 }
+
 .modal-container.whiteboat-canvas-entry-modal-container {
   position: fixed;
   top: 0;
@@ -80,6 +81,7 @@
   align-items: stretch;
   justify-content: stretch;
 }
+
 body.whiteboat-canvas-entry-open .modal-container.whiteboat-canvas-entry-modal-container {
   position: fixed;
   top: 0;
@@ -558,6 +560,7 @@ body.whiteboat-canvas-entry-open
 .whiteboat-canvas-entry__close {
   flex: 0 0 auto;
 }
+
 .whiteboat-canvas-entry__sound-toggle svg,
 .whiteboat-canvas-entry__close svg {
   width: var(--wb-entry-space-05);
@@ -577,6 +580,7 @@ body.whiteboat-canvas-entry-open
   background: var(--wb-entry-layer-02);
   transform: translateY(calc(var(--wb-entry-space-01) * -1));
 }
+
 body.theme-dark .whiteboat-canvas-entry button:is(.whiteboat-canvas-entry__sound-toggle, .whiteboat-canvas-entry__close) {
   appearance: none;
   color: var(--wb-entry-text-primary);
@@ -682,6 +686,7 @@ body.whiteboat-canvas-entry-open .whiteboat-canvas-entry button.whiteboat-canvas
     rotate(var(--wb-entry-celestial-projection-counter-angle))
     rotate(var(--wb-entry-boat-heading));
 }
+
 .whiteboat-canvas-entry__focus-veil {
   position: absolute;
   inset: 0;
@@ -695,6 +700,7 @@ body.whiteboat-canvas-entry-open .whiteboat-canvas-entry button.whiteboat-canvas
   visibility: visible;
   transition: none;
 }
+
 .whiteboat-canvas-entry__focus-layer {
   position: absolute;
   inset: 0;
@@ -897,6 +903,7 @@ body.whiteboat-canvas-entry-open .whiteboat-canvas-entry button.whiteboat-canvas
   transition-duration: var(--wb-entry-duration-settle);
   transition-timing-function: var(--wb-entry-ease-out-quart);
 }
+
 .whiteboat-canvas-entry .whiteboat-canvas-entry__composer[data-motion] {
   transition: none;
   transform-origin: 50% 65%;
@@ -975,6 +982,7 @@ html body.theme-dark.whiteboat-canvas-entry-open .whiteboat-canvas-entry__compos
 .theme-dark .whiteboat-canvas-entry__composer-surface::after {
   display: none;
 }
+
 .theme-dark .whiteboat-canvas-entry__composer-surface::before {
   position: absolute;
   inset: 0;
@@ -1185,6 +1193,7 @@ body.whiteboat-canvas-entry-open .whiteboat-canvas-entry__shortcut .whiteboat-ca
   font-size: var(--wb-entry-type-body);
   line-height: var(--wb-entry-leading-body);
 }
+
 .whiteboat-canvas-entry textarea.whiteboat-canvas-entry__idea:hover {
   background: transparent;
 }
@@ -1588,10 +1597,12 @@ body.whiteboat-canvas-entry-open .whiteboat-canvas-entry *::after {
     transform: scale(1.4);
   }
 }
+
 .whiteboat-canvas-entry:not(.is-mobile) .whiteboat-canvas-entry__shortcut {
   height: 2rem;
   align-items: stretch;
 }
+
 body.whiteboat-canvas-entry-open .whiteboat-canvas-entry:not(.is-mobile) .whiteboat-canvas-entry__shortcut {
   height: 2rem;
   align-items: stretch;
@@ -1644,8 +1655,11 @@ body.whiteboat-canvas-entry-open .whiteboat-canvas-entry:not(.is-mobile)
   box-sizing: border-box;
   aspect-ratio: 1;
 }
+
 .whiteboat-canvas-entry__composer[data-motion="cancelling"] { visibility: visible; }
+
 .whiteboat-canvas-entry__idea-echo { white-space: pre-wrap; }
+
 .whiteboat-canvas-entry-viewport-frame {
   position: fixed; right: auto; bottom: auto;
   min-width: 0; min-height: 0;
@@ -1653,6 +1667,7 @@ body.whiteboat-canvas-entry-open .whiteboat-canvas-entry:not(.is-mobile)
   padding: 0; margin: 0;
   overflow: hidden; box-sizing: border-box;
 }
+
 body.whiteboat-canvas-entry-open .whiteboat-canvas-entry-viewport-frame {
   position: fixed; right: auto; bottom: auto;
   min-width: 0; min-height: 0;
@@ -1660,22 +1675,45 @@ body.whiteboat-canvas-entry-open .whiteboat-canvas-entry-viewport-frame {
   padding: 0; margin: 0;
   overflow: hidden; box-sizing: border-box;
 }
+
 .whiteboat-canvas-entry-viewport-root { min-width: 0; min-height: 0; }
+
 .whiteboat-canvas-entry textarea.whiteboat-canvas-entry__idea-measuring { height: 0; }
+
 @supports (width: 100dvw) {
   .modal-container.whiteboat-canvas-entry-modal-container,
   .whiteboat-canvas-entry-modal.modal { width: 100dvw; }
 }
+
 @supports (width: 100dvw) {
   body.whiteboat-canvas-entry-open .modal-container.whiteboat-canvas-entry-modal-container,
 body.whiteboat-canvas-entry-open .whiteboat-canvas-entry-modal.modal { width: 100dvw; }
 }
+
 @supports (height: 100dvh) {
   .whiteboat-canvas-entry-modal.modal { height: 100dvh; }
 }
+
 @supports (height: 100dvh) {
   body.whiteboat-canvas-entry-open .whiteboat-canvas-entry-modal.modal { height: 100dvh; }
 }
+
+.whiteboat-canvas-entry__water-canvas[data-water-state="fallback"] {
+  visibility: hidden;
+}
+
+.whiteboat-disc-water-host > .whiteboat-disc-canvas-background {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.whiteboat-disc-water-host > .canvas { z-index: 1; }
+
+.whiteboat-disc-water-host > .canvas-background { visibility: hidden; }
 
 /* Generated core water presentation. Do not edit this block. */
 .wb-water-css-probe {

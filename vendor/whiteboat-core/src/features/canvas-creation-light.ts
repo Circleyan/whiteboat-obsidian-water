@@ -34,6 +34,8 @@ export interface CanvasCreationCelestialProjection {
   /** Normalized irradiance of the celestial light on a horizontal surface. */
   normalIncidence: number;
   waterDepth: number;
+  /** Direct-light envelope of the opt-in east/west orbit. */
+  sourceStrength: number;
   boat: CanvasCreationCelestialProjectionTier;
   pointer: CanvasCreationCelestialProjectionTier;
   composer: CanvasCreationCelestialProjectionTier;
@@ -95,6 +97,7 @@ export function sampleCanvasCreationCelestialProjection(options: {
   lightIntensity?: number;
   waterDepth?: number;
   reducedMotion?: boolean;
+  orbitMode?: "legacy" | "east-west";
 }): CanvasCreationCelestialProjection {
   const light = options.light;
   const intensity = normalizeCanvasCreationLightIntensity(
@@ -108,7 +111,10 @@ export function sampleCanvasCreationCelestialProjection(options: {
     : ((elapsedSeconds % periodSeconds) / periodSeconds) * Math.PI * 2;
   const centerAngle = light === "moon" ? -27 : 29;
   const angleAmplitude = light === "moon" ? 8 : 10;
-  const elevation = clamp(
+  const celestial = options.orbitMode === "east-west"
+    ? sampleCanvasCreationEastWestLight(options.reducedMotion ? 0 : elapsedSeconds, light)
+    : null;
+  const elevation = celestial?.elevation ?? clamp(
     0.72 + Math.cos(orbit) * (light === "moon" ? 0.14 : 0.18),
     0.34,
     0.96,
@@ -157,7 +163,7 @@ export function sampleCanvasCreationCelestialProjection(options: {
       ),
     ),
   });
-  const angleDeg = roundProjectionValue(
+  const angleDeg = celestial?.angleDeg ?? roundProjectionValue(
     centerAngle + Math.sin(orbit) * angleAmplitude,
   );
   return {
@@ -168,12 +174,36 @@ export function sampleCanvasCreationCelestialProjection(options: {
     shadowLengthFactor,
     normalIncidence,
     waterDepth,
-    boat: tier({ distance: 11, blur: 8, opacity: 0.28 }),
-    pointer: tier({ distance: 4, blur: 5, opacity: 0.14 }),
-    composer: tier({
+    sourceStrength: celestial?.sourceStrength ?? 1,
+    boat: illuminate(tier({ distance: 11, blur: 8, opacity: 0.28 }), celestial),
+    pointer: illuminate(tier({ distance: 4, blur: 5, opacity: 0.14 }), celestial),
+    composer: illuminate(tier({
       distance: light === "moon" ? 68 : 74,
       blur: 16,
       opacity: 0.24,
-    }),
+    }), celestial),
   };
+}
+
+/** Screen east is +x, west -x, north -y. The cycle is artistic active time. */
+export function sampleCanvasCreationEastWestLight(seconds: number, light: CanvasCreationCelestialLight) {
+  const period = light === "moon" ? 320 : 240;
+  const phase = ((0.2 + Math.max(0, seconds) / period) % 1 + 1) % 1;
+  const orbit = phase * Math.PI * 2;
+  const maximum = (light === "moon" ? 56 : 66) * Math.PI / 180;
+  const x = (light === "moon" ? -1 : 1) * Math.cos(orbit);
+  const y = -Math.cos(maximum) * Math.sin(orbit);
+  const z = Math.sin(maximum) * Math.sin(orbit);
+  const altitude = Math.asin(z) * 180 / Math.PI;
+  const rise = clamp(altitude / 12, 0, 1);
+  return {
+    phase, vector: [x, y, z] as const,
+    angleDeg: Math.atan2(y, x) * 180 / Math.PI + 90,
+    elevation: Math.sin(Math.max(8, altitude) * Math.PI / 180),
+    sourceStrength: rise * rise * (3 - 2 * rise),
+  };
+}
+
+function illuminate(tier: CanvasCreationCelestialProjectionTier, light: { sourceStrength: number } | null) {
+  return light ? { ...tier, opacity: roundProjectionValue(tier.opacity * light.sourceStrength) } : tier;
 }

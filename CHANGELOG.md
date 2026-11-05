@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.2.0 — 2026-11-05
+
+### Added
+
+- Optionally display water behind the current Canvas with the **Water surface** preference, off by default. Background drawing is limited to 30 fps and approximately two million pixels, and stops when hidden.
+
+### Changed
+
+- The water surface now has quiet fine lines, moving waves and local boat contact color.
+- Slow the default boat speed to 60%, preserving previously saved preferences.
+- The settings retain the familiar folder, sound, boat speed, light and depth controls; no experimental appearance or mode controls are exposed.
+
+### Fixed
+
+- Restore the water safely after graphics context loss, with a 2D fallback when WebGL 2 is unavailable.
+
 ## 0.1.4
 
 - Reduce water drawing work during boat and pointer movement on large desktop displays.

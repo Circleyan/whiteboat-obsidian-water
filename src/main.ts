@@ -1,8 +1,10 @@
 import { Plugin, PluginSettingTab, Setting, Notice, normalizePath, setTooltip, type Command, type DropdownComponent, type TextComponent } from "obsidian";
+import { CanvasDiscWaterBackground } from "./features/canvas-disc-water-background";
 import { WhiteboatCanvasCreationEntryModal } from "./features/canvas-creation-entry";
 import { openCanvasCreationEntryInMainWindow } from "./features/canvas-creation-entry-window";
 import { normalizeCanvasCreationBoatFollowSpeed } from "./features/canvas-creation-navigation";
 import { normalizeCanvasCreationLightIntensity, normalizeCanvasCreationWaterDepth } from "./features/canvas-creation-light";
+import { normalizeDiscWaterSettings } from "./features/disc-water-settings";
 import { normalizeTextNodeSize } from "./features/canvas-geometry";
 
 import { canvasCreationEntryText, currentWaterLanguage, normalizeWaterLanguage, waterUiText, type WaterLanguagePreference, type WaterUiTextKey } from "./i18n";
@@ -14,12 +16,14 @@ interface WaterPreferences {
   lightIntensity: number;
   waterDepth: number;
   soundEnabled: boolean;
+  canvasWaterEnabled: boolean;
 }
 function asRecord(value: unknown): Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {};
 }
 
 export default class WhiteboatPlugin extends Plugin {
+  private canvasWater: CanvasDiscWaterBackground | null = null;
   private savedData: Record<string, unknown> = {};
   private entry: WhiteboatCanvasCreationEntryModal | null = null;
   private startupTimer: number | null = null;
@@ -31,6 +35,8 @@ export default class WhiteboatPlugin extends Plugin {
   async onload(): Promise<void> {
     const loaded: unknown = await this.loadData();
     this.savedData = asRecord(loaded);
+    this.canvasWater = new CanvasDiscWaterBackground(this.app, () => this.preferences.canvasWaterEnabled);
+    this.canvasWater.register(this);
     this.waterCommand = this.addCommand({ id: "open-canvas-creation-entry", name: this.ui("open"), callback: () => this.openWater() });
     this.ribbon = this.addRibbonIcon("sailboat", this.ui("ribbon"), () => this.openWater());
     this.settingsTab = new WaterSettingTab(this);
@@ -75,6 +81,7 @@ export default class WhiteboatPlugin extends Plugin {
       boatFollowSpeed: normalizeCanvasCreationBoatFollowSpeed(saved.boatFollowSpeed),
       lightIntensity: normalizeCanvasCreationLightIntensity(saved.lightIntensity),
       waterDepth: normalizeCanvasCreationWaterDepth(saved.waterDepth),
+      canvasWaterEnabled: saved.canvasWaterEnabled === true,
       soundEnabled: typeof saved.soundEnabled === "boolean" ? saved.soundEnabled : true,
     };
   }
@@ -93,6 +100,7 @@ export default class WhiteboatPlugin extends Plugin {
     const automatic = update.defaultFolder === undefined ? this.usesAutomaticFolder : !update.defaultFolder.trim();
     this.savedData.canvas = { ...canvas, creation: { ...asRecord(canvas.creation), ...this.preferences, ...update, defaultFolderMode: automatic ? "auto" : "custom" } };
     await this.saveData(this.savedData);
+    this.canvasWater?.sync();
   }
 
   openWater(): void {
@@ -104,6 +112,7 @@ export default class WhiteboatPlugin extends Plugin {
       getBoatFollowSpeed: () => this.preferences.boatFollowSpeed,
       getLightIntensity: () => this.preferences.lightIntensity,
       getWaterDepth: () => this.preferences.waterDepth,
+      getDiscWaterSettings: () => normalizeDiscWaterSettings(undefined),
       getSoundEnabled: () => this.preferences.soundEnabled,
       onSoundEnabledChange: enabled => this.updateWaterPreferences({ soundEnabled: enabled }),
       onClose: () => { if (this.entry === entry) this.entry = null; },
@@ -114,6 +123,7 @@ export default class WhiteboatPlugin extends Plugin {
 
   onunload(): void {
     this.unloading = true;
+    this.canvasWater?.destroy();
     if (this.startupTimer !== null) window.clearTimeout(this.startupTimer);
     this.startupTimer = null;
     this.entry?.closeEntryImmediately();
@@ -165,6 +175,9 @@ class WaterSettingTab extends PluginSettingTab {
           this.folderInput = text;
           text.setValue(prefs.defaultFolder).onChange(value => { void this.waterPlugin.updateWaterPreferences({ defaultFolder: value }); });
         });
+      } },
+      { name: this.waterPlugin.ui("canvasWater"), desc: this.waterPlugin.ui("canvasWaterDesc"), nameKey: "canvasWater", descKey: "canvasWaterDesc", render: setting => {
+        setting.addToggle(toggle => toggle.setValue(this.waterPlugin.preferences.canvasWaterEnabled).onChange(value => this.waterPlugin.updateWaterPreferences({ canvasWaterEnabled: value })));
       } },
       { name: this.waterPlugin.ui("sound"), desc: this.waterPlugin.ui("soundDesc"), nameKey: "sound", descKey: "soundDesc", render: setting => {
         setting.addToggle(toggle => toggle.setValue(prefs.soundEnabled).onChange(value => this.waterPlugin.updateWaterPreferences({ soundEnabled: value })));

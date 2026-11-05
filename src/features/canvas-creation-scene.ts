@@ -1,3 +1,4 @@
+import { normalizeDiscWaterSettings, type DiscWaterSettings } from "./disc-water-settings";
 import logoMarkSvg from "../assets/canvas-entry-logo-mark.svg";
 import logoWordmarkSvg from "../assets/canvas-entry-logo-wordmark.svg";
 import { CANVAS_CREATION_ANCHOR_ASSET } from "./canvas-creation-anchor-asset";
@@ -37,6 +38,7 @@ export interface CanvasCreationHomePreviewController {
   update(options: {
     lightIntensity?: number;
     waterDepth?: number;
+    discWater?: DiscWaterSettings;
   }): {
     lightIntensity: number;
     waterDepth: number;
@@ -93,8 +95,10 @@ export function mountCanvasCreationHomePreview(
   initialSettings: {
     lightIntensity: number;
     waterDepth: number;
+    discWater?: DiscWaterSettings;
   },
 ): CanvasCreationHomePreviewController {
+  let discWater = normalizeDiscWaterSettings(initialSettings.discWater);
   const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   const rootEl = appendElement(
     stageEl,
@@ -213,6 +217,7 @@ export function mountCanvasCreationHomePreview(
   ideaEl.placeholder = "随便说说，你想到什么了？";
 
   const waterField = new CanvasCreationWaterField(canvasEl, {
+    getDiscWaterSettings: () => discWater,
     tokenRoot: rootEl,
     reducedMotion: motionQuery.matches,
   });
@@ -316,6 +321,7 @@ export function mountCanvasCreationHomePreview(
       if (options.waterDepth !== undefined) {
         waterDepth = normalizeCanvasCreationWaterDepth(options.waterDepth);
       }
+      if (options.discWater) { discWater = normalizeDiscWaterSettings(options.discWater); waterField.refreshColors(); }
       applyProjection(performance.now());
       return { lightIntensity, waterDepth };
     },

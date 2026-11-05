@@ -15,6 +15,9 @@ export async function createCleanSource(root, target) {
     await fs.mkdir(path.dirname(path.join(target, file)), { recursive: true });
     await fs.cp(path.join(root, file), path.join(target, file), { recursive: true });
   }
+  if (await fs.access(path.join(root, "experiments/water-shader-lab")).then(() => true, () => false)) {
+    await fs.cp(path.join(root, "experiments/water-shader-lab"), path.join(target, "experiments/water-shader-lab"), { recursive: true });
+  }
   await fs.mkdir(path.join(target, "node_modules"), { recursive: true });
   for (const name of await fs.readdir(path.join(root, "node_modules"))) {
     if (name === "whiteboat-core") continue;

@@ -1517,9 +1517,9 @@ describe("Whiteboat Canvas creation entry", () => {
       min: 0.5,
       max: 2,
       step: 0.05,
-      defaultValue: 1,
+      defaultValue: 0.6,
     });
-    expect(normalizeCanvasCreationBoatFollowSpeed(undefined)).toBe(1);
+    expect(normalizeCanvasCreationBoatFollowSpeed(undefined)).toBe(0.6);
     expect(normalizeCanvasCreationBoatFollowSpeed(0.49)).toBe(0.5);
     expect(normalizeCanvasCreationBoatFollowSpeed(1.26)).toBe(1.25);
     expect(normalizeCanvasCreationBoatFollowSpeed(2.1)).toBe(2);

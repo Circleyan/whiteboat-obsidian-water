@@ -11,16 +11,16 @@ afterEach(() => { vi.useRealTimers(); vi.unstubAllGlobals(); });
 describe("Water-only release lifecycle", () => {
  it("retains unrelated preferences and registers only the water command, with no startup after unload", async () => {
    vi.useFakeTimers();
-   vi.stubGlobal("window", { setTimeout, clearTimeout });
+   vi.stubGlobal("window", { setTimeout, clearTimeout, setInterval, clearInterval });
    const methods: Record<string, unknown> = {};
    const commands: string[] = [];
    const data = { canvas: { creation: { defaultFolder: "my thoughts", soundEnabled: false, futureWater: { keep: true } }, defaultTextNodeSize: { width: 312, height: 88 } }, futureFeature: { keep: true } };
    let saved: unknown;
    const prototype = Plugin.prototype as any;
-   const overrides = { loadData: async () => data, saveData: async (value: unknown) => { saved = value; }, addCommand: (command: any) => commands.push(command.id), addRibbonIcon: vi.fn(), addSettingTab: vi.fn() };
+   const overrides = { loadData: async () => data, saveData: async (value: unknown) => { saved = value; }, addCommand: (command: any) => commands.push(command.id), addRibbonIcon: vi.fn(), addSettingTab: vi.fn(), register: vi.fn(), registerEvent: vi.fn() };
    for (const [key, value] of Object.entries(overrides)) { methods[key] = prototype[key]; prototype[key] = value; }
    try {
-     const plugin = new WhiteboatPlugin({ workspace: { onLayoutReady: (fn: () => void) => fn() } } as any, {} as any);
+     const plugin = new WhiteboatPlugin({ workspace: { on: vi.fn(), onLayoutReady: (fn: () => void) => fn() } } as any, {} as any);
      const open = vi.spyOn(plugin, "openWater").mockImplementation(() => {});
      await plugin.onload();
      expect(commands).toEqual(["open-canvas-creation-entry"]);

@@ -18,6 +18,7 @@ export function applyCanvasCreationCelestialProjection(
     reducedMotion?: boolean;
     deviceMode?: "desktop" | "tablet" | "phone";
     projectionScale?: number;
+    orbitMode?: "legacy" | "east-west";
   },
 ): void {
   const deviceMode = options.deviceMode ?? "desktop";
@@ -27,6 +28,7 @@ export function applyCanvasCreationCelestialProjection(
     lightIntensity: options.lightIntensity,
     waterDepth: options.waterDepth,
     reducedMotion: options.reducedMotion,
+    orbitMode: options.orbitMode,
   });
   const lightIntensity = normalizeCanvasCreationLightIntensity(
     options.lightIntensity,
@@ -80,5 +82,6 @@ export function applyCanvasCreationCelestialProjection(
   rootEl.dataset.celestialLight = projection.light;
   rootEl.dataset.celestialElevation = String(projection.elevation);
   rootEl.dataset.celestialLightIntensity = String(lightIntensity);
+  rootEl.dataset.celestialSourceStrength = String(projection.sourceStrength);
   rootEl.dataset.waterDepth = String(waterDepth);
 }

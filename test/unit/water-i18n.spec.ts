@@ -66,9 +66,9 @@ describe("Water interface languages", () => {
     expect(openFile).toHaveBeenCalledOnce();
   });
   it.each([["en", "Canvases"], ["zh", "随手画布"], ["zh-TW", "隨手畫布"]])("follows %s for new installations and updates the default folder live", async (host, folder) => {
-    vi.stubGlobal("window", { setTimeout, clearTimeout });
+    vi.stubGlobal("window", { setTimeout, clearTimeout, setInterval: vi.fn(), clearInterval: vi.fn() });
     vi.mocked(getLanguage).mockReturnValue(host);
-    const plugin = new WhiteboatPlugin({ workspace: { onLayoutReady: () => {} } } as any, { name: "Whiteboat" } as any);
+    const plugin = new WhiteboatPlugin({ workspace: { on: vi.fn(), onLayoutReady: () => {} } } as any, { name: "Whiteboat" } as any);
     (plugin as any).loadData = vi.fn(async () => null);
     (plugin as any).saveData = vi.fn(async () => {});
     (plugin as any).addCommand = vi.fn();
