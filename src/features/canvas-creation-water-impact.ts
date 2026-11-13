@@ -18,9 +18,18 @@ export type {
   CanvasCreationWaterImpact,
 } from "whiteboat-core";
 
-import { mountCanvasCreationWaterImpact as mountCoreImpact, type CanvasCreationWaterImpactOptions as CoreImpactOptions } from "whiteboat-core";
+import type { CanvasCreationWaterImpact, CanvasCreationWaterImpactOptions as CoreImpactOptions } from "whiteboat-core";
 export type CanvasCreationWaterImpactOptions = Omit<CoreImpactOptions, "createCanvas">;
 
-export function mountCanvasCreationWaterImpact(source: HTMLCanvasElement, origin: { x: number; y: number }, options: CanvasCreationWaterImpactOptions) {
-  return mountCoreImpact(source, origin, { ...options, createCanvas: () => createEl("canvas") });
+type ImpactFactory = (origin: { x: number; y: number }, options: CanvasCreationWaterImpactOptions) => CanvasCreationWaterImpact | null;
+const materialImpacts = new WeakMap<HTMLCanvasElement, ImpactFactory>();
+
+/** The live water material owns disturbance; the composer supplies its clock. */
+export function registerCanvasCreationWaterImpact(source: HTMLCanvasElement, factory: ImpactFactory): () => void {
+  materialImpacts.set(source, factory);
+  return () => { if (materialImpacts.get(source) === factory) materialImpacts.delete(source); };
+}
+
+export function mountCanvasCreationWaterImpact(source: HTMLCanvasElement, origin: { x: number; y: number }, options: CanvasCreationWaterImpactOptions): CanvasCreationWaterImpact | null {
+  return materialImpacts.get(source)?.(origin, options) ?? null;
 }

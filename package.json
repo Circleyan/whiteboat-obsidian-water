@@ -1,6 +1,6 @@
 {
   "name": "whiteboat",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "description": "Begin on a quiet water surface and turn a thought into a new Canvas.",
   "main": "main.js",
@@ -24,7 +24,7 @@
     "obsidian-plugin",
     "whiteboat"
   ],
-  "author": "\u5343\u767e\u6167",
+  "author": "千百慧",
   "license": "MIT",
   "devDependencies": {
     "@eslint/js": "9.39.1",

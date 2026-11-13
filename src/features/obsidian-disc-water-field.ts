@@ -1,10 +1,16 @@
 import {
   CanvasCreationWaterField as CoreWaterField,
   CANVAS_CREATION_WATER_DEFAULTS,
+  CANVAS_CREATION_WATER_IMPACT_FIRST_RING_DELAY_SECONDS,
+  CANVAS_CREATION_WATER_IMPACT_RING_GAP_SECONDS,
+  CANVAS_CREATION_WATER_IMPACT_REACH_SECONDS,
+  CANVAS_CREATION_WATER_IMPACT_REACH_EXPONENT,
+  resolveCanvasCreationWaterImpactReach,
   resolveCanvasCreationWaterFlowTiming,
   type CanvasCreationWaterBoat,
   type CanvasCreationWaterFocus,
 } from "whiteboat-core";
+import { registerCanvasCreationWaterImpact, type CanvasCreationWaterImpactOptions, type CanvasCreationWaterImpact } from "./canvas-creation-water-impact";
 import { WaterRenderer } from "../../experiments/water-shader-lab/renderer.mjs";
 import { WaterPressure } from "../../experiments/water-shader-lab/pressure.mjs";
 import { InspirationBursts } from "../../experiments/water-shader-lab/field.mjs";
@@ -48,11 +54,15 @@ export class ObsidianDiscWaterField {
   private wakes: {x: number; y: number; heading: number; life: number}[] = [];
   private lastWake = 0;
   private focus: CanvasCreationWaterFocus | null = null;
+  private focusFloor = .3;
+  private impact: { x: number; y: number; elapsed: number; scale: number; reach: number; delay: number; gap: number; travel: number; exponent: number } | null = null;
+  private readonly unregisterImpact: () => void;
   private mooring: {x: number; y: number} | null = null;
 
   constructor(private readonly canvas: HTMLCanvasElement, private readonly options: Options) {
     this.owner = canvas.win ?? window;
     this.reduced = options.reducedMotion === true;
+    this.unregisterImpact = registerCanvasCreationWaterImpact(canvas, (origin, impactOptions) => this.mountImpact(origin, impactOptions));
     const signal = this.controller.signal;
     canvas.addEventListener("webglcontextlost", (event) => {
       event.preventDefault(); this.lost = true; this.last = 0;
@@ -75,6 +85,7 @@ export class ObsidianDiscWaterField {
     this.observer.observe(canvas);
     this.themeObserver = new MutationObserver(() => this.refreshColors());
     this.themeObserver.observe(canvas.ownerDocument.body, {attributes: true, attributeFilter: ["class", "style"]});
+    this.refreshColors();
     this.initialize();
   }
 
@@ -93,7 +104,8 @@ export class ObsidianDiscWaterField {
     if (this.destroyed || this.fallback) return;
     this.owner.clearTimeout(this.recoveryTimer); this.stopFrame();
     if (!this.lost) this.renderer?.destroy();
-    this.renderer = null;
+    this.renderer = null; this.impact = null;
+    delete this.canvas.dataset.waterImpact; delete this.canvas.dataset.impactElapsed;
     // A canvas that acquired WebGL cannot acquire 2D: use a sibling surface.
     const replacement = this.canvas.cloneNode(false) as HTMLCanvasElement;
     replacement.removeAttribute("id");
@@ -109,6 +121,35 @@ export class ObsidianDiscWaterField {
     this.fallback.setBoat(this.boat); this.fallback.setFocus(this.focus);
     this.fallback.setMooring(this.mooring); this.fallback.setFlowPaused(this.paused);
     if (this.running) this.fallback.start();
+  }
+
+  private mountImpact(origin: { x: number; y: number }, options: CanvasCreationWaterImpactOptions): CanvasCreationWaterImpact | null {
+    if (!this.renderer || this.lost || this.destroyed || this.reduced) return null;
+    const rect = this.canvas.getBoundingClientRect(), scale = options.visualScale ?? 1;
+    const impact = { ...origin, elapsed: 0, scale,
+      reach: options.reach ?? resolveCanvasCreationWaterImpactReach(rect.width, rect.height, origin.x, origin.y, scale),
+      delay: CANVAS_CREATION_WATER_IMPACT_FIRST_RING_DELAY_SECONDS,
+      gap: CANVAS_CREATION_WATER_IMPACT_RING_GAP_SECONDS,
+      travel: CANVAS_CREATION_WATER_IMPACT_REACH_SECONDS,
+      exponent: CANVAS_CREATION_WATER_IMPACT_REACH_EXPONENT,
+    };
+    this.impact = impact;
+    const redraw = () => { this.stopFrame(); this.paintedAt = 0; this.render(this.owner.performance.now()); };
+    return {
+      draw: elapsed => {
+        if (this.impact !== impact || this.destroyed || this.reduced) return;
+        impact.elapsed = elapsed;
+        this.canvas.dataset.waterImpact = "short-line-material";
+        this.canvas.dataset.impactElapsed = elapsed.toFixed(3);
+        redraw();
+      },
+      destroy: () => {
+        if (this.impact !== impact) return;
+        this.impact = null;
+        delete this.canvas.dataset.waterImpact; delete this.canvas.dataset.impactElapsed;
+        if (!this.destroyed) redraw();
+      },
+    };
   }
 
   private settings(): DiscWaterSettings {
@@ -151,7 +192,12 @@ export class ObsidianDiscWaterField {
     }
   }
 
-  refreshColors(): void { this.fallback?.refreshColors(); this.requestRender(); }
+  refreshColors(): void {
+    const tokenRoot = this.options.tokenRoot ?? this.canvas.parentElement ?? this.canvas;
+    const floorToken = parseFloat(this.owner.getComputedStyle(tokenRoot).getPropertyValue("--wb-entry-water-focus-dash-floor"));
+    this.focusFloor = Number.isFinite(floorToken) ? Math.max(0, Math.min(1, floorToken)) : .3;
+    this.fallback?.refreshColors(); this.requestRender();
+  }
   setReducedMotion(value: boolean): void {
     if (this.reduced === value) return;
     this.reduced = value; this.last = 0;
@@ -170,7 +216,6 @@ export class ObsidianDiscWaterField {
   setFocus(value: CanvasCreationWaterFocus | null): void {
     if (JSON.stringify(value) === JSON.stringify(this.focus)) return;
     this.focus = value; this.fallback?.setFocus(value);
-    this.canvas.style.setProperty("mask-image", value ? `radial-gradient(ellipse ${value.rx}px ${value.ry}px at ${value.x}px ${value.y}px, black 45%, rgba(0,0,0,${1-(value.amount ?? 0)*.9}) 100%)` : "");
     this.requestRender();
   }
   setMooring(value: {x: number; y: number} | null): void {
@@ -230,7 +275,7 @@ export class ObsidianDiscWaterField {
       this.renderer.advance(elapsed,s.view,(step: number)=>{
         this.pressure.advance(step);return this.pressure.sources(boat,s.pressure,s.mode!==3);
       });
-      this.renderer.draw({...s,dark:this.canvas.ownerDocument.body.classList.contains("theme-dark"),boat,
+      this.renderer.draw({...s,impact:this.impact,focus:this.focus,focusFloor:this.focusFloor,dark:this.canvas.ownerDocument.body.classList.contains("theme-dark"),boat,
         reducedMotion:this.reduced,inspirations:this.bursts.events},this.time);
       Object.assign(this.canvas.dataset,{waterState:this.reduced?"static":"running",waterFrames:String(this.renderer.frames),
         flowTime:String(this.time),flowScale:String(this.flowScale),waterMode:String(s.mode),waterViewAngle:String(s.view)});
@@ -239,7 +284,7 @@ export class ObsidianDiscWaterField {
   }
   destroy(): void {
     if (this.destroyed) return;
-    this.destroyed=true;this.stopFrame();this.owner.clearTimeout(this.recoveryTimer);
+    this.destroyed=true;this.unregisterImpact();this.impact=null;this.stopFrame();this.owner.clearTimeout(this.recoveryTimer);
     this.controller.abort();this.observer.disconnect();this.themeObserver.disconnect();
     if (!this.lost) this.renderer?.destroy();
     this.renderer=null;this.fallback?.destroy();this.fallbackCanvas?.remove();

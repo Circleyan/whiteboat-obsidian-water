@@ -9,26 +9,14 @@ import {
   type CanvasCreationWaterImpact,
 } from "./canvas-creation-water-impact";
 
-/** Host token names; core only needs the values they resolve to. */
-const WAKE_ACCENT_TOKENS = [
-  "--wb-entry-wake-accent-01",
-  "--wb-entry-wake-accent-02",
-  "--wb-entry-wake-accent-03",
-  "--wb-entry-wake-accent-04",
-] as const;
-
 /**
- * Obsidian's water palette, read off the water the pass will refract.  The
- * tokens are defined at the root and inherit down, so the source canvas and
- * the composer resolve to the same values; the fallback keeps a host without
- * them on a single tone rather than on black.
+ * The live water material owns the submission ripple and its theme ink.
+ * Keep one ink value for the host-neutral impact options.
  */
-function readWakeAccents(source: HTMLElement): [string, string, string, string] {
-  const tokens = getComputedStyle(source);
-  const fallback = tokens.color;
-  return WAKE_ACCENT_TOKENS.map((name) => tokens.getPropertyValue(name).trim() || fallback) as [
-    string, string, string, string,
-  ];
+function readImpactAccents(source: HTMLElement): [string, string, string, string] {
+  const tokens = source.ownerDocument.defaultView!.getComputedStyle(source);
+  const ink = tokens.getPropertyValue("--wb-entry-water-line-strong").trim() || tokens.color;
+  return [ink, ink, ink, ink];
 }
 
 const STILL = { opacity: 1, transform: "translate(0, 0) scale(1)", filter: "blur(0px)" };
@@ -133,7 +121,7 @@ export class CanvasCreationComposerMotion {
     const origin={x:center.x-waterRect.left,y:center.y-waterRect.top};
     const reach=resolveCanvasCreationWaterImpactReach(waterRect.width,waterRect.height,origin.x,origin.y,scale);
     this.impact=mountCanvasCreationWaterImpact(this.water,origin,{
-      accents:readWakeAccents(this.water),
+      accents:readImpactAccents(this.water),
       visualScale:scale,
       reach,
       canvasClassName:"whiteboat-canvas-entry__water-canvas whiteboat-canvas-entry__water-impact",

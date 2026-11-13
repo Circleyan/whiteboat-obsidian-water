@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { registerCanvasCreationWaterImpact, mountCanvasCreationWaterImpact } from "../../src/features/canvas-creation-water-impact";
 import { CanvasCreationComposerMotion } from "../../src/features/canvas-creation-composer-motion";
 
 afterEach(()=>vi.unstubAllGlobals());
@@ -9,20 +10,32 @@ function fixture(reduced=false) {
     classList:{contains:()=>true},getBoundingClientRect:()=>({left:0,top:0,width:400,height:224}),querySelectorAll:()=>[],
     animate(frames:Keyframe[],options:KeyframeAnimationOptions){let finish!:()=>void,reject!:()=>void;const finished=new Promise<void>((yes,no)=>{finish=yes;reject=()=>no(new Error("cancelled"));});const cancel=vi.fn(reject);runs.push({frames,options,cancel,finish});return {finished,cancel};},
   };
-  const water={getBoundingClientRect:()=>({left:0,top:0,width:1000,height:700})};
+  const water={ownerDocument:{defaultView:{getComputedStyle:()=>({color:"#ffffff",getPropertyValue:()=>""})}},getBoundingClientRect:()=>({left:0,top:0,width:1000,height:700})};
   const createElement=vi.fn(()=>({className:"",setAttribute:vi.fn(),getContext:()=>null}));
   vi.stubGlobal("document",{createElement});
   vi.stubGlobal("createEl",createElement);
   vi.stubGlobal("requestAnimationFrame",vi.fn(()=>42));
   vi.stubGlobal("cancelAnimationFrame",vi.fn());
-  // The motion reads the host's wake accents off the water before it mounts the
-  // pass; a real host always has this, the node test environment does not.
-  vi.stubGlobal("getComputedStyle",()=>({color:"#ffffff",getPropertyValue:()=>""}));
   const motion=new CanvasCreationComposerMotion(composer as unknown as HTMLFormElement,water as HTMLCanvasElement,()=>reduced);
-  return {motion,composer,runs,createElement};
+  return {motion,composer,water,runs,createElement};
 }
 
 describe("Home composer motion lifecycle",()=>{
+  it("drives the registered short-line material with the submission clock and releases it on reset",async()=>{
+    const f=fixture(),draw=vi.fn(),destroy=vi.fn();
+    const factory=vi.fn((_origin: {x:number;y:number})=>({draw,destroy}));
+    const unregister=registerCanvasCreationWaterImpact(f.water as HTMLCanvasElement,factory);
+    const finished=f.motion.confirm(true);
+    expect(factory).toHaveBeenCalledOnce();
+    expect(factory.mock.calls[0][0]).toEqual({x:200,y:112});
+    expect(f.createElement).not.toHaveBeenCalled();
+    const tick=vi.mocked(requestAnimationFrame).mock.calls[0][0];tick(performance.now()+950);
+    expect(draw).toHaveBeenCalledOnce();expect(draw.mock.calls[0][0]).toBeGreaterThan(.9);
+    f.motion.reset();await finished;expect(destroy).toHaveBeenCalledOnce();
+    unregister();
+    expect(mountCanvasCreationWaterImpact(f.water as HTMLCanvasElement,{x:0,y:0},{accents:["#fff","#fff","#fff","#fff"]})).toBeNull();
+  });
+
   it("reduces confirmation to a short fade with no water/GPU allocation",async()=>{
     const f=fixture(true);const finished=f.motion.confirm(true);
     expect(f.createElement).not.toHaveBeenCalled();

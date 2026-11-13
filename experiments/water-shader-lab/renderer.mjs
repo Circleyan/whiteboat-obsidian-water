@@ -30,7 +30,7 @@ export class WaterRenderer {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,3,-1,-1,3]), gl.STATIC_DRAW);
     const position = gl.getAttribLocation(program, 'position');
     gl.enableVertexAttribArray(position); gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
-    this.uniforms = Object.fromEntries(['resolution','dpr','time','strength','spacing','curvature','roughness','azimuth','elevation','view','mode','dark','swirl','brightness','waterBase','waterInk','boatFrame','boatRoll','boatVisible','wakeCount','reducedMotion','wakes[0]','waveState','waveExtent','inspirations[0]','inspirationCount'].map(name => [name, gl.getUniformLocation(program,name)]));
+    this.uniforms = Object.fromEntries(['resolution','dpr','time','strength','spacing','curvature','roughness','azimuth','elevation','view','mode','dark','swirl','brightness','waterBase','waterInk','focusArea','focusAmount','focusFloor','impactFrame','impactTiming','impactReach','impactActive','boatFrame','boatRoll','boatVisible','wakeCount','reducedMotion','wakes[0]','waveState','waveExtent','inspirations[0]','inspirationCount'].map(name => [name, gl.getUniformLocation(program,name)]));
     this.frames = 0;
     this.accumulator=0;
   }
@@ -60,6 +60,17 @@ export class WaterRenderer {
     gl.uniform3fv(u.waterBase,settings.dark?[0.072,0.088,0.099]:[0.985,0.995,1.0]);
     // Existing quiet/strong water tones: dark #e2ebf1, light #262626.
     gl.uniform3fv(u.waterInk,settings.dark?[226/255,235/255,241/255]:[38/255,38/255,38/255]);
+    // Host focus uses top-left CSS coordinates; the material uses centered screen coordinates.
+    const focus=settings.focus;
+    gl.uniform4f(u.focusArea,focus ? focus.x-width/dpr/2 : 0,focus ? focus.y-height/dpr/2 : 0,
+      Math.max(1,(focus?.rx||0)+(focus?.padding||0)),Math.max(1,(focus?.ry||0)+(focus?.padding||0)));
+    gl.uniform1f(u.focusAmount,Math.max(0,Math.min(1,focus?.amount||0)));
+    gl.uniform1f(u.focusFloor,Math.max(0,Math.min(1,settings.focusFloor ?? .3)));
+    const impact=settings.impact;
+    gl.uniform1i(u.impactActive,impact && !settings.reducedMotion ? 1 : 0);
+    gl.uniform4f(u.impactFrame,impact ? impact.x-width/dpr/2 : 0,impact ? impact.y-height/dpr/2 : 0,impact?.elapsed||0,impact?.scale||1);
+    gl.uniform4f(u.impactTiming,impact?.delay||0,impact?.gap||0,impact?.travel||1,impact?.exponent||1);
+    gl.uniform1f(u.impactReach,impact ? impact.reach/impact.scale : 0);
     const boat=settings.boat,cp=Math.cos(settings.view*Math.PI/180);
     gl.uniform1i(u.boatVisible,boat?.visible?1:0);gl.uniform1i(u.reducedMotion,settings.reducedMotion?1:0);
     gl.uniform4f(u.boatFrame,boat?.x||0,(boat?.y||0)*cp,boat?.heading||0,boat?.speed||0);

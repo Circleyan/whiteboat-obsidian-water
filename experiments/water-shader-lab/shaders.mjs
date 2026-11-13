@@ -8,6 +8,12 @@ precision highp float;
 uniform vec2 resolution;
 uniform float dpr, time, strength, spacing, curvature, roughness, azimuth, elevation, view, swirl, brightness;
 uniform vec3 waterBase, waterInk;
+uniform vec4 focusArea; // centered CSS x/y and padded clear radii
+uniform float focusAmount, focusFloor;
+uniform vec4 impactFrame; // centered CSS x/y, submission elapsed and visual scale
+uniform vec4 impactTiming; // shared delay, ring gap, travel duration and exponent
+uniform float impactReach;
+uniform int impactActive;
 uniform vec4 boatFrame; // screen x/y, heading, normalized speed
 uniform float boatRoll;
 uniform int boatVisible, wakeCount, reducedMotion;
@@ -193,9 +199,33 @@ vec3 discArray(vec2 screen,vec2 css,vec3 L) {
   return mix(result,plateColor,plateCoverage);
 }
 
+// A submission displaces the existing short-line material. The crest changes
+// only its optical ink below; empty water never receives a painted ring.
+vec3 submissionWave(vec2 p) {
+  if(impactActive==0)return vec3(0.0);
+  vec2 delta=(p-impactFrame.xy)/impactFrame.w;
+  float r=length(delta),elapsed=impactFrame.z,age=elapsed-impactTiming.x;
+  vec2 n=delta/max(r,.001);
+  float pull=smoothstep(.18,.49,elapsed)*(1.0-smoothstep(.53,.78,elapsed))*exp(-pow(r/91.0,2.0));
+  float wave=0.0,crest=0.0;
+  for(int i=0;i<2;i++){
+    float a=age-float(i)*impactTiming.y;
+    if(a>=0.0){
+      float radius=impactReach*pow(clamp(a/impactTiming.z,0.0,1.0),impactTiming.w);
+      float z=(r-radius)/(22.0+a*12.0);
+      float envelope=exp(-z*z)*exp(-a*.45)*(i==0?1.0:.43)*smoothstep(0.0,.07,a)*(1.0-smoothstep(1.7,2.1,age));
+      wave+=(1.0-2.0*z*z)*envelope;crest+=envelope;
+    }
+  }
+  float kick=age<0.0?0.0:exp(-pow((age-.12)/.105,2.0))*exp(-pow(r/73.0,2.0));
+  return vec3(n*(-r*.31*pull+17.0*wave+18.0*kick)*impactFrame.w,clamp(crest+kick*.6,0.0,1.0));
+}
+
 void main() {
   vec2 css=resolution/dpr;
   vec2 screen=vec2(gl_FragCoord.x/dpr,css.y-gl_FragCoord.y/dpr)-css*0.5;
+  vec3 disturbance=submissionWave(screen);
+  screen-=disturbance.xy;
   float pitch=radians(view), cp=cos(pitch), sp=sin(pitch);
   vec2 plane=vec2(screen.x,screen.y/cp);
   // Grid density is expressed in screen pixels, as in the existing Canvas field.
@@ -238,6 +268,8 @@ void main() {
     // A smooth microfacet normal lobe selects only the reflective portion of the disc.
     float accent=boatAccent(vec2(center.x,center.y*cp));
     float tint=smoothstep(.12,.52,accent);
+    // Give the existing colored marks more presence without extending their footprint.
+    tint=1.0-pow(1.0-tint,1.45);
     float eventGlow=inspiration(center).w;
     // Broad faint reflection preserves the water marks. The narrower solar lobe
     // catches only a small range of slopes, entering/leaving as the wave tilts.
@@ -255,12 +287,14 @@ void main() {
     float glint=spec*(0.9+fresnel*5.0)*incidence;
     vec3 pigment=wakeColor(floor(seed(id+12.0)*4.0));
     // Color occupies only the existing optically selected part of each patch.
-    float quiet=softSpec*incidence*mix(brightness*.20,.82,tint);
+    float quiet=softSpec*incidence*mix(brightness*.20,1.0,tint);
+    float crest=submissionWave(vec2(center.x,center.y*cp)).z;
+    quiet=min(1.0,quiet*(1.0+crest*4.0));
     vec3 surfaceColor=mix(base,mix(light,pigment,tint),quiet);
     // The solar peak lightens colored wakes too, on the same surface normals.
     float peakGain=mode==5?mix(.32,3.4,eventGlow):(mode==0?1.6:1.25);
-    float peak=min(1.0,glint*brightness*peakGain);
-    surfaceColor=mix(surfaceColor,mix(light,mix(pigment,light,.25),tint),peak);
+    float peak=min(1.0,glint*brightness*peakGain*(1.0+crest*4.0));
+    surfaceColor=mix(surfaceColor,mix(light,mix(pigment,light,.12),tint),peak);
     float surfaceOpacity=quiet+peak*(1.0-quiet);
     if(mode==1) {
       float edge=smoothstep(0.88,0.99,distance)*0.12;
@@ -268,8 +302,15 @@ void main() {
     }
     if(mode==2) surfaceColor=N*0.5+0.5;
     if(mode==1 || mode==2) surfaceOpacity=1.0;
+    // Recede whole marks, never the opaque background or their geometry. A fixed
+    // per-patch dither avoids visible contour bands between the eight alpha tiers.
+    float focusDistance=length((vec2(center.x,center.y*cp)-focusArea.xy)/focusArea.zw);
+    float fade=focusAmount*smoothstep(.9,2.0,focusDistance);
+    float tier=min(7.0,floor(fade*7.0+seed(id+31.0)));
+    float presence=1.0-(1.0-focusFloor)*tier/7.0;
+    surfaceColor=mix(base,surfaceColor,presence);
     result=mix(base,surfaceColor,coverage);
-    resultOpacity=coverage*surfaceOpacity;
+    resultOpacity=coverage*surfaceOpacity*presence;
     bestCoverage=coverage;
   }
   // Canvas backgrounds retain only the existing reflected marks. RGB is

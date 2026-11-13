@@ -1715,21 +1715,6 @@ body.whiteboat-canvas-entry-open .whiteboat-canvas-entry-modal.modal { width: 10
 
 .whiteboat-disc-water-host > .canvas-background { visibility: hidden; }
 
-/* Generated core water presentation. Do not edit this block. */
-.wb-water-css-probe {
-  position: absolute;
-  visibility: hidden;
-  pointer-events: none;
-  height: 0;
-}
-canvas[data-wb-water-impact-covered] {
-  visibility: hidden;
-}
-/* End generated core water presentation. */
-
-/* Workbench candidate */
-
-
 .whiteboat-settings-creation-light-preview__stage
   > .whiteboat-canvas-entry.is-settings-preview {
   position: absolute;
@@ -1848,3 +1833,15 @@ canvas[data-wb-water-impact-covered] {
 @container (max-width: 520px) {
   .whiteboat-water-workbench__preview { grid-column: 1 / -1; }
 }
+
+/* Generated core water presentation. Do not edit this block. */
+.wb-water-css-probe {
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+  height: 0;
+}
+canvas[data-wb-water-impact-covered] {
+  visibility: hidden;
+}
+/* End generated core water presentation. */

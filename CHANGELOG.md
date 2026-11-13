@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.2 — 2026-11-13
+
+- Form expanding submission ripples from the water’s existing short lines, preserving gaps and the background color.
+- Restore composer focus by fading distant water marks while keeping the background and nearby boat clear.
+- Make the boat’s colored contact marks and fading wake easier to see.
+
 ## 0.2.1 — 2026-11-13
 
 - Preview boat speed, water sound and Canvas pattern changes immediately in settings.

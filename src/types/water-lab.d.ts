@@ -1,8 +1,11 @@
 declare module "*water-shader-lab/renderer.mjs" {
   import type { DiscWaterSettings } from "../features/disc-water-settings";
-  import type { CanvasCreationWaterBoat } from "whiteboat-core";
+  import type { CanvasCreationWaterBoat, CanvasCreationWaterFocus } from "whiteboat-core";
   export interface LabDrawSettings extends DiscWaterSettings {
     dark: boolean;
+    focus?: CanvasCreationWaterFocus | null;
+    focusFloor?: number;
+    impact?: { x: number; y: number; elapsed: number; scale: number; reach: number; delay: number; gap: number; travel: number; exponent: number } | null;
     boat: (CanvasCreationWaterBoat & { wakes: { x: number; y: number; heading: number; life: number }[] }) | null;
     reducedMotion: boolean;
     inspirations: { x: number; y: number; age: number }[];
