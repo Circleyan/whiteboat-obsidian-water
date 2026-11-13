@@ -8,8 +8,8 @@ Begin on a quiet water surface of fine lines. Watch the boat, listen to the wate
 - Click the water or the boat to write. Use the visible submit control or Command/Ctrl + Enter to create a Canvas.
 - An empty submission creates an empty Canvas. Text becomes a normal editable text node.
 - Press Escape to dismiss the input, then Escape again to close the surface. Closing the surface does not create a Canvas.
-- Change the Canvas folder, boat speed, light intensity, water depth, and water sound in the plugin preferences. The default folder follows the interface language: `Canvases`, `随手画布`, or `隨手畫布`.
-- Enable **Water surface** in preferences to show water behind the current Canvas. It is off by default. **Water mark size** scales the Canvas pattern from 50% to 200%, with 90% as the default. The background stays transparent and follows your theme. Obsidian continues to handle node selection, dragging, editing and saving.
+- The **Launchpad** settings group contains **New Canvas location**, water sound, boat speed, and a two-axis light/depth pad. Drag to preview immediately and release to save. Left/right changes light; up/down changes depth. Numeric inputs, arrow keys, Escape cancellation, undo and reset are available. Move over the adjacent water preview to try the boat speed; the sound toggle auditions water. The default folder follows the interface language: `Canvases`, `随手画布`, or `隨手畫布`.
+- In the **Canvas** settings group, enable **Water surface** to show water behind the current Canvas. It is off by default. **Water mark size** scales the Canvas pattern from 50% to 200%, with 90% as the default. The background stays transparent and follows your theme. The adjacent Canvas preview responds immediately to the water toggle and pattern size. Obsidian continues to handle node selection, dragging, editing and saving.
 - The default boat speed is 60%; previously saved speed preferences are preserved.
 - This release contains the water entry, its soundscape and the optional Canvas background. Source scope and Product IDs are recorded in [release-scope.json](release-scope.json).
 

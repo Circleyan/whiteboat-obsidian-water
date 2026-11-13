@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.1 — 2026-11-13
+
+- Preview boat speed, water sound and Canvas pattern changes immediately in settings.
+- Combine light intensity and water depth in a two-axis pad with live preview, release-to-save, precise inputs, keyboard adjustment, cancel, undo and reset.
+
+- Group preferences into **Launchpad** and **Canvas**, with language selection above both groups. Group headings update immediately when switching languages.
+- Use **New Canvas location** for the destination setting, matching the established name and keeping the language-specific default folders.
+
 ## 0.2.0 — 2026-11-05
 
 ### Added

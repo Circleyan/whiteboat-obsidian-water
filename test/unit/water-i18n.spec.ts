@@ -1,9 +1,27 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-vi.mock("obsidian", async original => ({ ...await original<Record<string, unknown>>(), getLanguage: vi.fn(() => "en"), PluginSettingTab: class {}, Setting: class {} }));
-import { getLanguage, Plugin } from "obsidian";
+vi.mock("../../src/water-workbench", () => ({ mountWaterWorkbench: vi.fn(() => ({ refresh: vi.fn(), refreshText: vi.fn(), destroy: vi.fn() })) }));
+vi.mock("obsidian", async original => ({ ...await original<Record<string, unknown>>(), getLanguage: vi.fn(() => "en"), PluginSettingTab: class {}, Setting: class {
+  nameEl = { textContent: "" };
+  settingEl = { closest: () => this.container.group ?? null, classList: { add() {} } };
+  desc = "";
+  heading = false;
+  constructor(private container: any) { container.rows.push(this); }
+  setName(value: string) { this.nameEl.textContent = value; return this; }
+  setDesc(value: string) { this.desc = value; return this; }
+  setHeading() { this.heading = true; return this; }
+  addText(render: (control: any) => void) { render(this.control()); return this; }
+  addToggle(render: (control: any) => void) { render(this.control()); return this; }
+  addSlider(render: (control: any) => void) { render(this.control()); return this; }
+  addDropdown(render: (control: any) => void) { render(this.control()); return this; }
+  private control(): any {
+    return { sliderEl: { addEventListener() {} }, selectEl: { options: [] }, setValue() { return this; }, addOptions() { return this; },
+      onChange() { return this; }, setLimits() { return this; }, setInstant() { return this; }, setDynamicTooltip() { return this; } };
+  }
+} }));
+import { getLanguage, Plugin, Setting } from "obsidian";
 import { normalizeWaterLanguage, resolveWaterLanguage, currentWaterLanguage, WATER_UI_TEXT } from "../../src/i18n";
 import { CANVAS_CREATION_ENTRY_TEXT, canvasCreationEntryText } from "../../src/features/canvas-creation-entry-text";
-import WhiteboatPlugin from "../../src/main";
+import WhiteboatPlugin, { WaterSettingTab } from "../../src/main";
 import { createAndOpenCanvasFromEntry } from "../../src/features/canvas-creation-entry";
 
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); });
@@ -116,5 +134,55 @@ describe("Water interface languages", () => {
   });
   it("reports common failures in English", async () => {
     await expect(createAndOpenCanvasFromEntry({}, "", { text: canvasCreationEntryText("en") })).rejects.toThrow("The Obsidian vault cannot create files.");
+  });
+});
+
+
+describe("Water settings groups", () => {
+  function fixture(language: string) {
+    const plugin = new WhiteboatPlugin({} as any, {} as any);
+    (plugin as any).savedData = { waterLanguage: language, canvas: { creation: { canvasWaterEnabled: true, canvasWaterScale: 1.2, boatFollowSpeed: 1.3 } } };
+    const tab = new WaterSettingTab(plugin);
+    const container = { rows: [] as any[], empty() { this.rows = []; } };
+    (tab as any).containerEl = container;
+    return { plugin, tab, container };
+  }
+  it.each([["en", "Launchpad", "Canvas"], ["zh-CN", "启动台", "画布"], ["zh-TW", "啟動台", "畫布"]])("groups native settings in %s without changing preferences", (language, launchpad, canvas) => {
+    const { plugin, tab } = fixture(language);
+    const before = JSON.stringify(plugin.preferences);
+    const entries = tab.getSettingDefinitions();
+    expect(entries).toHaveLength(3);
+    expect(entries[0]).toMatchObject({ nameKey: "language" });
+    expect(entries.slice(1).map(entry => "type" in entry && entry.heading)).toEqual([launchpad, canvas]);
+    expect(entries.slice(1).map(entry => "type" in entry && entry.items.map(item => item.nameKey))).toEqual([
+      ["folder", "sound", "speed", "lighting"], ["canvasWater", "canvasWaterScale", "canvasPreview"],
+    ]);
+    expect(JSON.stringify(plugin.preferences)).toBe(before);
+  });
+  it("renders the same groups on older hosts and translates without replacing controls", () => {
+    const { plugin, tab, container } = fixture("en");
+    tab.display();
+    const rows = [...container.rows];
+    expect(rows.filter(row => row.heading).map(row => row.nameEl.textContent)).toEqual(["Launchpad", "Canvas"]);
+    expect(rows.filter(row => !row.heading).map(row => row.nameEl.textContent)).toEqual(["Language", "New Canvas location", "Water sound", "Boat speed", "Light and depth", "Water surface", "Water mark size", "Canvas preview"]);
+    (plugin as any).savedData.waterLanguage = "zh-TW";
+    tab.refreshText();
+    expect(container.rows).toEqual(rows);
+    expect(rows.filter(row => row.heading).map(row => row.nameEl.textContent)).toEqual(["啟動台", "畫布"]);
+    expect(rows[1].nameEl.textContent).toBe("啟動台");
+  });
+  it("updates native host headings in place during a language change", () => {
+    const { plugin, tab } = fixture("en");
+    const entries = tab.getSettingDefinitions();
+    const headings = entries.slice(1).map(entry => {
+      if (!("type" in entry)) throw new Error("Expected group");
+      const heading = { textContent: entry.heading };
+      const container = { rows: [], group: { querySelector: (selector: string) => selector === ".setting-item-heading .setting-item-name" ? heading : null } };
+      for (const item of entry.items) item.render(new Setting(container as any));
+      return heading;
+    });
+    (plugin as any).savedData.waterLanguage = "zh-CN";
+    tab.refreshText();
+    expect(headings.map(heading => heading.textContent)).toEqual(["启动台", "画布"]);
   });
 });

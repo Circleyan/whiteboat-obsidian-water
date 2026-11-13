@@ -757,6 +757,14 @@ export class WhiteboatCanvasCreationEntryModal extends Modal {
   private get t(): CanvasCreationEntryText { return this.options.text ?? defaultCanvasCreationEntryText; }
 
   /** Update copy in place: retain draft, focus, and every effect instance. */
+  refreshPreferences(): void {
+    if (!this.rootEl?.isConnected) return;
+    this.soundEnabled = this.options.getSoundEnabled?.() ?? true;
+    this.soundscape?.setEnabled(this.soundEnabled);
+    this.updateSoundLabel(this.soundToggleEl?.dataset.soundState === "error");
+    this.updateCelestialProjection(performance.now());
+  }
+
   refreshText(): void {
     if (!this.rootEl) return;
     const label = this.rootEl.querySelector("#whiteboat-canvas-entry-boat-label");
