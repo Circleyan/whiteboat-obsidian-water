@@ -3,7 +3,7 @@ import { CanvasDiscWaterBackground } from "./features/canvas-disc-water-backgrou
 import { WhiteboatCanvasCreationEntryModal } from "./features/canvas-creation-entry";
 import { openCanvasCreationEntryInMainWindow } from "./features/canvas-creation-entry-window";
 import { normalizeCanvasCreationBoatFollowSpeed } from "./features/canvas-creation-navigation";
-import { normalizeCanvasCreationLightIntensity, normalizeCanvasCreationWaterDepth } from "./features/canvas-creation-light";
+import { CANVAS_CREATION_LIGHT_INTENSITY_LIMITS, CANVAS_CREATION_WATER_DEPTH_LIMITS, normalizeCanvasCreationLightIntensity, normalizeCanvasCreationWaterDepth } from "./features/canvas-creation-light";
 import { normalizeCanvasWaterScale, normalizeDiscWaterSettings } from "./features/disc-water-settings";
 import { normalizeTextNodeSize } from "./features/canvas-geometry";
 
@@ -202,8 +202,6 @@ export class WaterSettingTab extends PluginSettingTab {
     this.previews.set(key, mountWaterWorkbench(setting.settingEl, {
       preferences: () => this.waterPlugin.preferences,
       text: key => this.waterPlugin.ui(key),
-      preview: value => this.waterPlugin.previewWaterPreferences(value),
-      save: value => this.waterPlugin.updateWaterPreferences(value),
       close: () => this.waterPlugin.clearWaterPreview(),
     }, canvasOnly));
   }
@@ -265,7 +263,21 @@ export class WaterSettingTab extends PluginSettingTab {
           slider.sliderEl.addEventListener("change", () => { void this.waterPlugin.updateWaterPreferences({ boatFollowSpeed: Number(slider.sliderEl.value) }); });
         });
       } },
-      { name: this.waterPlugin.ui("lighting"), desc: this.waterPlugin.ui("lightingDesc"), nameKey: "lighting", descKey: "lightingDesc", render: setting => this.renderPreview(setting, false) },
+      { name: this.waterPlugin.ui("light"), desc: this.waterPlugin.ui("lightDesc"), nameKey: "light", descKey: "lightDesc", render: setting => {
+        setting.addSlider(slider => {
+          slider.setLimits(CANVAS_CREATION_LIGHT_INTENSITY_LIMITS.min, CANVAS_CREATION_LIGHT_INTENSITY_LIMITS.max, CANVAS_CREATION_LIGHT_INTENSITY_LIMITS.step).setValue(prefs.lightIntensity).setDynamicTooltip();
+          slider.sliderEl.addEventListener("input", () => this.waterPlugin.previewWaterPreferences({ lightIntensity: Number(slider.sliderEl.value) }));
+          slider.sliderEl.addEventListener("change", () => { void this.waterPlugin.updateWaterPreferences({ lightIntensity: Number(slider.sliderEl.value) }).then(() => { slider.sliderEl.value = String(this.waterPlugin.preferences.lightIntensity); }); });
+        });
+      } },
+      { name: this.waterPlugin.ui("depth"), desc: this.waterPlugin.ui("depthDesc"), nameKey: "depth", descKey: "depthDesc", render: setting => {
+        setting.addSlider(slider => {
+          slider.setLimits(CANVAS_CREATION_WATER_DEPTH_LIMITS.min, CANVAS_CREATION_WATER_DEPTH_LIMITS.max, CANVAS_CREATION_WATER_DEPTH_LIMITS.step).setValue(prefs.waterDepth).setDynamicTooltip();
+          slider.sliderEl.addEventListener("input", () => this.waterPlugin.previewWaterPreferences({ waterDepth: Number(slider.sliderEl.value) }));
+          slider.sliderEl.addEventListener("change", () => { void this.waterPlugin.updateWaterPreferences({ waterDepth: Number(slider.sliderEl.value) }).then(() => { slider.sliderEl.value = String(this.waterPlugin.preferences.waterDepth); }); });
+        });
+      } },
+      { name: this.waterPlugin.ui("launchpadPreview"), desc: this.waterPlugin.ui("launchpadPreviewDesc"), nameKey: "launchpadPreview", descKey: "launchpadPreviewDesc", render: setting => this.renderPreview(setting, false) },
       { name: this.waterPlugin.ui("canvasPreview"), desc: this.waterPlugin.ui("canvasPreviewDesc"), nameKey: "canvasPreview", descKey: "canvasPreviewDesc", render: setting => this.renderPreview(setting, true) },
     ];
     const items = definitions.map(item => ({ ...item, render: (setting: Setting) => {
@@ -284,7 +296,7 @@ export class WaterSettingTab extends PluginSettingTab {
         } };
       }),
     });
-    return [items[0], group("launchpadGroup", ["folder", "sound", "speed", "lighting"]), group("canvasGroup", ["canvasWater", "canvasWaterScale", "canvasPreview"])];
+    return [items[0], group("launchpadGroup", ["folder", "sound", "speed", "light", "depth", "launchpadPreview"]), group("canvasGroup", ["canvasWater", "canvasWaterScale", "canvasPreview"])];
   }
 
   // Obsidian <1.13 calls display(); newer hosts render the same definitions.

@@ -155,7 +155,7 @@ describe("Water settings groups", () => {
     expect(entries[0]).toMatchObject({ nameKey: "language" });
     expect(entries.slice(1).map(entry => "type" in entry && entry.heading)).toEqual([launchpad, canvas]);
     expect(entries.slice(1).map(entry => "type" in entry && entry.items.map(item => item.nameKey))).toEqual([
-      ["folder", "sound", "speed", "lighting"], ["canvasWater", "canvasWaterScale", "canvasPreview"],
+      ["folder", "sound", "speed", "light", "depth", "launchpadPreview"], ["canvasWater", "canvasWaterScale", "canvasPreview"],
     ]);
     expect(JSON.stringify(plugin.preferences)).toBe(before);
   });
@@ -164,7 +164,7 @@ describe("Water settings groups", () => {
     tab.display();
     const rows = [...container.rows];
     expect(rows.filter(row => row.heading).map(row => row.nameEl.textContent)).toEqual(["Launchpad", "Canvas"]);
-    expect(rows.filter(row => !row.heading).map(row => row.nameEl.textContent)).toEqual(["Language", "New Canvas location", "Water sound", "Boat speed", "Light and depth", "Water surface", "Water mark size", "Canvas preview"]);
+    expect(rows.filter(row => !row.heading).map(row => row.nameEl.textContent)).toEqual(["Language", "New Canvas location", "Water sound", "Boat speed", "Light intensity", "Water depth", "Launchpad preview", "Water surface", "Water mark size", "Canvas preview"]);
     (plugin as any).savedData.waterLanguage = "zh-TW";
     tab.refreshText();
     expect(container.rows).toEqual(rows);

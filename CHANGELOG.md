@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.3 — 2026-11-14
+
+- Replace the two-axis light/depth pad with independent native sliders; remove precise inputs and the custom cancel, undo and reset controls.
+
 ## 0.2.2 — 2026-11-13
 
 - Form expanding submission ripples from the water’s existing short lines, preserving gaps and the background color.

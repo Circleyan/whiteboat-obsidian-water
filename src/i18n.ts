@@ -17,15 +17,8 @@ export function currentWaterLanguage(preference: WaterLanguagePreference): Canva
   try { return resolveWaterLanguage(preference, getLanguage()); } catch { return "en"; }
 }
 export const WATER_UI_TEXT = {
-  "lighting": {"en": "Light and depth", "zh-CN": "光照与水深", "zh-TW": "光照與水深"},
-  "lightingDesc": {"en": "Drag the point to see changes immediately; release to save.", "zh-CN": "拖动圆点即时预览，松手保存。", "zh-TW": "拖動圓點即時預覽，放開儲存。"},
-  "padHelp": {"en": "Left/right adjusts light; up/down adjusts depth. Arrow keys adjust; Shift makes larger changes; Escape cancels.", "zh-CN": "左右调整光照，上下调整水深。方向键调整，Shift 加大步长，Escape 取消。", "zh-TW": "左右調整光照，上下調整水深。方向鍵調整，Shift 加大步長，Escape 取消。"},
-  "lightWeak": {"en": "Dim", "zh-CN": "弱光", "zh-TW": "弱光"},
-  "lightStrong": {"en": "Bright", "zh-CN": "强光", "zh-TW": "強光"},
-  "depthDeep": {"en": "Deeper", "zh-CN": "更深", "zh-TW": "更深"},
-  "undo": {"en": "Undo", "zh-CN": "撤销", "zh-TW": "復原"},
-  "reset": {"en": "Reset", "zh-CN": "重置", "zh-TW": "重設"},
   "previewHelp": {"en": "Move the pointer over the water to try the boat speed. Water sound can be heard while adjusting.", "zh-CN": "把鼠标移到水面上体验船速；调整水声时可直接试听。", "zh-TW": "將游標移到水面體驗船速；調整水聲時可直接試聽。"},
+  "launchpadPreviewDesc": {"en": "Preview changes to the launchpad.", "zh-CN": "预览启动台的调整效果。", "zh-TW": "預覽啟動台的調整效果。"},
   "launchpadPreview": {"en": "Launchpad preview", "zh-CN": "启动台预览", "zh-TW": "啟動台預覽"},
   "canvasPreview": {"en": "Canvas preview", "zh-CN": "画布预览", "zh-TW": "畫布預覽"},
   "canvasPreviewDesc": {"en": "Preview water and water mark size without changing a Canvas.", "zh-CN": "即时预览水面和水纹大小，不修改画布。", "zh-TW": "即時預覽水面和水紋大小，不修改畫布。"},
